@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap");
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+/* 自定义组件样式 */
+.music-card {
+  @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden;
+}
+
+.music-card:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  @apply bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200 font-medium;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-900 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 font-medium;
+}
+
+.btn-outline {
+  @apply border border-primary-600 text-primary-600 px-4 py-2 rounded-md hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200 font-medium;
+}
+
+.input-field {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200;
+}
+
+.textarea-field {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200 min-h-[100px];
+  resize: vertical;
+}
+
+/* 音频播放器样式 */
+.audio-player {
+  @apply bg-white rounded-lg shadow-lg p-4 border border-gray-200;
+}
+
+.audio-progress {
+  @apply w-full h-2 bg-gray-200 rounded-full cursor-pointer;
+}
+
+.audio-progress-bar {
+  @apply h-full bg-primary-600 rounded-full transition-all duration-100;
+}
+
+.audio-time {
+  @apply text-sm text-gray-600 font-mono;
+}
+
+/* 加载动画 */
+.loading-spinner {
+  @apply inline-block w-4 h-4 border-2 border-gray-300 border-t-primary-600 rounded-full animate-spin;
+}
+
+/* 标签样式 */
+.tag {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.tag-blue {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.tag-green {
+  @apply bg-green-100 text-green-800;
+}
+
+.tag-yellow {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.tag-red {
+  @apply bg-red-100 text-red-800;
+}
+
+.tag-purple {
+  @apply bg-purple-100 text-purple-800;
+}
+
+/* 响应式网格 */
+.music-grid {
+  @apply grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+}
+
+.performance-grid {
+  @apply grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+}
+
+/* 导航样式 */
+.nav-link {
+  @apply text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200;
+}
+
+.nav-link.active {
+  @apply text-primary-600 bg-primary-50;
+}
+
+/* 卡片阴影效果 */
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card-shadow:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* 文件拖拽上传区域 */
+.dropzone {
+  @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors duration-200;
+}
+
+.dropzone.active {
+  @apply border-primary-500 bg-primary-50;
+}
+
+/* 音乐波形动画 */
+.wave-animation {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.wave-bar {
+  width: 3px;
+  background-color: currentColor;
+  animation: wave 1.2s ease-in-out infinite;
+}
+
+.wave-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.wave-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.wave-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.wave-bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.wave-bar:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+@keyframes wave {
+  0%,
+  40%,
+  100% {
+    height: 4px;
+  }
+  20% {
+    height: 16px;
+  }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
