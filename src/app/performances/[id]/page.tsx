@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/components/layout/Providers";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { Performance } from "@/types";
+import CommentList from "@/components/comments/CommentList";
 import {
   PlayIcon,
   PauseIcon,
@@ -344,10 +345,7 @@ export default function PerformanceDetailPage() {
             评论 ({performance.commentsCount})
           </h2>
 
-          {/* TODO: 这里需要实现评论组件 */}
-          <div className="text-center py-8 text-gray-500">
-            评论功能开发中...
-          </div>
+          <CommentList performanceId={performance.id} />
         </div>
       </div>
     </div>
