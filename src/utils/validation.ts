@@ -43,6 +43,20 @@ export const workSchema = Joi.object({
   description: Joi.string().max(2000).optional().messages({
     "string.max": "作品描述最多 2000 个字符",
   }),
+  pdfFilePath: Joi.string()
+    .pattern(/^\/uploads\/[^\/]+\/[^\/]+$/)
+    .optional()
+    .allow(null)
+    .messages({
+      "string.pattern.base": "PDF文件路径格式不正确",
+    }),
+  midiFilePath: Joi.string()
+    .pattern(/^\/uploads\/[^\/]+\/[^\/]+$/)
+    .optional()
+    .allow(null)
+    .messages({
+      "string.pattern.base": "MIDI文件路径格式不正确",
+    }),
   genreId: Joi.number().integer().positive().optional(),
   instrumentId: Joi.number().integer().positive().optional(),
   purposeId: Joi.number().integer().positive().optional(),

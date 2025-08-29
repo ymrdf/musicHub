@@ -8,6 +8,7 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD || "ymrdf",
   database: process.env.DB_NAME || "musicHub",
   dialect: "mysql",
+  dialectModule: require("mysql2"), // 显式指定 mysql2 模块
   logging: process.env.NODE_ENV === "development" ? console.log : false,
   pool: {
     max: 10,

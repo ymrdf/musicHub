@@ -27,10 +27,26 @@ export const useAuth = () => {
   return context;
 };
 
+// 设置 cookie 的辅助函数
+const setCookie = (name: string, value: string, days: number = 7) => {
+  if (typeof window !== "undefined") {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value}; path=/; expires=${expires.toUTCString()}`;
+  }
+};
+
+// 删除 cookie 的辅助函数
+const deleteCookie = (name: string) => {
+  if (typeof window !== "undefined") {
+    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+  }
+};
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false); // 简化加载状态
+  const [loading, setLoading] = useState(false);
 
   // 配置 axios 默认设置
   useEffect(() => {
@@ -56,6 +72,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         if (error.response?.status === 401 && typeof window !== "undefined") {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
+          deleteCookie("token");
           setUser(null);
           setToken(null);
         }
@@ -74,10 +91,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
         try {
           setToken(savedToken);
           setUser(JSON.parse(savedUser));
+          // 恢复 cookie
+          setCookie("token", savedToken);
         } catch (error) {
           console.error("恢复登录状态失败:", error);
           localStorage.removeItem("token");
           localStorage.removeItem("user");
+          deleteCookie("token");
         }
       }
     }
@@ -101,6 +121,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         if (typeof window !== "undefined") {
           localStorage.setItem("token", token);
           localStorage.setItem("user", JSON.stringify(user));
+          // 设置 cookie 供中间件使用
+          setCookie("token", token);
         }
       } else {
         throw new Error(response.data.error || "登录失败");
@@ -139,6 +161,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         if (typeof window !== "undefined") {
           localStorage.setItem("token", token);
           localStorage.setItem("user", JSON.stringify(user));
+          // 设置 cookie 供中间件使用
+          setCookie("token", token);
         }
       } else {
         throw new Error(response.data.error || "注册失败");
@@ -159,6 +183,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     if (typeof window !== "undefined") {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      deleteCookie("token");
     }
   };
 

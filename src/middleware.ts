@@ -1,6 +1,38 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+// JWT_SECRET 在这里不需要，因为我们只验证格式和过期时间，不验证签名
+
+// 简化的 JWT 验证函数（避免使用 jsonwebtoken 库，因为它在 Edge Runtime 中不可用）
+function verifyTokenSimple(token: string) {
+  try {
+    // 简单的 JWT 格式检查
+    const parts = token.split(".");
+    if (parts.length !== 3) {
+      return null;
+    }
+
+    // 解码 payload（不验证签名，只验证格式和过期时间）
+    const payload = JSON.parse(
+      atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"))
+    );
+
+    // 检查是否有 userId 和是否过期
+    if (!payload.userId || !payload.exp) {
+      return null;
+    }
+
+    // 检查是否过期（时间戳是秒，需要转换为毫秒）
+    if (payload.exp * 1000 < Date.now()) {
+      return null;
+    }
+
+    return payload;
+  } catch (error) {
+    return null;
+  }
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -39,8 +71,9 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    // 简单的 token 验证
-    if (!token.startsWith("demo-jwt-token")) {
+    // 验证 JWT token
+    const decoded = verifyTokenSimple(token);
+    if (!decoded || !decoded.userId) {
       // token 无效，重定向到登录页
       const loginUrl = new URL("/auth/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
@@ -55,8 +88,11 @@ export function middleware(request: NextRequest) {
       request.cookies.get("token")?.value ||
       request.headers.get("authorization")?.replace("Bearer ", "");
 
-    if (token && token.startsWith("demo-jwt-token")) {
-      return NextResponse.redirect(new URL("/", request.url));
+    if (token) {
+      const decoded = verifyTokenSimple(token);
+      if (decoded && decoded.userId) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
     }
   }
 

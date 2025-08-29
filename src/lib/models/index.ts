@@ -378,3 +378,6 @@ export const setupAssociations = () => {
 
   // 其他关联会在各自的模型文件中定义
 };
+
+// 自动设置关联关系
+setupAssociations();

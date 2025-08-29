@@ -101,11 +101,8 @@ export function Header() {
                 </Link>
 
                 {/* 用户头像和菜单 */}
-                <div className="relative">
-                  <button
-                    type="button"
-                    className="flex items-center space-x-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                  >
+                <Link href={`/users/${user.id}`} className="relative">
+                  <div className="flex items-center space-x-2 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:bg-gray-50 p-2 transition-colors duration-200">
                     {user.avatarUrl ? (
                       <img
                         className="h-8 w-8 rounded-full"
@@ -120,10 +117,8 @@ export function Header() {
                     <span className="hidden md:block text-gray-700 font-medium">
                       {user.username}
                     </span>
-                  </button>
-
-                  {/* 下拉菜单会在后续实现 */}
-                </div>
+                  </div>
+                </Link>
 
                 <button
                   onClick={logout}
