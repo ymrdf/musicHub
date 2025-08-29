@@ -362,6 +362,175 @@ Work.init(
   }
 );
 
+// Performance 模型
+interface PerformanceCreationAttributes
+  extends Optional<PerformanceType, "id" | "createdAt" | "updatedAt"> {}
+
+export class Performance
+  extends Model<PerformanceType, PerformanceCreationAttributes>
+  implements PerformanceType
+{
+  public id!: number;
+  public workId!: number;
+  public userId!: number;
+  public lyricsId?: number;
+  public title!: string;
+  public description?: string;
+  public audioFilePath!: string;
+  public audioFileSize?: number;
+  public duration?: number;
+  public fileFormat?: string;
+  public type!: "instrumental" | "vocal";
+  public instrument?: string;
+  public likesCount!: number;
+  public commentsCount!: number;
+  public playsCount!: number;
+  public isPublic!: boolean;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
+Performance.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    workId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "work_id",
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "user_id",
+    },
+    lyricsId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      field: "lyrics_id",
+    },
+    title: {
+      type: DataTypes.STRING(200),
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    audioFilePath: {
+      type: DataTypes.STRING(500),
+      allowNull: false,
+      field: "audio_file_path",
+    },
+    audioFileSize: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      field: "audio_file_size",
+    },
+    duration: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    fileFormat: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+      field: "file_format",
+    },
+    type: {
+      type: DataTypes.ENUM("instrumental", "vocal"),
+      allowNull: false,
+    },
+    instrument: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    likesCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      field: "likes_count",
+    },
+    commentsCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      field: "comments_count",
+    },
+    playsCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      field: "plays_count",
+    },
+    isPublic: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      field: "is_public",
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      field: "created_at",
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      field: "updated_at",
+    },
+  },
+  {
+    sequelize,
+    tableName: "performances",
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+  }
+);
+
+// PerformanceLike 模型
+interface PerformanceLikeCreationAttributes
+  extends Optional<PerformanceLikeType, "id" | "createdAt"> {}
+
+export class PerformanceLike
+  extends Model<PerformanceLikeType, PerformanceLikeCreationAttributes>
+  implements PerformanceLikeType
+{
+  public id!: number;
+  public performanceId!: number;
+  public userId!: number;
+  public readonly createdAt!: Date;
+}
+
+PerformanceLike.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    performanceId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "performance_id",
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "user_id",
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      field: "created_at",
+    },
+  },
+  {
+    sequelize,
+    tableName: "performance_likes",
+    timestamps: false,
+  }
+);
+
 // 导出所有模型以便在其他文件中使用
 export { sequelize };
 
@@ -370,6 +539,29 @@ export const setupAssociations = () => {
   // User 关联
   User.hasMany(Work, { foreignKey: "userId", as: "works" });
   Work.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+  // Performance 关联
+  User.hasMany(Performance, { foreignKey: "userId", as: "performances" });
+  Performance.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+  Work.hasMany(Performance, { foreignKey: "workId", as: "performances" });
+  Performance.belongsTo(Work, { foreignKey: "workId", as: "work" });
+
+  // PerformanceLike 关联
+  User.hasMany(PerformanceLike, {
+    foreignKey: "userId",
+    as: "performanceLikes",
+  });
+  PerformanceLike.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+  Performance.hasMany(PerformanceLike, {
+    foreignKey: "performanceId",
+    as: "likes",
+  });
+  PerformanceLike.belongsTo(Performance, {
+    foreignKey: "performanceId",
+    as: "performance",
+  });
 
   // Category 关联
   Work.belongsTo(Category, { foreignKey: "genreId", as: "genre" });

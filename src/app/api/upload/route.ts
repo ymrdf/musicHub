@@ -37,7 +37,17 @@ export async function POST(request: NextRequest) {
     const allowedTypes: { [key: string]: string[] } = {
       pdf: ["application/pdf"],
       midi: ["audio/midi", "audio/x-midi", "application/x-midi"],
-      audio: ["audio/mpeg", "audio/mp3", "audio/wav", "audio/wave"],
+      audio: [
+        "audio/mpeg",
+        "audio/mp3",
+        "audio/wav",
+        "audio/wave",
+        "audio/x-wav",
+        "audio/aac",
+        "audio/ogg",
+        "audio/webm",
+        "audio/mp4",
+      ],
       image: [
         "image/jpeg",
         "image/jpg",
@@ -111,7 +121,7 @@ export async function POST(request: NextRequest) {
       data: {
         filename: fileName,
         originalName: file.name,
-        path: filePath,
+        path: fileUrl, // 返回相对路径而不是绝对路径
         url: fileUrl,
         size: file.size,
         type: file.type,

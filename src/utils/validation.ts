@@ -1,5 +1,22 @@
 import Joi from "joi";
 
+// 配置 Joi 以解决 TLD 列表问题
+Joi.defaults((schema) =>
+  schema.options({
+    allowUnknown: true,
+    stripUnknown: true,
+  })
+);
+
+// 自定义邮箱验证函数，避免 TLD 列表问题
+const validateEmail = (value: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(value);
+};
+
+// 检查是否在浏览器环境中
+const isBrowser = typeof window !== "undefined";
+
 // 用户注册验证
 export const registerSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(30).required().messages({
@@ -8,10 +25,18 @@ export const registerSchema = Joi.object({
     "string.max": "用户名最多 30 个字符",
     "any.required": "用户名不能为空",
   }),
-  email: Joi.string().email().required().messages({
-    "string.email": "请输入有效的邮箱地址",
-    "any.required": "邮箱不能为空",
-  }),
+  email: Joi.string()
+    .custom((value, helpers) => {
+      if (!validateEmail(value)) {
+        return helpers.error("string.email");
+      }
+      return value;
+    }, "email-validation")
+    .required()
+    .messages({
+      "string.email": "请输入有效的邮箱地址",
+      "any.required": "邮箱不能为空",
+    }),
   password: Joi.string().min(8).required().messages({
     "string.min": "密码至少 8 个字符",
     "any.required": "密码不能为空",
@@ -24,10 +49,18 @@ export const registerSchema = Joi.object({
 
 // 用户登录验证
 export const loginSchema = Joi.object({
-  email: Joi.string().email().required().messages({
-    "string.email": "请输入有效的邮箱地址",
-    "any.required": "邮箱不能为空",
-  }),
+  email: Joi.string()
+    .custom((value, helpers) => {
+      if (!validateEmail(value)) {
+        return helpers.error("string.email");
+      }
+      return value;
+    }, "email-validation")
+    .required()
+    .messages({
+      "string.email": "请输入有效的邮箱地址",
+      "any.required": "邮箱不能为空",
+    }),
   password: Joi.string().required().messages({
     "any.required": "密码不能为空",
   }),
@@ -68,25 +101,55 @@ export const workSchema = Joi.object({
   license: Joi.string().max(50).default("CC BY-SA 4.0"),
 });
 
-// 演奏创建验证
-export const performanceSchema = Joi.object({
+// 演奏表单验证（前端使用）
+export const performanceFormSchema = Joi.object({
   title: Joi.string().min(1).max(200).required().messages({
     "string.min": "演奏标题不能为空",
     "string.max": "演奏标题最多 200 个字符",
     "any.required": "演奏标题不能为空",
   }),
-  description: Joi.string().max(2000).optional().messages({
+  description: Joi.string().max(2000).optional().allow("").messages({
     "string.max": "演奏描述最多 2000 个字符",
   }),
   type: Joi.string().valid("instrumental", "vocal").required().messages({
     "any.only": "演奏类型必须是器乐或声乐",
     "any.required": "演奏类型不能为空",
   }),
-  instrument: Joi.string().max(50).optional().messages({
+  instrument: Joi.string().max(50).optional().allow("").messages({
     "string.max": "乐器名称最多 50 个字符",
   }),
-  lyricsId: Joi.number().integer().positive().optional(),
+  lyricsId: Joi.number().integer().positive().optional().allow(null),
   isPublic: Joi.boolean().default(true),
+});
+
+// 演奏创建验证（API 使用）
+export const performanceSchema = Joi.object({
+  title: Joi.string().min(1).max(200).required().messages({
+    "string.min": "演奏标题不能为空",
+    "string.max": "演奏标题最多 200 个字符",
+    "any.required": "演奏标题不能为空",
+  }),
+  description: Joi.string().max(2000).optional().allow("").messages({
+    "string.max": "演奏描述最多 2000 个字符",
+  }),
+  type: Joi.string().valid("instrumental", "vocal").required().messages({
+    "any.only": "演奏类型必须是器乐或声乐",
+    "any.required": "演奏类型不能为空",
+  }),
+  instrument: Joi.string().max(50).optional().allow("").messages({
+    "string.max": "乐器名称最多 50 个字符",
+  }),
+  lyricsId: Joi.number().integer().positive().optional().allow(null),
+  isPublic: Joi.boolean().default(true),
+  // API 专用字段
+  workId: Joi.number().integer().positive().required().messages({
+    "any.required": "作品ID不能为空",
+  }),
+  audioFilePath: Joi.string().required().messages({
+    "any.required": "音频文件路径不能为空",
+  }),
+  audioFileSize: Joi.number().integer().positive().optional(),
+  fileFormat: Joi.string().max(10).optional(),
 });
 
 // 歌词创建验证

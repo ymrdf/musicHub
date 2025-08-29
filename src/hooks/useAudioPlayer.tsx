@@ -60,6 +60,62 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
     isRandom: false,
   });
 
+  // 辅助函数
+  const getNextIndex = (
+    currentIndex: number,
+    playlistLength: number
+  ): number => {
+    if (playlistLength === 0) return -1;
+    if (state.isRandom) {
+      return Math.floor(Math.random() * playlistLength);
+    }
+    return (currentIndex + 1) % playlistLength;
+  };
+
+  const getPreviousIndex = (
+    currentIndex: number,
+    playlistLength: number
+  ): number => {
+    if (playlistLength === 0) return -1;
+    if (state.isRandom) {
+      return Math.floor(Math.random() * playlistLength);
+    }
+    return currentIndex <= 0 ? playlistLength - 1 : currentIndex - 1;
+  };
+
+  const next = () => {
+    if (state.playlist.length === 0) return;
+
+    if (state.isRepeat && state.currentPerformance) {
+      // 重复播放当前歌曲
+      play(state.currentPerformance);
+      return;
+    }
+
+    const nextIndex = getNextIndex(state.currentIndex, state.playlist.length);
+    const nextPerformance = state.playlist[nextIndex];
+
+    if (nextPerformance) {
+      setState((prev) => ({ ...prev, currentIndex: nextIndex }));
+      play(nextPerformance);
+    }
+  };
+
+  const previous = () => {
+    if (state.playlist.length === 0) return;
+
+    const prevIndex = getPreviousIndex(
+      state.currentIndex,
+      state.playlist.length
+    );
+    const prevPerformance = state.playlist[prevIndex];
+
+    if (prevPerformance) {
+      setState((prev) => ({ ...prev, currentIndex: prevIndex }));
+      play(prevPerformance);
+    }
+  };
+
   // 初始化音频元素
   useEffect(() => {
     audioRef.current = new Audio();
@@ -210,67 +266,6 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
     const newMutedState = !state.isMuted;
     audio.muted = newMutedState;
     setState((prev) => ({ ...prev, isMuted: newMutedState }));
-  };
-
-  const getNextIndex = (
-    currentIndex: number,
-    playlistLength: number
-  ): number => {
-    if (state.isRandom) {
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * playlistLength);
-      } while (randomIndex === currentIndex && playlistLength > 1);
-      return randomIndex;
-    }
-    return (currentIndex + 1) % playlistLength;
-  };
-
-  const getPreviousIndex = (
-    currentIndex: number,
-    playlistLength: number
-  ): number => {
-    if (state.isRandom) {
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * playlistLength);
-      } while (randomIndex === currentIndex && playlistLength > 1);
-      return randomIndex;
-    }
-    return currentIndex === 0 ? playlistLength - 1 : currentIndex - 1;
-  };
-
-  const next = () => {
-    if (state.playlist.length === 0) return;
-
-    if (state.isRepeat && state.currentPerformance) {
-      // 重复播放当前歌曲
-      play(state.currentPerformance);
-      return;
-    }
-
-    const nextIndex = getNextIndex(state.currentIndex, state.playlist.length);
-    const nextPerformance = state.playlist[nextIndex];
-
-    if (nextPerformance) {
-      setState((prev) => ({ ...prev, currentIndex: nextIndex }));
-      play(nextPerformance);
-    }
-  };
-
-  const previous = () => {
-    if (state.playlist.length === 0) return;
-
-    const prevIndex = getPreviousIndex(
-      state.currentIndex,
-      state.playlist.length
-    );
-    const prevPerformance = state.playlist[prevIndex];
-
-    if (prevPerformance) {
-      setState((prev) => ({ ...prev, currentIndex: prevIndex }));
-      play(prevPerformance);
-    }
   };
 
   const toggleRepeat = () => {

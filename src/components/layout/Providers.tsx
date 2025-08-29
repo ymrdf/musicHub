@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@/types";
 import axios from "axios";
+import { AudioPlayerProvider } from "@/hooks/useAudioPlayer";
 
 interface AuthContextType {
   user: User | null;
@@ -81,26 +82,51 @@ export function Providers({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  // 验证 token 是否有效
+  const validateToken = async (token: string) => {
+    try {
+      const response = await axios.get("/api/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data.success;
+    } catch (error) {
+      return false;
+    }
+  };
+
   // 初始化时从 localStorage 恢复登录状态
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedToken = localStorage.getItem("token");
-      const savedUser = localStorage.getItem("user");
+    const initAuth = async () => {
+      if (typeof window !== "undefined") {
+        const savedToken = localStorage.getItem("token");
+        const savedUser = localStorage.getItem("user");
 
-      if (savedToken && savedUser) {
-        try {
-          setToken(savedToken);
-          setUser(JSON.parse(savedUser));
-          // 恢复 cookie
-          setCookie("token", savedToken);
-        } catch (error) {
-          console.error("恢复登录状态失败:", error);
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          deleteCookie("token");
+        if (savedToken && savedUser) {
+          try {
+            // 验证 token 是否仍然有效
+            const isValid = await validateToken(savedToken);
+            if (isValid) {
+              setToken(savedToken);
+              setUser(JSON.parse(savedUser));
+              // 恢复 cookie
+              setCookie("token", savedToken);
+            } else {
+              // token 无效，清除本地存储
+              localStorage.removeItem("token");
+              localStorage.removeItem("user");
+              deleteCookie("token");
+            }
+          } catch (error) {
+            console.error("恢复登录状态失败:", error);
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            deleteCookie("token");
+          }
         }
       }
-    }
+    };
+
+    initAuth();
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -196,5 +222,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     loading,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      <AudioPlayerProvider>{children}</AudioPlayerProvider>
+    </AuthContext.Provider>
+  );
 }

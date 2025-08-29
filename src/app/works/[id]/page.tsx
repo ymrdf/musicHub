@@ -25,6 +25,7 @@ import { StarIcon as StarSolidIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import PerformanceList from "@/components/works/PerformanceList";
 
 interface WorkDetail {
   id: number;
@@ -630,32 +631,7 @@ export default function WorkDetailPage() {
                 )}
               </div>
 
-              {work.performancesCount > 0 ? (
-                <div className="space-y-4">
-                  {/* TODO: 这里需要实现演奏列表组件 */}
-                  <div className="text-center py-8 text-gray-500">
-                    演奏列表功能开发中...
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <PlayIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    还没有人演奏过这首作品
-                  </h3>
-                  <p className="text-gray-500 mb-4">
-                    成为第一个分享演奏的人吧！
-                  </p>
-                  {currentUser && !work.isOwner && (
-                    <Link
-                      href={`/performances/new?workId=${work.id}`}
-                      className="btn-primary"
-                    >
-                      上传我的演奏
-                    </Link>
-                  )}
-                </div>
-              )}
+              <PerformanceList workId={work.id} />
             </div>
           </div>
 

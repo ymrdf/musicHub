@@ -27,6 +27,12 @@ export function Header() {
       icon: MusicalNoteIcon,
       current: false,
     },
+    {
+      name: "演奏列表",
+      href: "/performances",
+      icon: MusicalNoteIcon,
+      current: false,
+    },
     { name: "热榜", href: "/trending", icon: FireIcon, current: false },
   ];
 

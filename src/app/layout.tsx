@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/layout/Providers";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { AudioPlayer } from "@/components/music/AudioPlayer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
+            <AudioPlayer />
           </div>
         </Providers>
       </body>
