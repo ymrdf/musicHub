@@ -18,6 +18,7 @@ import {
   ClockIcon,
   EyeIcon,
   ChatBubbleLeftIcon,
+  DocumentArrowDownIcon,
 } from "@heroicons/react/24/outline";
 import {
   HeartIcon as HeartSolidIcon,
@@ -128,7 +129,7 @@ export default function DiscoverPage() {
     try {
       const params = new URLSearchParams();
 
-      // 添加筛选参数 - 只针对演奏数据
+      // 添加筛选参数
       if (filters.genreId) params.append("genreId", filters.genreId);
       if (filters.instrumentId)
         params.append("instrumentId", filters.instrumentId);
@@ -137,35 +138,114 @@ export default function DiscoverPage() {
       if (filters.sortOrder) params.append("sortOrder", filters.sortOrder);
       if (searchQuery) params.append("search", encodeURIComponent(searchQuery));
 
-      // 只获取演奏数据
-      const performancesResponse = await fetch(
-        `/api/performances?${params.toString()}`
-      );
-      const performancesData = performancesResponse.ok
-        ? await performancesResponse.json()
-        : { data: { performances: [] } };
+      // 获取作品数据
+      let worksData = { data: { items: [] } };
+      try {
+        const worksResponse = await fetch(`/api/works?${params.toString()}`);
+        if (worksResponse.ok) {
+          worksData = await worksResponse.json();
+        } else {
+          console.warn(
+            "Works API failed:",
+            worksResponse.status,
+            worksResponse.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching works:", error);
+      }
+
+      // 获取演奏数据
+      let performancesData = { data: { items: [] } };
+      try {
+        const performancesResponse = await fetch(
+          `/api/performances?${params.toString()}`
+        );
+        if (performancesResponse.ok) {
+          performancesData = await performancesResponse.json();
+        } else {
+          console.warn(
+            "Performances API failed:",
+            performancesResponse.status,
+            performancesResponse.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching performances:", error);
+      }
+
+      // 调试信息
+      console.log("Works API response:", worksData);
+      console.log("Performances API response:", performancesData);
+
+      // 格式化作品数据
+      const works: DiscoverItem[] = (worksData.data?.items || [])
+        .map((work: any) => {
+          if (!work || !work.id) {
+            console.warn("Invalid work data:", work);
+            return null;
+          }
+          return {
+            id: work.id,
+            type: "work" as const,
+            title: work.title || "",
+            description: work.description || "",
+            user: work.user || {
+              id: 0,
+              username: "Unknown",
+              isVerified: false,
+            },
+            genre: work.genre,
+            instrument: work.instrument,
+            purpose: work.purpose,
+            tags: work.tags || [],
+            starsCount: work.starsCount || 0,
+            performancesCount: work.performancesCount || 0,
+            commentsCount: work.commentsCount || 0,
+            viewsCount: work.viewsCount || 0,
+            pdfFilePath: work.pdfFilePath,
+            midiFilePath: work.midiFilePath,
+            createdAt: new Date(work.createdAt || Date.now()),
+            isStarred: work.isStarred || false,
+          };
+        })
+        .filter(Boolean) as DiscoverItem[];
 
       // 格式化演奏数据
-      const performances: DiscoverItem[] =
-        performancesData.data.performances.map((performance: any) => ({
-          id: performance.id,
-          type: "performance" as const,
-          title: performance.title,
-          description: performance.description,
-          user: performance.user,
-          genre: performance.work?.genre,
-          instrument: performance.work?.instrument,
-          purpose: performance.work?.purpose,
-          likesCount: performance.likesCount,
-          commentsCount: performance.commentsCount,
-          playsCount: performance.playsCount,
-          audioFilePath: performance.audioFilePath,
-          createdAt: new Date(performance.createdAt),
-          isLiked: performance.isLiked,
-        }));
+      const performances: DiscoverItem[] = (performancesData.data?.items || [])
+        .map((performance: any) => {
+          if (!performance || !performance.id) {
+            console.warn("Invalid performance data:", performance);
+            return null;
+          }
+          return {
+            id: performance.id,
+            type: "performance" as const,
+            title: performance.title || "",
+            description: performance.description || "",
+            user: performance.user || {
+              id: 0,
+              username: "Unknown",
+              isVerified: false,
+            },
+            genre: performance.work?.genre,
+            instrument: performance.work?.instrument,
+            purpose: performance.work?.purpose,
+            likesCount: performance.likesCount || 0,
+            commentsCount: performance.commentsCount || 0,
+            playsCount: performance.playsCount || 0,
+            audioFilePath: performance.audioFilePath,
+            createdAt: new Date(performance.createdAt || Date.now()),
+            isLiked: performance.isLiked || false,
+          };
+        })
+        .filter(Boolean) as DiscoverItem[];
+
+      // 合并数据
+      const allItems = [...works, ...performances];
 
       // 排序
-      performances.sort((a, b) => {
+      allItems.sort((a, b) => {
         const aValue = getSortValue(a, filters.sortBy);
         const bValue = getSortValue(b, filters.sortBy);
 
@@ -176,7 +256,7 @@ export default function DiscoverPage() {
         }
       });
 
-      setItems(performances);
+      setItems(allItems);
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -190,6 +270,8 @@ export default function DiscoverPage() {
         return item.likesCount || 0;
       case "playsCount":
         return item.playsCount || 0;
+      case "starsCount":
+        return item.starsCount || 0;
       case "createdAt":
       default:
         return item.createdAt.getTime();
@@ -245,6 +327,56 @@ export default function DiscoverPage() {
     }
   };
 
+  const handleStar = async (item: DiscoverItem) => {
+    if (item.type !== "work" || !currentUser) return;
+
+    try {
+      if (item.isStarred) {
+        // 取消收藏
+        const response = await fetch(`/api/works/${item.id}/star`, {
+          method: "DELETE",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setItems((prev) =>
+            prev.map((i) =>
+              i.id === item.id && i.type === "work"
+                ? {
+                    ...i,
+                    isStarred: false,
+                    starsCount: data.data.starsCount,
+                  }
+                : i
+            )
+          );
+        }
+      } else {
+        // 收藏
+        const response = await fetch(`/api/works/${item.id}/star`, {
+          method: "POST",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setItems((prev) =>
+            prev.map((i) =>
+              i.id === item.id && i.type === "work"
+                ? {
+                    ...i,
+                    isStarred: true,
+                    starsCount: data.data.starsCount,
+                  }
+                : i
+            )
+          );
+        }
+      }
+    } catch (error) {
+      console.error("收藏操作失败:", error);
+    }
+  };
+
   const handleLike = async (item: DiscoverItem) => {
     if (item.type !== "performance") return;
 
@@ -283,7 +415,11 @@ export default function DiscoverPage() {
   };
 
   const getItemUrl = (item: DiscoverItem) => {
-    return `/performances/${item.id}`;
+    if (item.type === "work") {
+      return `/works/${item.id}`;
+    } else {
+      return `/performances/${item.id}`;
+    }
   };
 
   const formatDate = (date: Date) => {
@@ -428,6 +564,7 @@ export default function DiscoverPage() {
                       className="block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                     >
                       <option value="createdAt">最新</option>
+                      <option value="starsCount">收藏数</option>
                       <option value="likesCount">点赞数</option>
                       <option value="playsCount">播放数</option>
                     </select>
@@ -515,23 +652,48 @@ export default function DiscoverPage() {
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-2">
-                      <MicrophoneIcon className="h-5 w-5 text-green-600" />
+                      {item.type === "work" ? (
+                        <MusicalNoteIcon className="h-5 w-5 text-blue-600" />
+                      ) : (
+                        <MicrophoneIcon className="h-5 w-5 text-green-600" />
+                      )}
                       <span className="text-xs font-medium text-gray-500 uppercase">
-                        演奏
+                        {item.type === "work" ? "原创作品" : "演奏"}
                       </span>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => handleLike(item)}
-                        className="p-1 rounded-full hover:bg-gray-100 transition-colors duration-200"
-                      >
-                        {item.isLiked ? (
-                          <HeartSolidIcon className="h-5 w-5 text-red-500" />
-                        ) : (
-                          <HeartIcon className="h-5 w-5 text-gray-400" />
-                        )}
-                      </button>
+                      {item.type === "work" ? (
+                        <button
+                          onClick={() => handleStar(item)}
+                          disabled={!currentUser}
+                          className={`inline-flex items-center px-2 py-1 border border-transparent rounded-md text-xs font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 ${
+                            item.isStarred
+                              ? "text-white bg-yellow-500 hover:bg-yellow-600"
+                              : "text-primary-700 bg-primary-100 hover:bg-primary-200"
+                          } ${
+                            !currentUser ? "opacity-50 cursor-not-allowed" : ""
+                          }`}
+                        >
+                          {item.isStarred ? (
+                            <StarSolidIcon className="h-4 w-4 mr-1" />
+                          ) : (
+                            <StarIcon className="h-4 w-4 mr-1" />
+                          )}
+                          {item.isStarred ? "已收藏" : "收藏"}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleLike(item)}
+                          className="p-1 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                        >
+                          {item.isLiked ? (
+                            <HeartSolidIcon className="h-5 w-5 text-red-500" />
+                          ) : (
+                            <HeartIcon className="h-5 w-5 text-gray-400" />
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -595,17 +757,32 @@ export default function DiscoverPage() {
                   {/* 统计信息 */}
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center space-x-4">
-                      {item.likesCount !== undefined && (
-                        <div className="flex items-center space-x-1">
-                          <HeartIcon className="h-4 w-4" />
-                          <span>{item.likesCount}</span>
-                        </div>
-                      )}
-                      {item.playsCount !== undefined && (
-                        <div className="flex items-center space-x-1">
-                          <PlayIcon className="h-4 w-4" />
-                          <span>{item.playsCount}</span>
-                        </div>
+                      {item.type === "work" ? (
+                        <>
+                          <div className="flex items-center space-x-1">
+                            <StarIcon className="h-4 w-4" />
+                            <span>{item.starsCount || 0}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <PlayIcon className="h-4 w-4" />
+                            <span>{item.performancesCount || 0}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          {item.likesCount !== undefined && (
+                            <div className="flex items-center space-x-1">
+                              <HeartIcon className="h-4 w-4" />
+                              <span>{item.likesCount}</span>
+                            </div>
+                          )}
+                          {item.playsCount !== undefined && (
+                            <div className="flex items-center space-x-1">
+                              <PlayIcon className="h-4 w-4" />
+                              <span>{item.playsCount}</span>
+                            </div>
+                          )}
+                        </>
                       )}
                       {item.commentsCount !== undefined &&
                         item.commentsCount > 0 && (
@@ -632,21 +809,34 @@ export default function DiscoverPage() {
                       查看详情
                     </Link>
 
-                    {item.audioFilePath && (
-                      <button
-                        onClick={() => handlePlay(item)}
-                        className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
-                      >
-                        {currentPerformance?.id === item.id && isPlaying ? (
-                          <PauseIcon className="h-4 w-4 mr-1" />
-                        ) : (
-                          <PlayIcon className="h-4 w-4 mr-1" />
-                        )}
-                        {currentPerformance?.id === item.id && isPlaying
-                          ? "暂停"
-                          : "播放"}
-                      </button>
-                    )}
+                    <div className="flex items-center space-x-2">
+                      {item.type === "work" && item.pdfFilePath && (
+                        <a
+                          href={item.pdfFilePath}
+                          download
+                          className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
+                        >
+                          <DocumentArrowDownIcon className="h-4 w-4 mr-1" />
+                          下载乐谱
+                        </a>
+                      )}
+
+                      {item.type === "performance" && item.audioFilePath && (
+                        <button
+                          onClick={() => handlePlay(item)}
+                          className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
+                        >
+                          {currentPerformance?.id === item.id && isPlaying ? (
+                            <PauseIcon className="h-4 w-4 mr-1" />
+                          ) : (
+                            <PlayIcon className="h-4 w-4 mr-1" />
+                          )}
+                          {currentPerformance?.id === item.id && isPlaying
+                            ? "暂停"
+                            : "播放"}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

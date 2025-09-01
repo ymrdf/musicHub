@@ -662,6 +662,94 @@ CommentLike.init(
   }
 );
 
+// UserFollow 模型
+interface UserFollowCreationAttributes
+  extends Optional<UserFollowType, "id" | "createdAt"> {}
+
+export class UserFollow
+  extends Model<UserFollowType, UserFollowCreationAttributes>
+  implements UserFollowType
+{
+  public id!: number;
+  public followerId!: number;
+  public followingId!: number;
+  public readonly createdAt!: Date;
+}
+
+UserFollow.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    followerId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "follower_id",
+    },
+    followingId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "following_id",
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      field: "created_at",
+    },
+  },
+  {
+    sequelize,
+    tableName: "user_follows",
+    timestamps: false,
+  }
+);
+
+// WorkStar 模型
+interface WorkStarCreationAttributes
+  extends Optional<WorkStarType, "id" | "createdAt"> {}
+
+export class WorkStar
+  extends Model<WorkStarType, WorkStarCreationAttributes>
+  implements WorkStarType
+{
+  public id!: number;
+  public workId!: number;
+  public userId!: number;
+  public readonly createdAt!: Date;
+}
+
+WorkStar.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    workId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "work_id",
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "user_id",
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      field: "created_at",
+    },
+  },
+  {
+    sequelize,
+    tableName: "work_stars",
+    timestamps: false,
+  }
+);
+
 // 导出所有模型以便在其他文件中使用
 export { sequelize };
 
@@ -713,6 +801,20 @@ export const setupAssociations = () => {
 
   Comment.hasMany(CommentLike, { foreignKey: "commentId", as: "likes" });
   CommentLike.belongsTo(Comment, { foreignKey: "commentId", as: "comment" });
+
+  // UserFollow 关联
+  User.hasMany(UserFollow, { foreignKey: "followerId", as: "following" });
+  User.hasMany(UserFollow, { foreignKey: "followingId", as: "followers" });
+
+  UserFollow.belongsTo(User, { foreignKey: "followerId", as: "follower" });
+  UserFollow.belongsTo(User, { foreignKey: "followingId", as: "following" });
+
+  // WorkStar 关联
+  User.hasMany(WorkStar, { foreignKey: "userId", as: "workStars" });
+  WorkStar.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+  Work.hasMany(WorkStar, { foreignKey: "workId", as: "stars" });
+  WorkStar.belongsTo(Work, { foreignKey: "workId", as: "work" });
 
   // 其他关联会在各自的模型文件中定义
 };

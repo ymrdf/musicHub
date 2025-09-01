@@ -225,18 +225,24 @@ export default function UserProfilePage() {
                   </div>
                   <div className="text-sm text-gray-600">演奏</div>
                 </div>
-                <div className="text-center">
+                <Link
+                  href={`/users/${profile.id}/followers`}
+                  className="text-center hover:opacity-80 transition-opacity cursor-pointer"
+                >
                   <div className="text-xl font-bold text-gray-900">
                     {profile.followersCount}
                   </div>
                   <div className="text-sm text-gray-600">粉丝</div>
-                </div>
-                <div className="text-center">
+                </Link>
+                <Link
+                  href={`/users/${profile.id}/following`}
+                  className="text-center hover:opacity-80 transition-opacity cursor-pointer"
+                >
                   <div className="text-xl font-bold text-gray-900">
                     {profile.followingCount}
                   </div>
                   <div className="text-sm text-gray-600">关注</div>
-                </div>
+                </Link>
               </div>
             </div>
 
@@ -389,6 +395,45 @@ export default function UserProfilePage() {
                     <span className="text-sm text-gray-700">人气用户</span>
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* 快速链接 */}
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                快速链接
+              </h3>
+              <div className="space-y-3">
+                <Link
+                  href={`/users/${profile.id}/starred-works`}
+                  className="flex items-center justify-between text-sm text-gray-600 hover:text-primary-600 transition-colors"
+                >
+                  <span className="flex items-center">
+                    <StarIcon className="h-4 w-4 mr-2" />
+                    收藏的作品
+                  </span>
+                  <span className="text-gray-400">→</span>
+                </Link>
+                <Link
+                  href={`/users/${profile.id}/following`}
+                  className="flex items-center justify-between text-sm text-gray-600 hover:text-primary-600 transition-colors"
+                >
+                  <span className="flex items-center">
+                    <UserPlusIcon className="h-4 w-4 mr-2" />
+                    关注的人
+                  </span>
+                  <span className="text-gray-400">→</span>
+                </Link>
+                <Link
+                  href={`/users/${profile.id}/followers`}
+                  className="flex items-center justify-between text-sm text-gray-600 hover:text-primary-600 transition-colors"
+                >
+                  <span className="flex items-center">
+                    <UserIcon className="h-4 w-4 mr-2" />
+                    我的粉丝
+                  </span>
+                  <span className="text-gray-400">→</span>
+                </Link>
               </div>
             </div>
 

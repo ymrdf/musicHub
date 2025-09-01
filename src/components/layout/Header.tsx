@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "./Providers";
+import { SearchSuggestions } from "../SearchSuggestions";
 import {
   Bars3Icon,
   XMarkIcon,
@@ -18,6 +19,7 @@ export function Header() {
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const navigation = [
     { name: "首页", href: "/", icon: HomeIcon, current: false },
@@ -39,9 +41,17 @@ export function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // TODO: 实现搜索功能
-      console.log("搜索:", searchQuery);
+      // 跳转到搜索页面
+      const params = new URLSearchParams();
+      params.set("q", searchQuery);
+      window.location.href = `/search?${params.toString()}`;
     }
+  };
+
+  const handleSuggestionSelect = (suggestion: any) => {
+    setShowSuggestions(false);
+    setSearchQuery("");
+    window.location.href = suggestion.url;
   };
 
   return (
@@ -87,7 +97,14 @@ export function Header() {
                   placeholder="搜索作品、用户..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setShowSuggestions(true)}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                />
+                <SearchSuggestions
+                  query={searchQuery}
+                  isVisible={showSuggestions}
+                  onSelect={handleSuggestionSelect}
+                  onClose={() => setShowSuggestions(false)}
                 />
               </div>
             </form>

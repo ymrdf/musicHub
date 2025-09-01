@@ -84,6 +84,7 @@ export function Footer() {
               </a>
             </div>
           </div>
+          <div></div>
 
           {/* 产品链接 */}
           <div>
@@ -103,7 +104,7 @@ export function Footer() {
           </div>
 
           {/* 社区链接 */}
-          <div>
+          {/* <div>
             <h3 className="text-white font-semibold mb-4">社区</h3>
             <ul className="space-y-2">
               {footerLinks.community.map((link) => (
@@ -117,7 +118,7 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* 公司链接 */}
           <div>

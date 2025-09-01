@@ -1,20 +1,126 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   MusicalNoteIcon,
   StarIcon,
   PlayIcon,
   UserGroupIcon,
   SparklesIcon,
+  FireIcon,
 } from "@heroicons/react/24/outline";
+import RecommendationSection from "@/components/RecommendationSection";
+
+interface Stats {
+  users: number;
+  works: number;
+  performances: number;
+  stars: number;
+}
+
+interface RecommendationItem {
+  id: number;
+  type: "work" | "performance";
+  title: string;
+  description?: string;
+  user: {
+    id: number;
+    username: string;
+    avatarUrl?: string;
+    isVerified: boolean;
+  };
+  genre?: {
+    id: number;
+    name: string;
+  };
+  instrument?: {
+    id: number;
+    name: string;
+  };
+  purpose?: {
+    id: number;
+    name: string;
+  };
+  work?: {
+    id: number;
+    title: string;
+  };
+  starsCount?: number;
+  performancesCount?: number;
+  commentsCount?: number;
+  viewsCount?: number;
+  pdfFilePath?: string;
+  midiFilePath?: string;
+  isStarred?: boolean;
+  likesCount?: number;
+  playsCount?: number;
+  audioFilePath?: string;
+  isLiked?: boolean;
+  createdAt: string;
+}
+
+interface Recommendations {
+  hotWorks: RecommendationItem[];
+  latestWorks: RecommendationItem[];
+  hotPerformances: RecommendationItem[];
+  latestPerformances: RecommendationItem[];
+}
 
 export default function HomePage() {
-  const stats = [
-    { name: "注册用户", value: "10,000+", icon: UserGroupIcon },
-    { name: "原创作品", value: "2,500+", icon: MusicalNoteIcon },
-    { name: "演奏作品", value: "8,000+", icon: PlayIcon },
-    { name: "作品收藏", value: "50,000+", icon: StarIcon },
+  const [stats, setStats] = useState<Stats>({
+    users: 0,
+    works: 0,
+    performances: 0,
+    stars: 0,
+  });
+  const [recommendations, setRecommendations] = useState<Recommendations>({
+    hotWorks: [],
+    latestWorks: [],
+    hotPerformances: [],
+    latestPerformances: [],
+  });
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // 获取统计数据
+      try {
+        const statsResponse = await fetch("/api/stats");
+        const statsData = await statsResponse.json();
+        if (statsData.success) {
+          setStats(statsData.data);
+        }
+      } catch (error) {
+        console.error("获取统计数据失败:", error);
+      } finally {
+        setStatsLoading(false);
+      }
+
+      // 获取推荐内容
+      try {
+        const recommendationsResponse = await fetch(
+          "/api/home/recommendations"
+        );
+        const recommendationsData = await recommendationsResponse.json();
+        if (recommendationsData.success) {
+          setRecommendations(recommendationsData.data);
+        }
+      } catch (error) {
+        console.error("获取推荐内容失败:", error);
+      } finally {
+        setRecommendationsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const statsData = [
+    { name: "注册用户", value: stats.users.toString(), icon: UserGroupIcon },
+    { name: "原创作品", value: stats.works.toString(), icon: MusicalNoteIcon },
+    { name: "演奏作品", value: stats.performances.toString(), icon: PlayIcon },
+    { name: "作品收藏", value: stats.stars.toString(), icon: StarIcon },
   ];
 
   return (
@@ -34,20 +140,27 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
+            <a
               href="/auth/register"
               className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary-700 bg-white hover:bg-gray-50 transition-colors duration-200"
             >
               <SparklesIcon className="h-5 w-5 mr-2" />
               立即加入
-            </Link>
-            <Link
+            </a>
+            <a
               href="/discover"
               className="inline-flex items-center px-8 py-3 border-2 border-white text-base font-medium rounded-md text-white hover:bg-white hover:text-primary-700 transition-colors duration-200"
             >
               <MusicalNoteIcon className="h-5 w-5 mr-2" />
               探索音乐
-            </Link>
+            </a>
+            <a
+              href="/trending"
+              className="inline-flex items-center px-8 py-3 border-2 border-white text-base font-medium rounded-md text-white hover:bg-white hover:text-primary-700 transition-colors duration-200"
+            >
+              <FireIcon className="h-5 w-5 mr-2" />
+              热门榜单
+            </a>
           </div>
         </div>
       </section>
@@ -56,7 +169,7 @@ export default function HomePage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat) => {
+            {statsData.map((stat) => {
               const Icon = stat.icon;
               return (
                 <div key={stat.name} className="text-center">
@@ -64,7 +177,7 @@ export default function HomePage() {
                     <Icon className="h-8 w-8 text-primary-600" />
                   </div>
                   <div className="text-3xl font-bold text-gray-900 mb-2">
-                    {stat.value}
+                    {statsLoading ? "..." : stat.value}
                   </div>
                   <div className="text-sm text-gray-600">{stat.name}</div>
                 </div>
@@ -127,6 +240,35 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 推荐区块 */}
+      <RecommendationSection
+        title="🔥 热门创作"
+        items={recommendations.hotWorks}
+        viewAllLink="/trending?type=work"
+        loading={recommendationsLoading}
+      />
+
+      <RecommendationSection
+        title="🎵 热门演奏"
+        items={recommendations.hotPerformances}
+        viewAllLink="/discover?sortBy=likesCount&sortOrder=desc"
+        loading={recommendationsLoading}
+      />
+
+      <RecommendationSection
+        title="✨ 最新创作"
+        items={recommendations.latestWorks}
+        viewAllLink="/works?sortBy=createdAt&sortOrder=desc"
+        loading={recommendationsLoading}
+      />
+
+      <RecommendationSection
+        title="🎤 最新演奏"
+        items={recommendations.latestPerformances}
+        viewAllLink="/discover?sortBy=createdAt&sortOrder=desc"
+        loading={recommendationsLoading}
+      />
+
       {/* CTA Section */}
       <section className="py-16 bg-primary-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -136,12 +278,12 @@ export default function HomePage() {
           <p className="text-xl text-white opacity-90 mb-8">
             加入 MusicHub，与全球音乐创作者一起，创造美妙的音乐世界。
           </p>
-          <Link
+          <a
             href="/auth/register"
             className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white hover:bg-gray-50 transition-colors duration-200"
           >
             免费注册
-          </Link>
+          </a>
         </div>
       </section>
     </div>
