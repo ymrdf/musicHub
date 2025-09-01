@@ -4,6 +4,7 @@ import { getUserFromRequest } from "@/lib/auth";
 import { testConnection } from "@/lib/database";
 import type { ApiResponse } from "@/types";
 import sequelize from "@/lib/database";
+import { QueryTypes } from "sequelize";
 
 // 关注用户
 export async function POST(
@@ -74,7 +75,7 @@ export async function POST(
       "SELECT * FROM user_follows WHERE follower_id = ? AND following_id = ?",
       {
         replacements: [currentUser.id, targetUserId],
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       }
     );
 
@@ -189,7 +190,7 @@ export async function DELETE(
       "SELECT * FROM user_follows WHERE follower_id = ? AND following_id = ?",
       {
         replacements: [currentUser.id, targetUserId],
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       }
     );
 

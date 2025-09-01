@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { NextRequest } from "next/server";
 import sequelize from "./database";
+import "./models";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
@@ -39,18 +40,26 @@ export const getUserFromRequest = async (
 ): Promise<any | null> => {
   try {
     const authHeader = request.headers.get("authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    let token: string | null = null;
+
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      token = authHeader.substring(7);
+    } else {
+      // 尝试从 cookie 中读取 token（兼容未显式附带 Authorization 的请求）
+      token = request.cookies.get("token")?.value || null;
+    }
+
+    if (!token) {
       return null;
     }
 
-    const token = authHeader.substring(7);
     const decoded = verifyToken(token);
     if (!decoded) {
       return null;
     }
 
     const User = sequelize.models.User;
-    const user = await User.findByPk(decoded.userId);
+    const user = await (User as any).findByPk(decoded.userId);
     if (!user || !(user as any).isActive) {
       return null;
     }

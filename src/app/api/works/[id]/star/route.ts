@@ -4,6 +4,7 @@ import { getUserFromRequest } from "@/lib/auth";
 import { testConnection } from "@/lib/database";
 import type { ApiResponse } from "@/types";
 import sequelize from "@/lib/database";
+import { QueryTypes } from "sequelize";
 
 // 收藏作品
 export async function POST(
@@ -74,7 +75,7 @@ export async function POST(
       "SELECT id FROM work_stars WHERE work_id = ? AND user_id = ?",
       {
         replacements: [workId, currentUser.id],
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       }
     );
 
@@ -188,7 +189,7 @@ export async function DELETE(
       "SELECT id FROM work_stars WHERE work_id = ? AND user_id = ?",
       {
         replacements: [workId, currentUser.id],
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       }
     );
 

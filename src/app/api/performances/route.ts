@@ -3,7 +3,8 @@ import { getUserFromRequest } from "@/lib/auth";
 import { performanceSchema } from "@/utils/validation";
 import type { ApiResponse } from "@/types";
 import sequelize from "@/lib/database";
-import { User, Work, Performance } from "@/lib/models";
+import { User, Work, Performance, Category } from "@/lib/models";
+import { Op } from "sequelize";
 
 // 获取演奏列表
 export async function GET(request: NextRequest) {
@@ -12,6 +13,12 @@ export async function GET(request: NextRequest) {
     const workId = searchParams.get("workId");
     const userId = searchParams.get("userId");
     const type = searchParams.get("type");
+    const genreId = searchParams.get("genreId");
+    const instrumentId = searchParams.get("instrumentId");
+    const purposeId = searchParams.get("purposeId");
+    const search = searchParams.get("search");
+    const sortBy = searchParams.get("sortBy") || "createdAt";
+    const sortOrder = searchParams.get("sortOrder") || "desc";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
 
@@ -32,6 +39,24 @@ export async function GET(request: NextRequest) {
       where.type = type;
     }
 
+    // 构建作品筛选条件
+    const workWhere: any = {};
+    if (genreId) {
+      workWhere.genreId = parseInt(genreId);
+    }
+    if (instrumentId) {
+      workWhere.instrumentId = parseInt(instrumentId);
+    }
+    if (purposeId) {
+      workWhere.purposeId = parseInt(purposeId);
+    }
+    if (search && search.trim()) {
+      workWhere[Op.or] = [
+        { title: { [Op.like]: `%${search.trim()}%` } },
+        { description: { [Op.like]: `%${search.trim()}%` } },
+      ];
+    }
+
     const offset = (page - 1) * limit;
 
     const { count, rows } = await Performance.findAndCountAll({
@@ -45,10 +70,28 @@ export async function GET(request: NextRequest) {
         {
           model: Work,
           as: "work",
-          attributes: ["id", "title"],
+          attributes: ["id", "title", "genreId", "instrumentId", "purposeId"],
+          where: Object.keys(workWhere).length > 0 ? workWhere : undefined,
+          include: [
+            {
+              model: Category,
+              as: "genre",
+              attributes: ["id", "name"],
+            },
+            {
+              model: Category,
+              as: "instrument",
+              attributes: ["id", "name"],
+            },
+            {
+              model: Category,
+              as: "purpose",
+              attributes: ["id", "name"],
+            },
+          ],
         },
       ],
-      order: [["createdAt", "DESC"]],
+      order: [[sortBy, sortOrder.toUpperCase()]],
       limit,
       offset,
     });

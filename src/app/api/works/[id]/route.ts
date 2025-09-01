@@ -4,6 +4,7 @@ import { getUserFromRequest } from "@/lib/auth";
 import { testConnection } from "@/lib/database";
 import type { ApiResponse } from "@/types";
 import sequelize from "@/lib/database";
+import { QueryTypes } from "sequelize";
 
 export async function GET(
   request: NextRequest,
@@ -94,7 +95,7 @@ export async function GET(
       `,
       {
         replacements: [workId],
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       }
     );
 
@@ -105,7 +106,7 @@ export async function GET(
         "SELECT id FROM work_stars WHERE work_id = ? AND user_id = ?",
         {
           replacements: [workId, currentUser.id],
-          type: sequelize.QueryTypes.SELECT,
+          type: QueryTypes.SELECT,
         }
       );
       isStarred = !!star;

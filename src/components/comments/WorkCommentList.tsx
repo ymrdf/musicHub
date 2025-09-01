@@ -179,22 +179,33 @@ export default function WorkCommentList({ workId }: WorkCommentListProps) {
 
   // 点赞/取消点赞评论
   const handleLikeComment = async (commentId: number, isLiked: boolean) => {
-    if (!user) return;
+    if (!user) {
+      alert("请先登录");
+      return;
+    }
 
     try {
       // 获取认证令牌
       const token = localStorage.getItem("token");
 
+      if (!token) {
+        alert("请先登录");
+        return;
+      }
+
       const method = isLiked ? "DELETE" : "POST";
       const response = await fetch(`/api/comments/${commentId}/like`, {
         method,
         headers: {
-          Authorization: token ? `Bearer ${token}` : "",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error(isLiked ? "取消点赞失败" : "点赞失败");
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || (isLiked ? "取消点赞失败" : "点赞失败")
+        );
       }
 
       const data = await response.json();
@@ -219,6 +230,7 @@ export default function WorkCommentList({ workId }: WorkCommentListProps) {
       }
     } catch (err: any) {
       console.error(isLiked ? "取消点赞失败" : "点赞失败", err);
+      alert(err.message);
     }
   };
 
