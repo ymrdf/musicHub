@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/database";
-import { getServerSession } from "@/lib/auth";
+import sequelize from "@/lib/database";
+import { getUserFromRequest } from "@/lib/auth";
+import { QueryTypes } from "sequelize";
 
 // 点赞评论
 export async function POST(
@@ -8,8 +9,8 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession();
-    if (!session?.user) {
+    const user = await getUserFromRequest(request);
+    if (!user) {
       return NextResponse.json(
         { success: false, error: "未授权" },
         { status: 401 }
@@ -25,9 +26,13 @@ export async function POST(
     }
 
     // 检查评论是否存在
-    const comment = await db.comment.findUnique({
-      where: { id: commentId },
-    });
+    const [comment] = await sequelize.query(
+      "SELECT id FROM comments WHERE id = ?",
+      {
+        replacements: [commentId],
+        type: QueryTypes.SELECT,
+      }
+    );
 
     if (!comment) {
       return NextResponse.json(
@@ -37,12 +42,13 @@ export async function POST(
     }
 
     // 检查用户是否已经点赞
-    const existingLike = await db.commentLike.findFirst({
-      where: {
-        commentId,
-        userId: session.user.id,
-      },
-    });
+    const [existingLike] = await sequelize.query(
+      "SELECT id FROM comment_likes WHERE comment_id = ? AND user_id = ?",
+      {
+        replacements: [commentId, user.id],
+        type: QueryTypes.SELECT,
+      }
+    );
 
     if (existingLike) {
       return NextResponse.json(
@@ -52,22 +58,22 @@ export async function POST(
     }
 
     // 创建点赞记录
-    await db.commentLike.create({
-      data: {
-        commentId,
-        userId: session.user.id,
-      },
-    });
+    await sequelize.query(
+      "INSERT INTO comment_likes (comment_id, user_id, created_at) VALUES (?, ?, NOW())",
+      {
+        replacements: [commentId, user.id],
+        type: QueryTypes.INSERT,
+      }
+    );
 
     // 更新评论的点赞计数
-    await db.comment.update({
-      where: { id: commentId },
-      data: {
-        likesCount: {
-          increment: 1,
-        },
-      },
-    });
+    await sequelize.query(
+      "UPDATE comments SET likes_count = likes_count + 1 WHERE id = ?",
+      {
+        replacements: [commentId],
+        type: QueryTypes.UPDATE,
+      }
+    );
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
@@ -85,8 +91,8 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession();
-    if (!session?.user) {
+    const user = await getUserFromRequest(request);
+    if (!user) {
       return NextResponse.json(
         { success: false, error: "未授权" },
         { status: 401 }
@@ -102,9 +108,13 @@ export async function DELETE(
     }
 
     // 检查评论是否存在
-    const comment = await db.comment.findUnique({
-      where: { id: commentId },
-    });
+    const [comment] = await sequelize.query(
+      "SELECT id FROM comments WHERE id = ?",
+      {
+        replacements: [commentId],
+        type: QueryTypes.SELECT,
+      }
+    );
 
     if (!comment) {
       return NextResponse.json(
@@ -114,12 +124,13 @@ export async function DELETE(
     }
 
     // 检查用户是否已经点赞
-    const existingLike = await db.commentLike.findFirst({
-      where: {
-        commentId,
-        userId: session.user.id,
-      },
-    });
+    const [existingLike] = await sequelize.query(
+      "SELECT id FROM comment_likes WHERE comment_id = ? AND user_id = ?",
+      {
+        replacements: [commentId, user.id],
+        type: QueryTypes.SELECT,
+      }
+    );
 
     if (!existingLike) {
       return NextResponse.json(
@@ -129,21 +140,22 @@ export async function DELETE(
     }
 
     // 删除点赞记录
-    await db.commentLike.delete({
-      where: {
-        id: existingLike.id,
-      },
-    });
+    await sequelize.query(
+      "DELETE FROM comment_likes WHERE comment_id = ? AND user_id = ?",
+      {
+        replacements: [commentId, user.id],
+        type: QueryTypes.DELETE,
+      }
+    );
 
     // 更新评论的点赞计数
-    await db.comment.update({
-      where: { id: commentId },
-      data: {
-        likesCount: {
-          decrement: 1,
-        },
-      },
-    });
+    await sequelize.query(
+      "UPDATE comments SET likes_count = likes_count - 1 WHERE id = ?",
+      {
+        replacements: [commentId],
+        type: QueryTypes.UPDATE,
+      }
+    );
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

@@ -4,11 +4,11 @@ import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
 import { useAuth } from "@/components/layout/Providers";
 
-interface CommentListProps {
-  performanceId: number;
+interface WorkCommentListProps {
+  workId: number;
 }
 
-export default function CommentList({ performanceId }: CommentListProps) {
+export default function WorkCommentList({ workId }: WorkCommentListProps) {
   const { user } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +25,7 @@ export default function CommentList({ performanceId }: CommentListProps) {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `/api/performances/${performanceId}/comments?page=${pageNum}&limit=10`,
+        `/api/works/${workId}/comments?page=${pageNum}&limit=10`,
         {
           headers: {
             Authorization: token ? `Bearer ${token}` : "",
@@ -74,17 +74,14 @@ export default function CommentList({ performanceId }: CommentListProps) {
       // 获取认证令牌
       const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        `/api/performances/${performanceId}/comments`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-          body: JSON.stringify({ content }),
-        }
-      );
+      const response = await fetch(`/api/works/${workId}/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify({ content }),
+      });
 
       if (!response.ok) {
         throw new Error("提交评论失败");
@@ -114,17 +111,14 @@ export default function CommentList({ performanceId }: CommentListProps) {
       // 获取认证令牌
       const token = localStorage.getItem("token");
 
-      const response = await fetch(
-        `/api/performances/${performanceId}/comments`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-          body: JSON.stringify({ content, parentId }),
-        }
-      );
+      const response = await fetch(`/api/works/${workId}/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify({ content, parentId }),
+      });
 
       if (!response.ok) {
         throw new Error("提交回复失败");
@@ -230,10 +224,10 @@ export default function CommentList({ performanceId }: CommentListProps) {
 
   // 初始加载评论
   useEffect(() => {
-    if (performanceId) {
+    if (workId) {
       fetchComments();
     }
-  }, [performanceId]);
+  }, [workId]);
 
   return (
     <div>

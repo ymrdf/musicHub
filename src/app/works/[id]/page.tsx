@@ -26,6 +26,7 @@ import Link from "next/link";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import PerformanceList from "@/components/works/PerformanceList";
+import WorkCommentList from "@/components/comments/WorkCommentList";
 
 interface WorkDetail {
   id: number;
@@ -642,10 +643,7 @@ export default function WorkDetailPage() {
                 评论 ({work.commentsCount})
               </h3>
 
-              {/* TODO: 这里需要实现评论组件 */}
-              <div className="text-center py-8 text-gray-500">
-                评论功能开发中...
-              </div>
+              <WorkCommentList workId={work.id} />
             </div>
           </div>
         </div>

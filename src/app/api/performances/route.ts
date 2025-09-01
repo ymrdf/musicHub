@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getUserFromRequest } from "@/lib/auth";
 import { performanceSchema } from "@/utils/validation";
 import type { ApiResponse } from "@/types";
-import { sequelize } from "@/lib/database";
+import sequelize from "@/lib/database";
 import { User, Work, Performance } from "@/lib/models";
 
 // 获取演奏列表

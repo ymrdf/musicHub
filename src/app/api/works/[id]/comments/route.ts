@@ -4,32 +4,29 @@ import { getUserFromRequest } from "@/lib/auth";
 import { ApiResponse, Comment, PaginatedResponse } from "@/types";
 import { QueryTypes } from "sequelize";
 
-// 获取演奏评论列表
+// 获取作品评论列表
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const performanceId = parseInt(params.id);
-    if (isNaN(performanceId)) {
+    const workId = parseInt(params.id);
+    if (isNaN(workId)) {
       return NextResponse.json(
-        { success: false, error: "无效的演奏ID" },
+        { success: false, error: "无效的作品ID" },
         { status: 400 }
       );
     }
 
-    // 检查演奏是否存在
-    const [performance] = await sequelize.query(
-      "SELECT id FROM performances WHERE id = ?",
-      {
-        replacements: [performanceId],
-        type: QueryTypes.SELECT,
-      }
-    );
+    // 检查作品是否存在
+    const [works] = await sequelize.query("SELECT id FROM works WHERE id = ?", {
+      replacements: [workId],
+      type: QueryTypes.SELECT,
+    });
 
-    if (!performance) {
+    if (!works) {
       return NextResponse.json(
-        { success: false, error: "演奏不存在" },
+        { success: false, error: "作品不存在" },
         { status: 404 }
       );
     }
@@ -51,9 +48,9 @@ export async function GET(
     // 获取评论总数
     const [countResult] = await sequelize.query(
       `SELECT COUNT(*) as total FROM comments c 
-       WHERE c.commentable_type = 'performance' AND c.commentable_id = ? ${parentCondition}`,
+       WHERE c.commentable_type = 'work' AND c.commentable_id = ? ${parentCondition}`,
       {
-        replacements: [performanceId],
+        replacements: [workId],
         type: QueryTypes.SELECT,
       }
     );
@@ -67,11 +64,11 @@ export async function GET(
        (SELECT COUNT(*) FROM comment_likes WHERE comment_id = c.id) as likes_count
        FROM comments c
        LEFT JOIN users u ON c.user_id = u.id
-       WHERE c.commentable_type = 'performance' AND c.commentable_id = ? ${parentCondition}
+       WHERE c.commentable_type = 'work' AND c.commentable_id = ? ${parentCondition}
        ORDER BY c.created_at DESC
        LIMIT ? OFFSET ?`,
       {
-        replacements: [performanceId, limit, offset],
+        replacements: [workId, limit, offset],
         type: QueryTypes.SELECT,
       }
     );
@@ -175,26 +172,23 @@ export async function POST(
       );
     }
 
-    const performanceId = parseInt(params.id);
-    if (isNaN(performanceId)) {
+    const workId = parseInt(params.id);
+    if (isNaN(workId)) {
       return NextResponse.json(
-        { success: false, error: "无效的演奏ID" },
+        { success: false, error: "无效的作品ID" },
         { status: 400 }
       );
     }
 
-    // 检查演奏是否存在
-    const [performance] = await sequelize.query(
-      "SELECT id FROM performances WHERE id = ?",
-      {
-        replacements: [performanceId],
-        type: QueryTypes.SELECT,
-      }
-    );
+    // 检查作品是否存在
+    const [work] = await sequelize.query("SELECT id FROM works WHERE id = ?", {
+      replacements: [workId],
+      type: QueryTypes.SELECT,
+    });
 
-    if (!performance) {
+    if (!work) {
       return NextResponse.json(
-        { success: false, error: "演奏不存在" },
+        { success: false, error: "作品不存在" },
         { status: 404 }
       );
     }
@@ -227,13 +221,13 @@ export async function POST(
         );
       }
 
-      // 确保父评论也属于同一个演奏
+      // 确保父评论也属于同一个作品
       if (
-        (parentComment as any).commentable_type !== "performance" ||
-        (parentComment as any).commentable_id !== performanceId
+        (parentComment as any).commentable_type !== "work" ||
+        (parentComment as any).commentable_id !== workId
       ) {
         return NextResponse.json(
-          { success: false, error: "父评论不属于此演奏" },
+          { success: false, error: "父评论不属于此作品" },
           { status: 400 }
         );
       }
@@ -243,14 +237,9 @@ export async function POST(
     const [result] = await sequelize.query(
       `INSERT INTO comments 
        (user_id, commentable_type, commentable_id, content, parent_id, is_public, created_at, updated_at) 
-       VALUES (?, 'performance', ?, ?, ?, true, NOW(), NOW())`,
+       VALUES (?, 'work', ?, ?, ?, true, NOW(), NOW())`,
       {
-        replacements: [
-          user.id,
-          performanceId,
-          content.trim(),
-          parentId || null,
-        ],
+        replacements: [user.id, workId, content.trim(), parentId || null],
         type: QueryTypes.INSERT,
       }
     );
@@ -269,11 +258,11 @@ export async function POST(
       }
     );
 
-    // 更新演奏的评论计数
+    // 更新作品的评论计数
     await sequelize.query(
-      "UPDATE performances SET comments_count = comments_count + 1 WHERE id = ?",
+      "UPDATE works SET comments_count = comments_count + 1 WHERE id = ?",
       {
-        replacements: [performanceId],
+        replacements: [workId],
         type: QueryTypes.UPDATE,
       }
     );

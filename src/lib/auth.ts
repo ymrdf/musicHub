@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { NextRequest } from "next/server";
-import { User } from "./models";
+import sequelize from "./database";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
@@ -36,7 +36,7 @@ export const comparePassword = async (
 // 从请求中获取用户信息
 export const getUserFromRequest = async (
   request: NextRequest
-): Promise<User | null> => {
+): Promise<any | null> => {
   try {
     const authHeader = request.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -49,8 +49,9 @@ export const getUserFromRequest = async (
       return null;
     }
 
+    const User = sequelize.models.User;
     const user = await User.findByPk(decoded.userId);
-    if (!user || !user.isActive) {
+    if (!user || !(user as any).isActive) {
       return null;
     }
 
@@ -64,7 +65,7 @@ export const getUserFromRequest = async (
 // 权限检查中间件
 export const requireAuth = async (
   request: NextRequest
-): Promise<User | Response> => {
+): Promise<any | Response> => {
   const user = await getUserFromRequest(request);
   if (!user) {
     return new Response(

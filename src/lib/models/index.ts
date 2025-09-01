@@ -531,6 +531,137 @@ PerformanceLike.init(
   }
 );
 
+// Comment 模型
+interface CommentCreationAttributes
+  extends Optional<CommentType, "id" | "createdAt" | "updatedAt"> {}
+
+export class Comment
+  extends Model<CommentType, CommentCreationAttributes>
+  implements CommentType
+{
+  public id!: number;
+  public userId!: number;
+  public commentableType!: "work" | "performance" | "lyrics";
+  public commentableId!: number;
+  public content!: string;
+  public parentId?: number;
+  public likesCount!: number;
+  public repliesCount!: number;
+  public isPublic!: boolean;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
+Comment.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "user_id",
+    },
+    commentableType: {
+      type: DataTypes.ENUM("work", "performance", "lyrics"),
+      allowNull: false,
+      field: "commentable_type",
+    },
+    commentableId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "commentable_id",
+    },
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    parentId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      field: "parent_id",
+    },
+    likesCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      field: "likes_count",
+    },
+    repliesCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      field: "replies_count",
+    },
+    isPublic: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      field: "is_public",
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      field: "created_at",
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      field: "updated_at",
+    },
+  },
+  {
+    sequelize,
+    tableName: "comments",
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+  }
+);
+
+// CommentLike 模型
+interface CommentLikeCreationAttributes
+  extends Optional<CommentLikeType, "id" | "createdAt"> {}
+
+export class CommentLike
+  extends Model<CommentLikeType, CommentLikeCreationAttributes>
+  implements CommentLikeType
+{
+  public id!: number;
+  public commentId!: number;
+  public userId!: number;
+  public readonly createdAt!: Date;
+}
+
+CommentLike.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    commentId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "comment_id",
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "user_id",
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      field: "created_at",
+    },
+  },
+  {
+    sequelize,
+    tableName: "comment_likes",
+    timestamps: false,
+  }
+);
+
 // 导出所有模型以便在其他文件中使用
 export { sequelize };
 
@@ -567,6 +698,21 @@ export const setupAssociations = () => {
   Work.belongsTo(Category, { foreignKey: "genreId", as: "genre" });
   Work.belongsTo(Category, { foreignKey: "instrumentId", as: "instrument" });
   Work.belongsTo(Category, { foreignKey: "purposeId", as: "purpose" });
+
+  // Comment 关联
+  User.hasMany(Comment, { foreignKey: "userId", as: "comments" });
+  Comment.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+  // 评论回复关联
+  Comment.hasMany(Comment, { foreignKey: "parentId", as: "replies" });
+  Comment.belongsTo(Comment, { foreignKey: "parentId", as: "parent" });
+
+  // CommentLike 关联
+  User.hasMany(CommentLike, { foreignKey: "userId", as: "commentLikes" });
+  CommentLike.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+  Comment.hasMany(CommentLike, { foreignKey: "commentId", as: "likes" });
+  CommentLike.belongsTo(Comment, { foreignKey: "commentId", as: "comment" });
 
   // 其他关联会在各自的模型文件中定义
 };

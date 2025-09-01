@@ -3,7 +3,7 @@ import { Comment } from "@/types";
 import {
   HeartIcon,
   TrashIcon,
-  DotsVerticalIcon,
+  EllipsisVerticalIcon as DotsVerticalIcon,
   ChatBubbleLeftIcon as ReplyIcon,
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
