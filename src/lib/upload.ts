@@ -136,3 +136,74 @@ export const getFileUrl = (filePath: string): string => {
   const relativePath = filePath.replace(process.cwd(), "").replace(/\\/g, "/");
   return `${baseUrl}${relativePath}`;
 };
+
+// 文件上传函数（用于Next.js API）
+export const uploadFile = async (
+  file: File,
+  type: "audio" | "pdf" | "midi" | "image"
+): Promise<{ success: boolean; filePath?: string; error?: string }> => {
+  try {
+    // 验证文件类型 - 创建兼容的对象
+    const mockMulterFile = {
+      fieldname: type,
+      originalname: file.name,
+      encoding: "7bit",
+      mimetype: file.type,
+      size: file.size,
+      buffer: Buffer.from(await file.arrayBuffer()),
+      destination: "",
+      filename: "",
+      path: "",
+      stream: null as any,
+    };
+
+    const validation = validateFile(mockMulterFile, type);
+    if (!validation.valid) {
+      return { success: false, error: validation.message || "文件验证失败" };
+    }
+
+    // 确定上传路径
+    let uploadPath = "";
+    switch (type) {
+      case "audio":
+        uploadPath = path.join(process.cwd(), "uploads/audio");
+        break;
+      case "pdf":
+        uploadPath = path.join(process.cwd(), "uploads/pdf");
+        break;
+      case "midi":
+        uploadPath = path.join(process.cwd(), "uploads/midi");
+        break;
+      case "image":
+        uploadPath = path.join(process.cwd(), "uploads/avatars");
+        break;
+      default:
+        uploadPath = path.join(process.cwd(), "uploads/misc");
+    }
+
+    // 确保目录存在
+    ensureUploadDir(uploadPath);
+
+    // 生成文件名
+    const fileName = generateFileName(file.name);
+    const fullPath = path.join(uploadPath, fileName);
+
+    // 将File对象转换为Buffer并写入文件
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    fs.writeFileSync(fullPath, buffer);
+
+    // 返回相对路径（用于数据库存储）
+    const relativePath = path
+      .join("uploads", type, fileName)
+      .replace(/\\/g, "/");
+
+    return {
+      success: true,
+      filePath: `/${relativePath}`,
+    };
+  } catch (error) {
+    console.error("文件上传失败:", error);
+    return { success: false, error: "文件上传失败" };
+  }
+};

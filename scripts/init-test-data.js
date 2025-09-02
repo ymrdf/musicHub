@@ -2,9 +2,9 @@ const mysql = require("mysql2/promise");
 
 // 数据库配置
 const dbConfig = {
-  host: "localhost",
-  user: "root",
-  password: "password",
+  host: "127.0.0.1",
+  user: "admin",
+  password: "ymrdf",
   database: "musicHub",
 };
 

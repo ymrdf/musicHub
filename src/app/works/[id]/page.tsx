@@ -20,6 +20,8 @@ import {
   MagnifyingGlassIcon,
   ArrowsPointingOutIcon,
   ArrowsPointingInIcon,
+  CodeBracketIcon,
+  ClockIcon,
 } from "@heroicons/react/24/outline";
 import { StarIcon as StarSolidIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
@@ -27,6 +29,9 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import PerformanceList from "@/components/works/PerformanceList";
 import WorkCommentList from "@/components/comments/WorkCommentList";
+import CollaborationList from "@/components/works/CollaborationList";
+import VersionHistory from "@/components/works/VersionHistory";
+import CollaborationModal from "@/components/works/CollaborationModal";
 
 interface WorkDetail {
   id: number;
@@ -86,6 +91,8 @@ export default function WorkDetailPage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [pdfScale, setPdfScale] = useState(1);
   const [showPdfViewer, setShowPdfViewer] = useState(true);
+  const [activeTab, setActiveTab] = useState("performances");
+  const [showCollaborationModal, setShowCollaborationModal] = useState(false);
 
   const workId = params.id as string;
 
@@ -517,7 +524,7 @@ export default function WorkDetailPage() {
 
               {/* 其他操作 */}
               {currentUser && !work.isOwner && (
-                <div className="mt-4">
+                <div className="mt-4 space-y-2">
                   <Link
                     href={`/performances/new?workId=${work.id}`}
                     className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
@@ -525,6 +532,16 @@ export default function WorkDetailPage() {
                     <PlayIcon className="h-4 w-4 mr-2" />
                     我要演奏
                   </Link>
+
+                  {work.allowCollaboration && (
+                    <button
+                      onClick={() => setShowCollaborationModal(true)}
+                      className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                    >
+                      <CodeBracketIcon className="h-4 w-4 mr-2" />
+                      提交协作
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -611,29 +628,80 @@ export default function WorkDetailPage() {
         </div>
       )}
 
-      {/* 演奏和评论区域 */}
+      {/* 协作、演奏和评论区域 */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* 演奏列表 */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  相关演奏 ({work.performancesCount})
-                </h2>
-                {currentUser && !work.isOwner && (
-                  <Link
-                    href={`/performances/new?workId=${work.id}`}
-                    className="btn-primary"
-                  >
-                    <PlusIcon className="h-4 w-4 mr-1" />
-                    上传演奏
-                  </Link>
-                )}
-              </div>
+        {/* 标签页导航 */}
+        <div className="mb-6">
+          <nav className="flex space-x-8">
+            <button
+              onClick={() => setActiveTab("performances")}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === "performances"
+                  ? "border-primary-500 text-primary-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              <PlayIcon className="h-4 w-4 inline mr-1" />
+              演奏 ({work.performancesCount})
+            </button>
 
-              <PerformanceList workId={work.id} />
-            </div>
+            {work.allowCollaboration && (
+              <button
+                onClick={() => setActiveTab("collaborations")}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === "collaborations"
+                    ? "border-primary-500 text-primary-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                <CodeBracketIcon className="h-4 w-4 inline mr-1" />
+                协作请求
+              </button>
+            )}
+
+            <button
+              onClick={() => setActiveTab("versions")}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === "versions"
+                  ? "border-primary-500 text-primary-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              <ClockIcon className="h-4 w-4 inline mr-1" />
+              版本历史
+            </button>
+          </nav>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* 主要内容区域 */}
+          <div className="lg:col-span-2">
+            {activeTab === "performances" && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    相关演奏 ({work.performancesCount})
+                  </h2>
+                  {currentUser && !work.isOwner && (
+                    <Link
+                      href={`/performances/new?workId=${work.id}`}
+                      className="btn-primary"
+                    >
+                      <PlusIcon className="h-4 w-4 mr-1" />
+                      上传演奏
+                    </Link>
+                  )}
+                </div>
+
+                <PerformanceList workId={work.id} />
+              </div>
+            )}
+
+            {activeTab === "collaborations" && work.allowCollaboration && (
+              <CollaborationList workId={work.id} isOwner={work.isOwner} />
+            )}
+
+            {activeTab === "versions" && <VersionHistory workId={work.id} />}
           </div>
 
           {/* 评论区 */}
@@ -648,6 +716,20 @@ export default function WorkDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* 协作请求模态框 */}
+      {showCollaborationModal && work && (
+        <CollaborationModal
+          workId={work.id}
+          workTitle={work.title}
+          isOpen={showCollaborationModal}
+          onClose={() => setShowCollaborationModal(false)}
+          onSuccess={() => {
+            setShowCollaborationModal(false);
+            // 可以在这里刷新协作列表
+          }}
+        />
+      )}
     </div>
   );
 }
