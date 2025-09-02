@@ -16,6 +16,7 @@ import {
   CheckCircleIcon as CheckCircleSolidIcon,
   XCircleIcon as XCircleSolidIcon,
 } from "@heroicons/react/24/solid";
+import RealMidiPlayer from "./RealMidiPlayer";
 
 interface CollaborationRequest {
   id: number;
@@ -242,6 +243,15 @@ export default function CollaborationList({
                         {collab.changes_summary}
                       </div>
                     )}
+                  </div>
+
+                  {/* MIDI文件预览 */}
+                  <div className="mb-3">
+                    <RealMidiPlayer
+                      filePath={collab.midi_file_path}
+                      fileName={`${collab.version_number}.mid`}
+                      fileSize={collab.midi_file_size}
+                    />
                   </div>
 
                   {collab.review_comment && (

@@ -12,6 +12,7 @@ import {
   ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
 import { CheckCircleIcon as CheckCircleSolidIcon } from "@heroicons/react/24/solid";
+import RealMidiPlayer from "./RealMidiPlayer";
 
 interface Version {
   id: number;
@@ -170,17 +171,15 @@ export default function VersionHistory({ workId }: VersionHistoryProps) {
                       合并者: {version.merger_username}
                     </div>
                   )}
-                </div>
 
-                <div className="ml-4">
-                  <a
-                    href={version.midi_file_path}
-                    download
-                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                  >
-                    <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
-                    下载
-                  </a>
+                  {/* MIDI文件预览 */}
+                  <div className="mt-3">
+                    <RealMidiPlayer
+                      filePath={version.midi_file_path}
+                      fileName={`${version.version_number}.mid`}
+                      fileSize={version.midi_file_size}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
