@@ -10,8 +10,9 @@ import {
   SpeakerWaveIcon,
   SpeakerXMarkIcon,
   MusicalNoteIcon,
-  ArrowPathIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
+import MidiSheetModal from "./MidiSheetModal";
 
 interface RealMidiPlayerProps {
   filePath: string;
@@ -25,6 +26,7 @@ export default function RealMidiPlayer({
   fileSize,
 }: RealMidiPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [volume, setVolume] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
@@ -33,10 +35,11 @@ export default function RealMidiPlayer({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isSheetModalOpen, setIsSheetModalOpen] = useState(false);
 
   const synthRef = useRef<Tone.PolySynth | null>(null);
   const synthsRef = useRef<Tone.PolySynth[]>([]);
-  const transportRef = useRef<Tone.Transport | null>(null);
+  const transportRef = useRef<any | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const partRef = useRef<Tone.Part | null>(null);
 
@@ -125,22 +128,17 @@ export default function RealMidiPlayer({
         transportRef.current = Tone.Transport;
         console.log("Transport obtained:", transportRef.current);
 
-        // 测试合成器是否工作
-        console.log("Testing synth with a simple note...");
-        synthRef.current.triggerAttackRelease("C4", "8n");
-
-        // 等待一下再测试另一个音符
-        setTimeout(() => {
-          console.log("Testing another note...");
-          synthRef.current.triggerAttackRelease("E4", "8n");
-        }, 500);
+        // 初始化合成器完成
+        console.log("Synth initialized successfully");
 
         setIsInitialized(true);
         console.log("Audio initialized successfully");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to initialize audio:", error);
-      setError("音频初始化失败，请检查浏览器权限: " + error.message);
+      setError(
+        "音频初始化失败，请检查浏览器权限: " + (error.message || String(error))
+      );
     }
   };
 
@@ -192,9 +190,11 @@ export default function RealMidiPlayer({
             : null,
         });
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to load MIDI:", error);
-      setError("MIDI文件加载失败，请检查文件格式: " + error.message);
+      setError(
+        "MIDI文件加载失败，请检查文件格式: " + (error.message || String(error))
+      );
     } finally {
       setIsLoading(false);
     }
@@ -222,12 +222,52 @@ export default function RealMidiPlayer({
         if (animationFrameRef.current) {
           cancelAnimationFrame(animationFrameRef.current);
         }
+        // 清除进度更新定时器
+        if (progressIntervalRef.current) {
+          clearInterval(progressIntervalRef.current);
+          progressIntervalRef.current = null;
+        }
       } else {
         // 播放
         console.log("Starting playback...");
         console.log("Transport state:", transportRef.current.state);
 
-        // 总是重新调度音符，确保播放
+        // 检查是否是从暂停状态恢复播放
+        if (
+          transportRef.current.state !== "started" &&
+          transportRef.current.state !== "stopped"
+        ) {
+          console.log("Resuming from pause...");
+          transportRef.current.start();
+          setIsPlaying(true);
+          updateProgress();
+
+          // 设置进度更新定时器
+          if (progressIntervalRef.current) {
+            clearInterval(progressIntervalRef.current);
+          }
+          progressIntervalRef.current = setInterval(() => {
+            if (transportRef.current && isPlaying) {
+              const currentSeconds = transportRef.current.seconds || 0;
+              setCurrentTime((prev) => {
+                if (Math.abs(prev - currentSeconds) > 0.01) {
+                  return currentSeconds;
+                }
+                return prev;
+              });
+            } else if (progressIntervalRef.current) {
+              clearInterval(progressIntervalRef.current);
+              progressIntervalRef.current = null;
+            }
+          }, 50);
+
+          return;
+        }
+
+        // 如果不是从暂停状态恢复，则重新开始播放
+        console.log("Starting new playback...");
+
+        // 重新调度音符，确保播放
         transportRef.current.cancel();
         transportRef.current.stop();
 
@@ -323,6 +363,15 @@ export default function RealMidiPlayer({
           const synthIndex = noteData.track % synthsRef.current.length;
           const synth = synthsRef.current[synthIndex];
 
+          // 每次播放音符时，更新当前时间
+          if (transportRef.current) {
+            // 使用setTimeout确保在主线程更新UI
+            setTimeout(() => {
+              const currentSeconds = transportRef.current?.seconds || 0;
+              setCurrentTime(currentSeconds);
+            }, 0);
+          }
+
           console.log(
             `Playing note: ${noteData.note} at time ${time} on track ${noteData.track} with synth ${synthIndex}`
           );
@@ -343,12 +392,39 @@ export default function RealMidiPlayer({
         setIsPlaying(true);
         console.log("Transport started, isPlaying set to true");
 
+        // 确保当前时间从0开始
+        transportRef.current.seconds = 0;
+        setCurrentTime(0);
+
         // 开始更新进度
         updateProgress();
+
+        // 设置一个定时器，每50毫秒检查一次进度，确保UI更新
+        if (progressIntervalRef.current) {
+          clearInterval(progressIntervalRef.current);
+        }
+        progressIntervalRef.current = setInterval(() => {
+          if (transportRef.current && isPlaying) {
+            // 直接从Transport获取当前时间并强制更新状态
+            const currentSeconds = transportRef.current.seconds || 0;
+            console.log("定时更新进度:", currentSeconds, "秒");
+            // 使用函数形式的setState确保基于最新状态更新
+            setCurrentTime((prev) => {
+              // 只有当新值与旧值不同时才更新
+              if (Math.abs(prev - currentSeconds) > 0.01) {
+                return currentSeconds;
+              }
+              return prev;
+            });
+          } else if (progressIntervalRef.current) {
+            clearInterval(progressIntervalRef.current);
+            progressIntervalRef.current = null;
+          }
+        }, 50);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Playback error:", error);
-      setError("播放失败，请重试: " + error.message);
+      setError("播放失败，请重试: " + (error.message || String(error)));
     }
   };
 
@@ -364,6 +440,12 @@ export default function RealMidiPlayer({
       }
     }
 
+    // 清除进度更新定时器
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+
     // 停止Part
     if (partRef.current) {
       partRef.current.stop();
@@ -375,7 +457,12 @@ export default function RealMidiPlayer({
   // 更新播放进度
   const updateProgress = () => {
     if (transportRef.current && isPlaying) {
-      setCurrentTime(transportRef.current.seconds);
+      // 获取当前时间并强制更新状态
+      const currentSeconds = transportRef.current.seconds || 0;
+      setCurrentTime(currentSeconds);
+      console.log("更新进度:", currentSeconds, "秒");
+
+      // 继续请求动画帧
       animationFrameRef.current = requestAnimationFrame(updateProgress);
     }
   };
@@ -447,6 +534,10 @@ export default function RealMidiPlayer({
         partRef.current.stop();
         partRef.current.dispose();
       }
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
     };
   }, []);
 
@@ -455,7 +546,22 @@ export default function RealMidiPlayer({
     loadMidiFile();
   }, [filePath]);
 
-  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+  // 计算进度百分比，确保值在0-100之间
+  const progressPercent =
+    duration > 0
+      ? Math.min(100, Math.max(0, (currentTime / duration) * 100))
+      : 0;
+
+  // 调试输出进度信息
+  useEffect(() => {
+    if (isPlaying) {
+      console.log(
+        `进度更新: ${currentTime.toFixed(2)}秒 / ${duration.toFixed(
+          2
+        )}秒 (${progressPercent.toFixed(1)}%)`
+      );
+    }
+  }, [currentTime, isPlaying, duration, progressPercent]);
 
   return (
     <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 border border-purple-200">
@@ -534,17 +640,12 @@ export default function RealMidiPlayer({
           </button>
 
           <button
-            onClick={() => {
-              if (synthRef.current) {
-                console.log("Testing direct note playback...");
-                synthRef.current.triggerAttackRelease("C4", "4n");
-              }
-            }}
-            disabled={!synthRef.current}
-            className="inline-flex items-center px-3 py-1.5 border border-green-300 shadow-sm text-sm font-medium rounded-md text-green-700 bg-white hover:bg-green-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => setIsSheetModalOpen(true)}
+            disabled={!midiData}
+            className="inline-flex items-center px-3 py-1.5 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <MusicalNoteIcon className="h-4 w-4 mr-1" />
-            测试
+            <DocumentTextIcon className="h-4 w-4 mr-1" />
+            乐谱
           </button>
         </div>
       </div>
@@ -561,12 +662,18 @@ export default function RealMidiPlayer({
               onClick={handleProgressClick}
             >
               <div
-                className="h-full bg-purple-600 rounded-full transition-all duration-100"
-                style={{ width: `${progressPercent}%` }}
+                className="h-full bg-purple-600 rounded-full"
+                style={{
+                  width: `${progressPercent}%`,
+                  transition: "width 0.1s linear",
+                }}
               />
               <div
                 className="absolute top-1/2 transform -translate-y-1/2 w-3 h-3 bg-purple-600 rounded-full shadow-sm cursor-pointer"
-                style={{ left: `calc(${progressPercent}% - 6px)` }}
+                style={{
+                  left: `calc(${progressPercent}% - 6px)`,
+                  transition: "left 0.1s linear",
+                }}
               />
             </div>
             <span className="text-xs text-gray-500 font-mono w-10">
@@ -601,6 +708,14 @@ export default function RealMidiPlayer({
           </div>
         </div>
       )}
+      {/* 乐谱弹窗 */}
+      <MidiSheetModal
+        isOpen={isSheetModalOpen}
+        onClose={() => setIsSheetModalOpen(false)}
+        filePath={filePath}
+        fileName={fileName}
+        midiData={midiData}
+      />
     </div>
   );
 }

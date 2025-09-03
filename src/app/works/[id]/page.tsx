@@ -32,6 +32,7 @@ import WorkCommentList from "@/components/comments/WorkCommentList";
 import CollaborationList from "@/components/works/CollaborationList";
 import VersionHistory from "@/components/works/VersionHistory";
 import CollaborationModal from "@/components/works/CollaborationModal";
+import RealMidiPlayer from "@/components/works/RealMidiPlayer";
 
 interface WorkDetail {
   id: number;
@@ -624,6 +625,37 @@ export default function WorkDetailPage() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* MIDI播放器区域 */}
+      {work.midiFilePath && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="bg-white rounded-lg shadow">
+            {/* 工具栏 */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <div className="flex items-center space-x-4">
+                <h2 className="text-xl font-semibold text-gray-900 flex items-center">
+                  <MusicalNoteIcon className="h-6 w-6 text-blue-500 mr-2" />
+                  MIDI播放器
+                </h2>
+              </div>
+            </div>
+
+            {/* MIDI播放器 */}
+            <div className="p-4">
+              <RealMidiPlayer
+                filePath={work.midiFilePath}
+                fileName={work.midiFilePath.split("/").pop() || "midi文件"}
+                fileSize={work.midiFileSize || 0}
+              />
+
+              {/* 下载提示 */}
+              <div className="mt-4 text-center text-sm text-gray-500">
+                <p>💡 提示：您也可以点击右上角的下载按钮获取完整MIDI文件</p>
+              </div>
+            </div>
           </div>
         </div>
       )}
