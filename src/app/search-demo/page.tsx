@@ -38,7 +38,7 @@ export default function SearchDemoPage() {
             搜索功能演示
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            体验MusicHub强大的搜索功能，快速找到你需要的音乐作品、创作者和演奏
+            体验MusicEmit强大的搜索功能，快速找到你需要的音乐作品、创作者和演奏
           </p>
         </div>
 

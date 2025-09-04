@@ -29,8 +29,8 @@ export default function TermsOfServicePage() {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">概述</h2>
             <div className="prose prose-gray max-w-none">
               <p className="text-gray-700 leading-relaxed">
-                欢迎使用 MusicHub！这些服务条款（以下简称"条款"）是您与 MusicHub
-                之间就使用我们的音乐分享平台服务达成的协议。
+                欢迎使用 MusicEmit！这些服务条款（以下简称"条款"）是您与
+                MusicEmit 之间就使用我们的音乐分享平台服务达成的协议。
                 通过访问或使用我们的服务，您同意遵守这些条款。
               </p>
             </div>
@@ -43,7 +43,7 @@ export default function TermsOfServicePage() {
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                MusicHub 是一个面向音乐创作者的原创音乐分享平台，提供以下服务：
+                MusicEmit 是一个面向音乐创作者的原创音乐分享平台，提供以下服务：
               </p>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
                 <li>乐谱和 MIDI 文件的上传、存储和分享</li>
@@ -141,7 +141,7 @@ export default function TermsOfServicePage() {
                   平台内容
                 </h3>
                 <p className="text-gray-700 leading-relaxed">
-                  MusicHub
+                  MusicEmit
                   平台本身（包括但不限于软件、设计、商标）受知识产权法保护。
                   未经许可，您不得复制、修改或分发这些内容。
                 </p>
@@ -302,13 +302,13 @@ export default function TermsOfServicePage() {
               </p>
               <div className="bg-gray-50 rounded-lg p-4">
                 <p className="text-gray-700">
-                  <strong>邮箱：</strong> legal@musichub.com
+                  <strong>邮箱：</strong> 837856276@qq.com
                 </p>
                 <p className="text-gray-700">
-                  <strong>地址：</strong> [公司地址]
+                  <strong>地址：</strong> 中国上海
                 </p>
                 <p className="text-gray-700">
-                  <strong>电话：</strong> [联系电话]
+                  <strong>电话：</strong> +086-15663632812
                 </p>
               </div>
             </div>

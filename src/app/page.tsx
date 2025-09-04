@@ -130,7 +130,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 font-music">
-            欢迎来到 MusicHub
+            欢迎来到 MusicEmit
           </h1>
           <p className="text-xl md:text-2xl text-white opacity-90 mb-8 max-w-3xl mx-auto">
             连接全球音乐创作者的原创音乐分享平台
@@ -195,7 +195,7 @@ export default function HomePage() {
               为音乐创作者量身打造
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              MusicHub
+              MusicEmit
               提供完整的音乐创作、分享和协作解决方案，让您的音乐才华得到最大的发挥。
             </p>
           </div>
@@ -276,7 +276,7 @@ export default function HomePage() {
             准备好开始您的音乐之旅了吗？
           </h2>
           <p className="text-xl text-white opacity-90 mb-8">
-            加入 MusicHub，与全球音乐创作者一起，创造美妙的音乐世界。
+            加入 MusicEmit，与全球音乐创作者一起，创造美妙的音乐世界。
           </p>
           <a
             href="/auth/register"

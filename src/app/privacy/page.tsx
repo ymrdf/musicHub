@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
             </h2>
             <div className="prose prose-gray max-w-none">
               <p className="text-gray-700 leading-relaxed">
-                MusicHub（以下简称"我们"）非常重视您的隐私保护。本隐私政策说明了我们如何收集、使用、存储和保护您的个人信息。
+                MusicEmit（以下简称"我们"）非常重视您的隐私保护。本隐私政策说明了我们如何收集、使用、存储和保护您的个人信息。
                 通过使用我们的服务，您同意我们按照本政策处理您的信息。
               </p>
             </div>
@@ -237,13 +237,13 @@ export default function PrivacyPolicyPage() {
               </p>
               <div className="bg-gray-50 rounded-lg p-4">
                 <p className="text-gray-700">
-                  <strong>邮箱：</strong> privacy@musichub.com
+                  <strong>邮箱：</strong> 837856276@qq.com
                 </p>
                 <p className="text-gray-700">
-                  <strong>地址：</strong> [公司地址]
+                  <strong>地址：</strong> 中国上海
                 </p>
                 <p className="text-gray-700">
-                  <strong>电话：</strong> [联系电话]
+                  <strong>电话：</strong> +086-15663632812
                 </p>
               </div>
               <p className="text-gray-700 leading-relaxed">

@@ -36,7 +36,7 @@ export function Footer() {
             <Link href="/" className="flex items-center space-x-2 mb-4">
               <MusicalNoteIcon className="h-8 w-8 text-primary-400" />
               <span className="text-xl font-bold text-white font-music">
-                MusicHub
+                MusicEmit
               </span>
             </Link>
             <p className="text-gray-400 text-sm leading-6 mb-4">
@@ -142,7 +142,7 @@ export function Footer() {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {currentYear} MusicHub. 保留所有权利.
+              © {currentYear} MusicEmit. 保留所有权利.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link

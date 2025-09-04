@@ -9,11 +9,11 @@ import { AudioPlayer } from "@/components/music/AudioPlayer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MusicHub - 原创音乐分享平台",
+  title: "MusicEmit - 原创音乐分享平台",
   description:
     "一个面向音乐创作者的原创音乐分享平台，支持乐谱分享、协作创作、演奏演唱和社区互动。",
   keywords: "音乐创作,乐谱分享,MIDI,演奏,演唱,音乐社区",
-  authors: [{ name: "MusicHub Team" }],
+  authors: [{ name: "MusicEmit Team" }],
   viewport: "width=device-width, initial-scale=1",
 };
 

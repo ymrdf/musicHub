@@ -27,7 +27,7 @@ export default function HelpPage() {
   const faqData: FAQItem[] = [
     // 账户相关
     {
-      question: "如何注册 MusicHub 账户？",
+      question: "如何注册 MusicEmit 账户？",
       answer:
         "点击首页的'立即加入'按钮，填写用户名、邮箱和密码即可完成注册。注册后需要验证邮箱才能使用完整功能。",
       category: "account",
@@ -291,7 +291,7 @@ export default function HelpPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="font-medium text-gray-900 mb-2">邮箱支持</h3>
-              <p className="text-gray-600">support@musichub.com</p>
+              <p className="text-gray-600">support@MusicEmit.com</p>
               <p className="text-sm text-gray-500 mt-1">通常在24小时内回复</p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
@@ -301,12 +301,12 @@ export default function HelpPage() {
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="font-medium text-gray-900 mb-2">版权问题</h3>
-              <p className="text-gray-600">copyright@musichub.com</p>
+              <p className="text-gray-600">copyright@MusicEmit.com</p>
               <p className="text-sm text-gray-500 mt-1">专门处理版权相关事务</p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="font-medium text-gray-900 mb-2">技术问题</h3>
-              <p className="text-gray-600">tech@musichub.com</p>
+              <p className="text-gray-600">tech@MusicEmit.com</p>
               <p className="text-sm text-gray-500 mt-1">处理技术故障和bug</p>
             </div>
           </div>

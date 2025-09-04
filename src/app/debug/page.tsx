@@ -94,7 +94,7 @@ export default function DebugPage() {
                 </p>
                 <p>
                   <strong>数据库名称:</strong>{" "}
-                  {process.env.DB_NAME || "musicHub"}
+                  {process.env.DB_NAME || "MusicEmit"}
                 </p>
               </div>
             </div>

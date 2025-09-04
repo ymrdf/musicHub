@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
             >
               <MusicalNoteIcon className="h-10 w-10 text-primary-600" />
               <span className="text-2xl font-bold text-gray-900 font-music">
-                MusicHub
+                MusicEmit
               </span>
             </Link>
             <h2 className="text-3xl font-extrabold text-gray-900">
@@ -100,7 +100,7 @@ export default function ForgotPasswordPage() {
           >
             <MusicalNoteIcon className="h-10 w-10 text-primary-600" />
             <span className="text-2xl font-bold text-gray-900 font-music">
-              MusicHub
+              MusicEmit
             </span>
           </Link>
           <h2 className="text-3xl font-extrabold text-gray-900">忘记密码</h2>

@@ -33,7 +33,7 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       await registerUser(data.username, data.email, data.password);
-      toast.success("注册成功！欢迎加入 MusicHub");
+      toast.success("注册成功！欢迎加入 MusicEmit");
       router.push("/");
     } catch (error: any) {
       console.error("注册错误:", error);
@@ -54,7 +54,7 @@ export default function RegisterPage() {
           >
             <MusicalNoteIcon className="h-10 w-10 text-primary-600" />
             <span className="text-2xl font-bold text-gray-900 font-music">
-              MusicHub
+              MusicEmit
             </span>
           </Link>
           <h2 className="text-3xl font-extrabold text-gray-900">创建账户</h2>

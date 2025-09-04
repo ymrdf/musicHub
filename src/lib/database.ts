@@ -6,7 +6,7 @@ const sequelize = new Sequelize({
   port: parseInt(process.env.DB_PORT || "3306"),
   username: process.env.DB_USER || "admin",
   password: process.env.DB_PASSWORD || "ymrdf",
-  database: process.env.DB_NAME || "musicHub",
+  database: process.env.DB_NAME || "MusicEmit",
   dialect: "mysql",
   dialectModule: require("mysql2"), // 显式指定 mysql2 模块
   logging: process.env.NODE_ENV === "development" ? console.log : false,

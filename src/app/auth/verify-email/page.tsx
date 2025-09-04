@@ -85,7 +85,7 @@ export default function VerifyEmailPage() {
           >
             <MusicalNoteIcon className="h-10 w-10 text-primary-600" />
             <span className="text-2xl font-bold text-gray-900 font-music">
-              MusicHub
+              MusicEmit
             </span>
           </Link>
 
@@ -99,7 +99,7 @@ export default function VerifyEmailPage() {
                 {verificationResult.message}
               </p>
               <p className="text-sm text-gray-500">
-                您现在可以享受 MusicHub 的完整功能了！
+                您现在可以享受 MusicEmit 的完整功能了！
               </p>
             </div>
           ) : (
