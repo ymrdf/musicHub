@@ -21,7 +21,7 @@ export function Footer() {
     ],
     company: [
       { name: "关于我们", href: "/about" },
-      { name: "联系我们", href: "/contact" },
+      { name: "意见反馈", href: "/feedback" },
       { name: "隐私政策", href: "/privacy" },
       { name: "服务条款", href: "/terms" },
     ],

@@ -19,7 +19,7 @@ const sequelize = new Sequelize({
   timezone: "+08:00",
   define: {
     timestamps: true,
-    underscored: false,
+    underscored: true,
     freezeTableName: true,
   },
 });

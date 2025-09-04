@@ -17,6 +17,9 @@ import type {
   TrendingCache as TrendingCacheType,
 } from "../../types";
 
+// 导入Feedback模型
+import Feedback from "./feedback";
+
 // User 模型
 interface UserCreationAttributes
   extends Optional<UserType, "id" | "createdAt" | "updatedAt"> {}
@@ -751,7 +754,7 @@ WorkStar.init(
 );
 
 // 导出所有模型以便在其他文件中使用
-export { sequelize };
+export { sequelize, Feedback };
 
 // 设置模型关联关系
 export const setupAssociations = () => {
