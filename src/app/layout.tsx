@@ -15,6 +15,16 @@ export const metadata: Metadata = {
   keywords: "音乐创作,乐谱分享,MIDI,演奏,演唱,音乐社区",
   authors: [{ name: "MusicEmit Team" }],
   viewport: "width=device-width, initial-scale=1",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({
