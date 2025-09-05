@@ -25,125 +25,132 @@ export default function HelpPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   const faqData: FAQItem[] = [
-    // 账户相关
+    // Account related
     {
-      question: "如何注册 MusicEmit 账户？",
+      question: "How to register a MusicEmit account?",
       answer:
-        "点击首页的'立即加入'按钮，填写用户名、邮箱和密码即可完成注册。注册后需要验证邮箱才能使用完整功能。",
+        "Click the 'Join for Free' button on the homepage, fill in your username, email and password to complete registration. You need to verify your email after registration to use all features.",
       category: "account",
     },
     {
-      question: "忘记密码怎么办？",
+      question: "What to do if I forgot my password?",
       answer:
-        "在登录页面点击'忘记密码'，输入您的邮箱地址，我们会发送重置密码的链接到您的邮箱。",
+        "Click 'Forgot Password' on the login page, enter your email address, and we will send a password reset link to your email.",
       category: "account",
     },
     {
-      question: "如何修改个人资料？",
+      question: "How to edit my profile?",
       answer:
-        "登录后点击右上角的头像，选择'个人资料'即可修改头像、用户名、个人简介等信息。",
+        "After logging in, click on your avatar in the top right corner and select 'Profile' to edit your avatar, username, bio and other information.",
       category: "account",
     },
     {
-      question: "如何删除账户？",
+      question: "How to delete my account?",
       answer:
-        "在个人资料页面找到'账户设置'，选择'删除账户'。请注意，删除账户后所有数据将无法恢复。",
+        "Find 'Account Settings' on your profile page and select 'Delete Account'. Please note that all data will be unrecoverable after account deletion.",
       category: "account",
     },
-    // 作品上传
+    // Work Upload
     {
-      question: "支持哪些文件格式？",
+      question: "What file formats are supported?",
       answer:
-        "乐谱支持 PDF 格式，MIDI 文件支持 .mid 和 .midi 格式，音频文件支持 MP3、WAV 格式。",
+        "Sheet music supports PDF format, MIDI files support .mid and .midi formats, and audio files support MP3 and WAV formats.",
       category: "upload",
     },
     {
-      question: "文件大小有限制吗？",
-      answer: "PDF 文件最大 50MB，MIDI 文件最大 10MB，音频文件最大 100MB。",
+      question: "Are there file size limits?",
+      answer: "PDF files max 50MB, MIDI files max 10MB, audio files max 100MB.",
       category: "upload",
     },
     {
-      question: "如何上传音乐作品？",
+      question: "How to upload musical works?",
       answer:
-        "点击'创建作品'，填写作品信息，上传乐谱和 MIDI 文件，添加分类标签，点击发布即可。",
+        "Click 'Create Work', fill in work information, upload sheet music and MIDI files, add category tags, and click publish.",
       category: "upload",
     },
     {
-      question: "如何上传演奏作品？",
+      question: "How to upload performance works?",
       answer:
-        "在作品页面点击'我要演奏'，录制或上传音频文件，添加演奏描述，点击发布即可。",
+        "Click 'Record a Cover' on the work page, record or upload audio files, add performance description, and click publish.",
       category: "upload",
     },
-    // 功能使用
+    // Features
     {
-      question: "如何收藏喜欢的作品？",
+      question: "How to favorite works?",
       answer:
-        "在作品页面点击星形图标即可收藏。您可以在个人主页的'收藏作品'中查看所有收藏。",
+        "Click the star icon on the work page to favorite. You can view all favorites in 'Starred Works' on your profile page.",
       category: "features",
     },
     {
-      question: "如何评论作品？",
-      answer: "在作品页面底部的评论区输入您的评论，点击'发表评论'即可。",
-      category: "features",
-    },
-    {
-      question: "如何关注其他用户？",
+      question: "How to comment on works?",
       answer:
-        "在用户主页点击'关注'按钮即可关注该用户，关注后可以在首页看到他们的最新动态。",
+        "Enter your comment in the comment section at the bottom of the work page and click 'Post Comment'.",
       category: "features",
     },
     {
-      question: "如何搜索音乐作品？",
-      answer: "使用顶部搜索框，可以按作品名称、创作者、标签或分类进行搜索。",
-      category: "features",
-    },
-    // 版权问题
-    {
-      question: "上传作品需要注意什么版权问题？",
+      question: "How to follow other users?",
       answer:
-        "只能上传您原创或拥有版权的作品。不得上传侵犯他人知识产权的音乐内容。",
+        "Click the 'Follow' button on the user's profile page to follow them. After following, you can see their latest updates on the homepage.",
+      category: "features",
+    },
+    {
+      question: "How to search for musical works?",
+      answer:
+        "Use the search box at the top to search by work name, creator, tags, or category.",
+      category: "features",
+    },
+    // Copyright Issues
+    {
+      question:
+        "What copyright issues should I be aware of when uploading works?",
+      answer:
+        "You can only upload works that you created or own the rights to. Do not upload music content that infringes on others' intellectual property.",
       category: "copyright",
     },
     {
-      question: "发现侵权内容怎么办？",
+      question: "What to do if I find infringing content?",
       answer:
-        "点击作品页面的'举报'按钮，选择'版权侵权'并提供相关证据，我们会及时处理。",
+        "Click the 'Report' button on the work page, select 'Copyright Infringement' and provide relevant evidence. We will handle it promptly.",
       category: "copyright",
     },
     {
-      question: "我的作品被侵权了怎么办？",
+      question: "What to do if my work is being infringed?",
       answer:
-        "请联系我们的版权保护团队，提供您的版权证明和侵权证据，我们会协助您处理。",
+        "Please contact our copyright protection team, provide your copyright proof and infringement evidence, and we will assist you in handling it.",
       category: "copyright",
     },
-    // 技术问题
+    // Technical Issues
     {
-      question: "音频播放不了怎么办？",
+      question: "What to do if audio won't play?",
       answer:
-        "请检查网络连接，尝试刷新页面。如果问题持续，请清除浏览器缓存或尝试其他浏览器。",
+        "Please check your network connection and try refreshing the page. If the problem persists, clear your browser cache or try a different browser.",
       category: "technical",
     },
     {
-      question: "上传失败怎么办？",
+      question: "What to do if upload fails?",
       answer:
-        "请检查文件格式和大小是否符合要求，网络连接是否稳定。如果问题持续，请联系客服。",
+        "Please check if the file format and size meet the requirements, and if your network connection is stable. If the problem persists, please contact customer service.",
       category: "technical",
     },
     {
-      question: "页面加载很慢怎么办？",
+      question: "What to do if pages load slowly?",
       answer:
-        "请检查网络连接，尝试刷新页面。如果问题持续，可能是服务器繁忙，请稍后再试。",
+        "Please check your network connection and try refreshing the page. If the problem persists, the server might be busy, please try again later.",
       category: "technical",
     },
   ];
 
   const categories = [
-    { id: "all", name: "全部问题", icon: QuestionMarkCircleIcon },
-    { id: "account", name: "账户管理", icon: UserGroupIcon },
-    { id: "upload", name: "作品上传", icon: MusicalNoteIcon },
-    { id: "features", name: "功能使用", icon: PlayIcon },
-    { id: "copyright", name: "版权问题", icon: ExclamationTriangleIcon },
-    { id: "technical", name: "技术问题", icon: BookOpenIcon },
+    { id: "all", name: "All Questions", icon: QuestionMarkCircleIcon },
+    { id: "account", name: "Account Management", icon: UserGroupIcon },
+    { id: "upload", name: "Work Upload", icon: MusicalNoteIcon },
+    { id: "features", name: "Features", icon: PlayIcon },
+    {
+      id: "copyright",
+      name: "Copyright Issues",
+      icon: ExclamationTriangleIcon,
+    },
+    { id: "technical", name: "Technical Issues", icon: BookOpenIcon },
   ];
 
   const filteredFAQs =
@@ -164,67 +171,73 @@ export default function HelpPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* 页面标题 */}
+        {/* Page title */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-4">
             <QuestionMarkCircleIcon className="h-12 w-12 text-primary-600" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">帮助中心</h1>
-          <p className="text-lg text-gray-600">找到您需要的答案和指导</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Help Center</h1>
+          <p className="text-lg text-gray-600">
+            Find the answers and guidance you need
+          </p>
         </div>
 
-        {/* 快速导航 */}
+        {/* Quick navigation */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">快速导航</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Quick Navigation
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <a
               href="/auth/register"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
             >
               <UserGroupIcon className="h-6 w-6 text-primary-600 mr-3" />
-              <span className="font-medium">注册账户</span>
+              <span className="font-medium">Register Account</span>
             </a>
             <a
               href="/works/new"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
             >
               <MusicalNoteIcon className="h-6 w-6 text-primary-600 mr-3" />
-              <span className="font-medium">上传作品</span>
+              <span className="font-medium">Upload Works</span>
             </a>
             <a
               href="/discover"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
             >
               <PlayIcon className="h-6 w-6 text-primary-600 mr-3" />
-              <span className="font-medium">发现音乐</span>
+              <span className="font-medium">Discover Music</span>
             </a>
             <a
               href="/trending"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
             >
               <StarIcon className="h-6 w-6 text-primary-600 mr-3" />
-              <span className="font-medium">热门榜单</span>
+              <span className="font-medium">Trending Charts</span>
             </a>
             <a
               href="/privacy"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
             >
               <ExclamationTriangleIcon className="h-6 w-6 text-primary-600 mr-3" />
-              <span className="font-medium">隐私政策</span>
+              <span className="font-medium">Privacy Policy</span>
             </a>
             <a
               href="#contact"
               className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
             >
               <ChatBubbleLeftRightIcon className="h-6 w-6 text-primary-600 mr-3" />
-              <span className="font-medium">联系客服</span>
+              <span className="font-medium">Contact Support</span>
             </a>
           </div>
         </div>
 
         {/* 分类筛选 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">常见问题</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Frequently Asked Questions
+          </h2>
           <div className="flex flex-wrap gap-2 mb-6">
             {categories.map((category) => {
               const Icon = category.icon;
@@ -283,31 +296,44 @@ export default function HelpPage() {
         {/* 联系客服 */}
         <div id="contact" className="bg-white rounded-lg shadow-sm p-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            联系客服
+            Contact Support
           </h2>
           <p className="text-gray-700 mb-6">
-            如果您没有找到需要的答案，请通过以下方式联系我们：
+            If you haven't found the answer you need, please contact us through
+            the following methods:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-medium text-gray-900 mb-2">邮箱支持</h3>
+              <h3 className="font-medium text-gray-900 mb-2">Email Support</h3>
               <p className="text-gray-600">837856276@qq.com</p>
-              <p className="text-sm text-gray-500 mt-1">通常在24小时内回复</p>
+              <p className="text-sm text-gray-500 mt-1">
+                Usually responds within 24 hours
+              </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-medium text-gray-900 mb-2">在线客服</h3>
-              <p className="text-gray-600">工作日 9:00-18:00</p>
-              <p className="text-sm text-gray-500 mt-1">实时在线支持</p>
+              <h3 className="font-medium text-gray-900 mb-2">Live Chat</h3>
+              <p className="text-gray-600">Weekdays 9:00-18:00</p>
+              <p className="text-sm text-gray-500 mt-1">
+                Real-time online support
+              </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-medium text-gray-900 mb-2">版权问题</h3>
+              <h3 className="font-medium text-gray-900 mb-2">
+                Copyright Issues
+              </h3>
               <p className="text-gray-600">837856276@qq.com</p>
-              <p className="text-sm text-gray-500 mt-1">专门处理版权相关事务</p>
+              <p className="text-sm text-gray-500 mt-1">
+                Specialized in handling copyright-related matters
+              </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-medium text-gray-900 mb-2">技术问题</h3>
+              <h3 className="font-medium text-gray-900 mb-2">
+                Technical Issues
+              </h3>
               <p className="text-gray-600">837856276@qq.com</p>
-              <p className="text-sm text-gray-500 mt-1">处理技术故障和bug</p>
+              <p className="text-sm text-gray-500 mt-1">
+                Handling technical failures and bugs
+              </p>
             </div>
           </div>
         </div>
@@ -318,7 +344,7 @@ export default function HelpPage() {
             href="/"
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200"
           >
-            返回首页
+            Back to Home
           </a>
         </div>
       </div>

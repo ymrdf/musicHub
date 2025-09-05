@@ -58,7 +58,7 @@ export default function AdvancedMidiPreview({
         <div className="flex items-center space-x-2">
           <MusicalNoteIcon className="h-5 w-5 text-blue-600" />
           <span className="text-sm font-medium text-gray-900">
-            MIDI 文件预览
+            MIDI File Preview
           </span>
         </div>
         <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded">
@@ -74,11 +74,13 @@ export default function AdvancedMidiPreview({
           >
             {fileName}
           </p>
-          <p className="text-xs text-gray-500 mt-1">专业音乐文件格式</p>
+          <p className="text-xs text-gray-500 mt-1">
+            Professional music file format
+          </p>
         </div>
 
         <div className="flex items-center space-x-2">
-          {/* 音量控制 */}
+          {/* Volume control */}
           <div className="flex items-center space-x-1">
             <button
               onClick={toggleMute}

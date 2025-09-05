@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/components/layout/Providers";
@@ -68,13 +66,13 @@ export default function UserFollowersPage() {
         setUsers(response.data.data.users);
         setPagination(response.data.data.pagination);
 
-        // 检查当前用户是否关注了这些粉丝
+        // Check if current user is following these followers
         if (currentUser) {
           const followingStatus = await Promise.all(
             response.data.data.users.map(async (user: FollowerUser) => {
               try {
-                // 这里需要实现检查关注状态的API
-                // 暂时设置为false，实际应该调用API检查
+                // Need to implement API to check following status
+                // Temporarily set to false, should call API to check
                 return { userId: user.id, isFollowing: false };
               } catch (error) {
                 return { userId: user.id, isFollowing: false };
@@ -90,7 +88,9 @@ export default function UserFollowersPage() {
         }
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "获取粉丝列表失败");
+      toast.error(
+        error.response?.data?.error || "Failed to fetch followers list"
+      );
     } finally {
       setLoading(false);
     }
@@ -98,7 +98,7 @@ export default function UserFollowersPage() {
 
   const handleFollow = async (targetUserId: number, isFollowing: boolean) => {
     if (!currentUser) {
-      toast.error("请先登录");
+      toast.error("Please login first");
       return;
     }
 
@@ -106,7 +106,7 @@ export default function UserFollowersPage() {
       setFollowLoading(targetUserId);
 
       if (isFollowing) {
-        // 取消关注
+        // Unfollow
         const response = await axios.delete(
           `/api/users/${targetUserId}/follow`
         );
@@ -122,10 +122,10 @@ export default function UserFollowersPage() {
             ...prev,
             [targetUserId]: false,
           }));
-          toast.success("取消关注成功");
+          toast.success("Unfollowed successfully");
         }
       } else {
-        // 关注
+        // Follow
         const response = await axios.post(`/api/users/${targetUserId}/follow`);
         if (response.data.success) {
           setUsers((prev) =>
@@ -139,11 +139,11 @@ export default function UserFollowersPage() {
             ...prev,
             [targetUserId]: true,
           }));
-          toast.success("关注成功");
+          toast.success("Followed successfully");
         }
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "操作失败");
+      toast.error(error.response?.data?.error || "Operation failed");
     } finally {
       setFollowLoading(null);
     }
@@ -158,7 +158,7 @@ export default function UserFollowersPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">加载中...</p>
+          <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -166,7 +166,7 @@ export default function UserFollowersPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 页面头部 */}
+      {/* Page header */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center space-x-4">
@@ -177,16 +177,16 @@ export default function UserFollowersPage() {
               <ArrowLeftIcon className="h-5 w-5" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">粉丝</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Followers</h1>
               <p className="text-gray-600">
-                共有 {pagination?.total || 0} 个粉丝
+                {pagination?.total || 0} followers total
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 用户列表 */}
+      {/* User list */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {users.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -199,7 +199,7 @@ export default function UserFollowersPage() {
                   className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-start space-x-4">
-                    {/* 头像 */}
+                    {/* Avatar */}
                     <div className="flex-shrink-0">
                       {user.avatarUrl ? (
                         <img
@@ -214,7 +214,7 @@ export default function UserFollowersPage() {
                       )}
                     </div>
 
-                    {/* 用户信息 */}
+                    {/* User info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-1">
                         <h3 className="text-lg font-semibold text-gray-900 truncate">
@@ -226,7 +226,10 @@ export default function UserFollowersPage() {
                           </Link>
                         </h3>
                         {user.isVerified && (
-                          <span className="text-primary-500" title="已验证用户">
+                          <span
+                            className="text-primary-500"
+                            title="Verified User"
+                          >
                             ✓
                           </span>
                         )}
@@ -253,7 +256,7 @@ export default function UserFollowersPage() {
                         </div>
                       </div>
 
-                      {/* 关注按钮 */}
+                      {/* Follow button */}
                       {currentUser && currentUser.id !== user.id && (
                         <button
                           onClick={() => handleFollow(user.id, isFollowing)}
@@ -271,7 +274,7 @@ export default function UserFollowersPage() {
                           ) : (
                             <UserPlusIcon className="h-3 w-3 mr-1" />
                           )}
-                          {isFollowing ? "取消关注" : "关注"}
+                          {isFollowing ? "Unfollow" : "Follow"}
                         </button>
                       )}
                     </div>
@@ -284,19 +287,21 @@ export default function UserFollowersPage() {
           <div className="text-center py-12">
             <UserIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              还没有粉丝
+              No followers yet
             </h3>
-            <p className="text-gray-600 mb-4">分享更多作品来吸引粉丝吧</p>
+            <p className="text-gray-600 mb-4">
+              Share more works to attract followers
+            </p>
             <Link
               href="/works/new"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
             >
-              创建作品
+              Create Work
             </Link>
           </div>
         )}
 
-        {/* 分页 */}
+        {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
           <div className="mt-8 flex justify-center">
             <nav className="flex items-center space-x-2">
@@ -305,7 +310,7 @@ export default function UserFollowersPage() {
                 disabled={currentPage === 1}
                 className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                上一页
+                Previous
               </button>
 
               {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
@@ -338,7 +343,7 @@ export default function UserFollowersPage() {
                 disabled={currentPage === pagination.totalPages}
                 className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                下一页
+                Next
               </button>
             </nav>
           </div>
@@ -347,4 +352,3 @@ export default function UserFollowersPage() {
     </div>
   );
 }
-

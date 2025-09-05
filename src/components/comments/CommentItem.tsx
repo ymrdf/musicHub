@@ -58,7 +58,7 @@ export default function CommentItem({
   const handleDelete = async () => {
     if (!currentUser) return;
     if (deleteLoading) return;
-    if (!confirm("确定要删除这条评论吗？")) return;
+    if (!confirm("Are you sure you want to delete this comment?")) return;
 
     setDeleteLoading(true);
     try {
@@ -84,7 +84,7 @@ export default function CommentItem({
       } mb-4 last:mb-0`}
     >
       <div className="flex gap-3">
-        {/* 用户头像 */}
+        {/* User avatar */}
         <div className="flex-shrink-0">
           {comment.user?.avatarUrl ? (
             <img
@@ -97,7 +97,7 @@ export default function CommentItem({
           )}
         </div>
 
-        {/* 评论内容 */}
+        {/* Comment content */}
         <div className="flex-1 min-w-0">
           <div className="bg-gray-50 rounded-lg px-4 py-3">
             <div className="flex items-center justify-between mb-1">
@@ -120,7 +120,7 @@ export default function CommentItem({
                         className="flex items-center w-full px-4 py-2 text-sm text-left text-red-600 hover:bg-gray-100"
                       >
                         <TrashIcon className="h-4 w-4 mr-2" />
-                        {deleteLoading ? "删除中..." : "删除评论"}
+                        {deleteLoading ? "Deleting..." : "Delete Comment"}
                       </button>
                     </div>
                   )}
@@ -132,7 +132,7 @@ export default function CommentItem({
             </p>
           </div>
 
-          {/* 评论操作 */}
+          {/* Comment actions */}
           <div className="flex items-center mt-2 text-sm text-gray-500">
             <span className="mr-4">{formattedDate}</span>
 
@@ -158,7 +158,7 @@ export default function CommentItem({
                 className="flex items-center hover:text-primary-600"
               >
                 <ReplyIcon className="h-4 w-4 mr-1" />
-                <span>{isReplying ? "取消回复" : "回复"}</span>
+                <span>{isReplying ? "Cancel Reply" : "Reply"}</span>
                 {comment.repliesCount > 0 && !showReplies && (
                   <span className="ml-1">({comment.repliesCount})</span>
                 )}
@@ -166,13 +166,13 @@ export default function CommentItem({
             )}
           </div>
 
-          {/* 回复表单 */}
+          {/* Reply form */}
           {isReplying && (
             <div className="mt-3">
               <CommentForm
                 onSubmit={handleReplySubmit}
-                placeholder={`回复 ${comment.user?.username}...`}
-                submitButtonText="回复"
+                placeholder={`Reply to ${comment.user?.username}...`}
+                submitButtonText="Reply"
                 autoFocus
               />
             </div>

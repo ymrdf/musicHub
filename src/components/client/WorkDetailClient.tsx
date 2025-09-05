@@ -23,7 +23,7 @@ export default function WorkDetailClient({
 
   return (
     <>
-      {/* 标签页导航 */}
+      {/* Tab navigation */}
       <div className="mb-6">
         <nav className="flex space-x-8">
           <button
@@ -34,7 +34,7 @@ export default function WorkDetailClient({
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
-            演奏 ({performancesCount})
+            Performances ({performancesCount})
           </button>
 
           {allowCollaboration && (
@@ -46,7 +46,7 @@ export default function WorkDetailClient({
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              协作请求
+              Collaboration Requests
             </button>
           )}
 
@@ -58,19 +58,19 @@ export default function WorkDetailClient({
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
-            版本历史
+            Version History
           </button>
         </nav>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* 主要内容区域 */}
+        {/* Main content area */}
         <div className="lg:col-span-2">
           {activeTab === "performances" && (
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">
-                  相关演奏 ({performancesCount})
+                  Related Performances ({performancesCount})
                 </h2>
               </div>
 
@@ -85,10 +85,12 @@ export default function WorkDetailClient({
           {activeTab === "versions" && <VersionHistory workId={workId} />}
         </div>
 
-        {/* 评论区 */}
+        {/* Comments section */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">评论</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Comments
+            </h3>
 
             <WorkCommentList workId={workId} />
           </div>

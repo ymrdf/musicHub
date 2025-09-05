@@ -13,7 +13,7 @@ import {
 import { fetchUserProfile } from "@/lib/api-utils";
 import UserProfileActions from "@/components/client/UserProfileActions";
 
-// 动态生成元数据
+// Dynamically generate metadata
 export async function generateMetadata({
   params,
 }: {
@@ -23,22 +23,23 @@ export async function generateMetadata({
 
   if (!profile) {
     return {
-      title: "用户不存在 - MusicEmit",
-      description: "您访问的用户不存在或已被删除",
+      title: "User Not Found - MusicEmit",
+      description:
+        "The user you're looking for doesn't exist or has been deleted",
     };
   }
 
   return {
-    title: `${profile.username} - 用户主页 - MusicEmit`,
+    title: `${profile.username} - User Profile - MusicEmit`,
     description:
       profile.bio ||
-      `${profile.username}的音乐创作主页，查看Ta的原创作品和演奏`,
-    keywords: `${profile.username},音乐创作者,原创音乐,音乐人`,
+      `${profile.username}'s music creation homepage, view their original works and performances`,
+    keywords: `${profile.username},music creator,original music,musician`,
     openGraph: {
       title: `${profile.username} - MusicEmit`,
       description:
         profile.bio ||
-        `${profile.username}的音乐创作主页，查看Ta的原创作品和演奏`,
+        `${profile.username}'s music creation homepage, view their original works and performances`,
       type: "profile",
       url: `https://musicemit.com/users/${profile.id}`,
       images: [
@@ -64,7 +65,7 @@ export default async function UserProfilePage({
     notFound();
   }
 
-  // 结构化数据
+  // Structured data
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -82,17 +83,17 @@ export default async function UserProfilePage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 结构化数据 */}
+      {/* Structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      {/* 用户信息头部 */}
+      {/* User info header */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
-            {/* 头像 */}
+            {/* Avatar */}
             <div className="flex-shrink-0">
               {profile.avatarUrl ? (
                 <img
@@ -109,14 +110,14 @@ export default async function UserProfilePage({
               )}
             </div>
 
-            {/* 用户信息 */}
+            {/* User info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-2 mb-2">
                 <h1 className="text-2xl font-bold text-gray-900 truncate">
                   {profile.username}
                 </h1>
                 {profile.isVerified && (
-                  <span className="text-primary-500" title="已验证用户">
+                  <span className="text-primary-500" title="Verified User">
                     ✓
                   </span>
                 )}
@@ -135,28 +136,28 @@ export default async function UserProfilePage({
                     className="flex items-center hover:text-primary-600"
                   >
                     <LinkIcon className="h-4 w-4 mr-1" />
-                    网站
+                    Website
                   </a>
                 )}
                 <div className="flex items-center">
                   <CalendarIcon className="h-4 w-4 mr-1" />
-                  加入于 {new Date(profile.createdAt).toLocaleDateString()}
+                  Joined {new Date(profile.createdAt).toLocaleDateString()}
                 </div>
               </div>
 
-              {/* 统计数据 */}
+              {/* Statistics */}
               <div className="flex space-x-6 mt-4">
                 <div className="text-center">
                   <div className="text-xl font-bold text-gray-900">
                     {profile.worksCount}
                   </div>
-                  <div className="text-sm text-gray-600">作品</div>
+                  <div className="text-sm text-gray-600">Works</div>
                 </div>
                 <div className="text-center">
                   <div className="text-xl font-bold text-gray-900">
                     {profile.performancesCount}
                   </div>
-                  <div className="text-sm text-gray-600">演奏</div>
+                  <div className="text-sm text-gray-600">Performances</div>
                 </div>
                 <Link
                   href={`/users/${profile.id}/followers`}
@@ -165,7 +166,7 @@ export default async function UserProfilePage({
                   <div className="text-xl font-bold text-gray-900">
                     {profile.followersCount}
                   </div>
-                  <div className="text-sm text-gray-600">粉丝</div>
+                  <div className="text-sm text-gray-600">Followers</div>
                 </Link>
                 <Link
                   href={`/users/${profile.id}/following`}
@@ -174,16 +175,16 @@ export default async function UserProfilePage({
                   <div className="text-xl font-bold text-gray-900">
                     {profile.followingCount}
                   </div>
-                  <div className="text-sm text-gray-600">关注</div>
+                  <div className="text-sm text-gray-600">Following</div>
                 </Link>
               </div>
             </div>
 
-            {/* 操作按钮 - 客户端组件 */}
+            {/* Action buttons - Client component */}
             <div className="flex-shrink-0">
               <UserProfileActions
                 userId={profile.id}
-                initialIsFollowing={false} // 这个值需要在客户端组件中获取
+                initialIsFollowing={false} // This value needs to be fetched in client component
                 initialFollowersCount={profile.followersCount}
               />
             </div>
@@ -191,24 +192,24 @@ export default async function UserProfilePage({
         </div>
       </div>
 
-      {/* 用户内容 */}
+      {/* User content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* 主要内容 */}
+          {/* Main content */}
           <div className="lg:col-span-2">
-            {/* 最近作品 */}
+            {/* Recent works */}
             <div className="bg-white rounded-lg shadow p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900 flex items-center">
                   <MusicalNoteIcon className="h-5 w-5 mr-2" />
-                  最近作品
+                  Recent Works
                 </h2>
                 {profile.worksCount > 0 && (
                   <Link
                     href={`/users/${profile.id}/works`}
                     className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                   >
-                    查看全部 ({profile.worksCount})
+                    View All ({profile.worksCount})
                   </Link>
                 )}
               </div>
@@ -265,43 +266,47 @@ export default async function UserProfilePage({
               ) : (
                 <div className="text-center py-8">
                   <MusicalNoteIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">该用户还没有发布任何作品</p>
+                  <p className="text-gray-500">
+                    This user hasn't published any works yet
+                  </p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* 侧边栏 */}
+          {/* Sidebar */}
           <div className="lg:col-span-1">
-            {/* 成就/徽章区域 */}
+            {/* Achievements/Badges area */}
             <div className="bg-white rounded-lg shadow p-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">成就</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Achievements
+              </h3>
               <div className="space-y-3">
                 {profile.isVerified && (
                   <div className="flex items-center space-x-2">
                     <span className="text-primary-500">✓</span>
-                    <span className="text-sm text-gray-700">已验证用户</span>
+                    <span className="text-sm text-gray-700">Verified User</span>
                   </div>
                 )}
                 {profile.worksCount >= 10 && (
                   <div className="flex items-center space-x-2">
                     <span className="text-yellow-500">🏆</span>
-                    <span className="text-sm text-gray-700">作品达人</span>
+                    <span className="text-sm text-gray-700">Work Master</span>
                   </div>
                 )}
                 {profile.followersCount >= 100 && (
                   <div className="flex items-center space-x-2">
                     <span className="text-pink-500">💫</span>
-                    <span className="text-sm text-gray-700">人气用户</span>
+                    <span className="text-sm text-gray-700">Popular User</span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* 快速链接 */}
+            {/* Quick links */}
             <div className="bg-white rounded-lg shadow p-6 mb-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                快速链接
+                Quick Links
               </h3>
               <div className="space-y-3">
                 <Link
@@ -310,7 +315,7 @@ export default async function UserProfilePage({
                 >
                   <span className="flex items-center">
                     <StarIcon className="h-4 w-4 mr-2" />
-                    收藏的作品
+                    Starred Works
                   </span>
                   <span className="text-gray-400">→</span>
                 </Link>
@@ -320,7 +325,7 @@ export default async function UserProfilePage({
                 >
                   <span className="flex items-center">
                     <UserIcon className="h-4 w-4 mr-2" />
-                    关注的人
+                    Following
                   </span>
                   <span className="text-gray-400">→</span>
                 </Link>
@@ -330,35 +335,35 @@ export default async function UserProfilePage({
                 >
                   <span className="flex items-center">
                     <UserIcon className="h-4 w-4 mr-2" />
-                    我的粉丝
+                    Followers
                   </span>
                   <span className="text-gray-400">→</span>
                 </Link>
               </div>
             </div>
 
-            {/* 活动统计 */}
+            {/* Activity stats */}
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                活动统计
+                Activity Stats
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">总作品数</span>
+                  <span className="text-gray-600">Total Works</span>
                   <span className="font-medium">{profile.worksCount}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">总演奏数</span>
+                  <span className="text-gray-600">Total Performances</span>
                   <span className="font-medium">
                     {profile.performancesCount}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">粉丝数</span>
+                  <span className="text-gray-600">Followers</span>
                   <span className="font-medium">{profile.followersCount}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">关注数</span>
+                  <span className="text-gray-600">Following</span>
                   <span className="font-medium">{profile.followingCount}</span>
                 </div>
               </div>

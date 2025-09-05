@@ -107,7 +107,7 @@ export default function DiscoverPage() {
         setCategories(data.data);
       }
     } catch (error) {
-      console.error("获取分类失败:", error);
+      console.error("Failed to fetch categories:", error);
     }
   };
 
@@ -119,7 +119,7 @@ export default function DiscoverPage() {
         setPopularTags(data.data);
       }
     } catch (error) {
-      console.error("获取热门标签失败:", error);
+      console.error("Failed to fetch popular tags:", error);
     }
   };
 
@@ -373,7 +373,7 @@ export default function DiscoverPage() {
         }
       }
     } catch (error) {
-      console.error("收藏操作失败:", error);
+      console.error("Star operation failed:", error);
     }
   };
 
@@ -399,7 +399,7 @@ export default function DiscoverPage() {
         );
       }
     } catch (error) {
-      console.error("点赞操作失败:", error);
+      console.error("Like operation failed:", error);
     }
   };
 
@@ -423,7 +423,7 @@ export default function DiscoverPage() {
   };
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("zh-CN", {
+    return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -433,17 +433,20 @@ export default function DiscoverPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 页面标题 */}
+        {/* Page title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">发现音乐</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Discover Music
+          </h1>
           <p className="text-gray-600">
-            发现优秀的演奏演绎，直接播放音乐，与音乐创作者互动交流
+            Discover amazing performances, play music directly, and interact
+            with music creators
           </p>
         </div>
 
-        {/* 搜索和筛选 */}
+        {/* Search and filters */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-          {/* 搜索框 */}
+          {/* Search box */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="flex-1">
               <div className="relative">
@@ -452,7 +455,7 @@ export default function DiscoverPage() {
                 </div>
                 <input
                   type="text"
-                  placeholder="搜索作品、演奏、创作者..."
+                  placeholder="Search works, performances, creators..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
@@ -465,18 +468,18 @@ export default function DiscoverPage() {
               className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             >
               <FunnelIcon className="h-4 w-4 mr-2" />
-              筛选
+              Filter
             </button>
           </div>
 
-          {/* 筛选面板 */}
+          {/* Filter panel */}
           {showFilters && (
             <div className="border-t border-gray-200 pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                {/* 流派筛选 */}
+                {/* Genre filter */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    流派
+                    Genre
                   </label>
                   <select
                     value={filters.genreId}
@@ -488,7 +491,7 @@ export default function DiscoverPage() {
                     }
                     className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   >
-                    <option value="">全部流派</option>
+                    <option value="">All Genres</option>
                     {categories.genre.map((genre) => (
                       <option key={genre.id} value={genre.id}>
                         {genre.name}
@@ -497,10 +500,10 @@ export default function DiscoverPage() {
                   </select>
                 </div>
 
-                {/* 乐器筛选 */}
+                {/* Instrument filter */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    乐器
+                    Instrument
                   </label>
                   <select
                     value={filters.instrumentId}
@@ -512,7 +515,7 @@ export default function DiscoverPage() {
                     }
                     className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   >
-                    <option value="">全部乐器</option>
+                    <option value="">All Instruments</option>
                     {categories.instrument.map((instrument) => (
                       <option key={instrument.id} value={instrument.id}>
                         {instrument.name}
@@ -521,10 +524,10 @@ export default function DiscoverPage() {
                   </select>
                 </div>
 
-                {/* 用途筛选 */}
+                {/* Purpose filter */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    用途
+                    Purpose
                   </label>
                   <select
                     value={filters.purposeId}
@@ -536,7 +539,7 @@ export default function DiscoverPage() {
                     }
                     className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   >
-                    <option value="">全部用途</option>
+                    <option value="">All Purposes</option>
                     {categories.purpose.map((purpose) => (
                       <option key={purpose.id} value={purpose.id}>
                         {purpose.name}
@@ -546,11 +549,11 @@ export default function DiscoverPage() {
                 </div>
               </div>
 
-              {/* 排序 */}
+              {/* Sort */}
               <div className="flex flex-col sm:flex-row gap-4 items-end">
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    排序方式
+                    Sort by
                   </label>
                   <div className="flex gap-2">
                     <select
@@ -563,10 +566,10 @@ export default function DiscoverPage() {
                       }
                       className="block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                     >
-                      <option value="createdAt">最新</option>
-                      <option value="starsCount">收藏数</option>
-                      <option value="likesCount">点赞数</option>
-                      <option value="playsCount">播放数</option>
+                      <option value="createdAt">Latest</option>
+                      <option value="starsCount">Stars</option>
+                      <option value="likesCount">Likes</option>
+                      <option value="playsCount">Plays</option>
                     </select>
                     <select
                       value={filters.sortOrder}
@@ -578,8 +581,8 @@ export default function DiscoverPage() {
                       }
                       className="block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                     >
-                      <option value="desc">降序</option>
-                      <option value="asc">升序</option>
+                      <option value="desc">Descending</option>
+                      <option value="asc">Ascending</option>
                     </select>
                   </div>
                 </div>
@@ -588,17 +591,17 @@ export default function DiscoverPage() {
                   onClick={clearFilters}
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
-                  清除筛选
+                  Clear Filters
                 </button>
               </div>
             </div>
           )}
 
-          {/* 热门标签 */}
+          {/* Popular tags */}
           {popularTags.length > 0 && (
             <div className="border-t border-gray-200 pt-6">
               <h3 className="text-sm font-medium text-gray-700 mb-3">
-                热门标签
+                Popular Tags
               </h3>
               <div className="flex flex-wrap gap-2">
                 {popularTags.slice(0, 10).map((tag) => (
@@ -618,7 +621,7 @@ export default function DiscoverPage() {
           )}
         </div>
 
-        {/* 内容列表 */}
+        {/* Content list */}
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
@@ -630,15 +633,17 @@ export default function DiscoverPage() {
               onClick={fetchItems}
               className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             >
-              重试
+              Retry
             </button>
           </div>
         ) : items.length === 0 ? (
           <div className="text-center py-12">
             <MusicalNoteIcon className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">暂无内容</h3>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              No Content
+            </h3>
             <p className="mt-1 text-sm text-gray-500">
-              没有找到符合条件的内容，试试调整筛选条件
+              No content found matching your criteria. Try adjusting the filters
             </p>
           </div>
         ) : (
@@ -648,7 +653,7 @@ export default function DiscoverPage() {
                 key={`${item.type}-${item.id}`}
                 className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
               >
-                {/* 内容头部 */}
+                {/* Content header */}
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-2">
@@ -658,7 +663,7 @@ export default function DiscoverPage() {
                         <MicrophoneIcon className="h-5 w-5 text-green-600" />
                       )}
                       <span className="text-xs font-medium text-gray-500 uppercase">
-                        {item.type === "work" ? "原创作品" : "演奏"}
+                        {item.type === "work" ? "Original Work" : "Performance"}
                       </span>
                     </div>
 
@@ -680,7 +685,7 @@ export default function DiscoverPage() {
                           ) : (
                             <StarIcon className="h-4 w-4 mr-1" />
                           )}
-                          {item.isStarred ? "已收藏" : "收藏"}
+                          {item.isStarred ? "Starred" : "Star"}
                         </button>
                       ) : (
                         <button
@@ -709,7 +714,7 @@ export default function DiscoverPage() {
                     </p>
                   )}
 
-                  {/* 分类标签 */}
+                  {/* Category tags */}
                   <div className="flex flex-wrap gap-2 mb-4">
                     {item.genre && (
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -728,7 +733,7 @@ export default function DiscoverPage() {
                     )}
                   </div>
 
-                  {/* 用户信息 */}
+                  {/* User info */}
                   <div className="flex items-center space-x-3 mb-4">
                     <Link
                       href={`/users/${item.user.id}`}
@@ -754,7 +759,7 @@ export default function DiscoverPage() {
                     </Link>
                   </div>
 
-                  {/* 统计信息 */}
+                  {/* Statistics */}
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center space-x-4">
                       {item.type === "work" ? (
@@ -799,14 +804,14 @@ export default function DiscoverPage() {
                   </div>
                 </div>
 
-                {/* 操作按钮 */}
+                {/* Action buttons */}
                 <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
                   <div className="flex items-center justify-between">
                     <Link
                       href={getItemUrl(item)}
                       className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200"
                     >
-                      查看详情
+                      View Details
                     </Link>
 
                     <div className="flex items-center space-x-2">
@@ -817,7 +822,7 @@ export default function DiscoverPage() {
                           className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
                         >
                           <DocumentArrowDownIcon className="h-4 w-4 mr-1" />
-                          下载乐谱
+                          Download Sheet
                         </a>
                       )}
 
@@ -832,8 +837,8 @@ export default function DiscoverPage() {
                             <PlayIcon className="h-4 w-4 mr-1" />
                           )}
                           {currentPerformance?.id === item.id && isPlaying
-                            ? "暂停"
-                            : "播放"}
+                            ? "Pause"
+                            : "Play"}
                         </button>
                       )}
                     </div>

@@ -55,10 +55,10 @@ export default function SearchPage() {
   const [error, setError] = useState("");
 
   const searchTypes = [
-    { value: "all", label: "全部", icon: MagnifyingGlassIcon },
-    { value: "works", label: "作品", icon: MusicalNoteIcon },
-    { value: "users", label: "用户", icon: UserIcon },
-    { value: "performances", label: "演奏", icon: PlayIcon },
+    { value: "all", label: "All", icon: MagnifyingGlassIcon },
+    { value: "works", label: "Works", icon: MusicalNoteIcon },
+    { value: "users", label: "Users", icon: UserIcon },
+    { value: "performances", label: "Performances", icon: PlayIcon },
   ];
 
   const performSearch = async (query: string, type: string) => {
@@ -76,10 +76,10 @@ export default function SearchPage() {
       if (data.success) {
         setResults(data.data);
       } else {
-        setError(data.error || "搜索失败");
+        setError(data.error || "Search failed");
       }
     } catch (err) {
-      setError("搜索请求失败");
+      setError("Search request failed");
     } finally {
       setLoading(false);
     }

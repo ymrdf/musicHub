@@ -45,7 +45,7 @@ export default function EditPerformancePage() {
         const data = await response.json();
         const perf = data.data;
 
-        // 检查权限
+        // Check permissions
         if (perf.userId !== currentUser?.id) {
           router.push("/");
           return;
@@ -61,10 +61,10 @@ export default function EditPerformancePage() {
           isPublic: perf.isPublic,
         });
       } else {
-        throw new Error("获取演奏信息失败");
+        throw new Error("Failed to fetch performance information");
       }
     } catch (error: any) {
-      console.error("获取演奏信息失败:", error);
+      console.error("Failed to fetch performance information:", error);
       setErrors((prev) => ({ ...prev, submit: error.message }));
     } finally {
       setLoading(false);
@@ -81,7 +81,7 @@ export default function EditPerformancePage() {
       ...prev,
       [name]: value,
     }));
-    // 清除错误
+    // Clear errors
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -120,10 +120,10 @@ export default function EditPerformancePage() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "更新演奏失败");
+        throw new Error(error.error || "Failed to update performance");
       }
 
-      // 跳转到演奏详情页面
+      // Navigate to performance detail page
       router.push(`/performances/${performanceId}`);
     } catch (error: any) {
       setErrors((prev) => ({ ...prev, submit: error.message }));
@@ -136,13 +136,17 @@ export default function EditPerformancePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-lg shadow p-6">
-          <h1 className="text-xl font-semibold text-gray-900 mb-4">请先登录</h1>
-          <p className="text-gray-600 mb-4">您需要登录后才能编辑演奏</p>
+          <h1 className="text-xl font-semibold text-gray-900 mb-4">
+            Please Login First
+          </h1>
+          <p className="text-gray-600 mb-4">
+            You need to login to edit performances
+          </p>
           <button
             onClick={() => router.push("/auth/login")}
             className="w-full btn-primary"
           >
-            去登录
+            Go to Login
           </button>
         </div>
       </div>
@@ -162,10 +166,10 @@ export default function EditPerformancePage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-lg shadow p-6">
           <h1 className="text-xl font-semibold text-gray-900 mb-4">
-            演奏不存在
+            Performance Not Found
           </h1>
           <button onClick={() => router.back()} className="w-full btn-primary">
-            返回
+            Go Back
           </button>
         </div>
       </div>
@@ -175,28 +179,28 @@ export default function EditPerformancePage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 头部导航 */}
+        {/* Header navigation */}
         <div className="mb-6">
           <button
             onClick={() => router.back()}
             className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeftIcon className="h-5 w-5" />
-            <span>返回</span>
+            <span>Back</span>
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">编辑演奏</h1>
-          <p className="text-gray-600 mt-2">修改演奏信息</p>
+          <h1 className="text-2xl font-bold text-gray-900">Edit Performance</h1>
+          <p className="text-gray-600 mt-2">Modify performance information</p>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* 演奏标题 */}
+            {/* Performance title */}
             <div>
               <label
                 htmlFor="title"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                演奏标题 *
+                Performance Title *
               </label>
               <input
                 type="text"
@@ -207,20 +211,20 @@ export default function EditPerformancePage() {
                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                   errors.title ? "border-red-500" : "border-gray-300"
                 }`}
-                placeholder="请输入演奏标题"
+                placeholder="Enter performance title"
               />
               {errors.title && (
                 <p className="text-red-500 text-sm mt-1">{errors.title}</p>
               )}
             </div>
 
-            {/* 演奏描述 */}
+            {/* Performance description */}
             <div>
               <label
                 htmlFor="description"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                演奏描述
+                Performance Description
               </label>
               <textarea
                 id="description"
@@ -229,17 +233,17 @@ export default function EditPerformancePage() {
                 onChange={handleInputChange}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="描述一下您的演奏（可选）"
+                placeholder="Describe your performance (optional)"
               />
             </div>
 
-            {/* 演奏类型 */}
+            {/* Performance type */}
             <div>
               <label
                 htmlFor="type"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                演奏类型 *
+                Performance Type *
               </label>
               <select
                 id="type"
@@ -248,18 +252,18 @@ export default function EditPerformancePage() {
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
-                <option value="instrumental">器乐演奏</option>
-                <option value="vocal">声乐演唱</option>
+                <option value="instrumental">Instrumental</option>
+                <option value="vocal">Vocal</option>
               </select>
             </div>
 
-            {/* 乐器 */}
+            {/* Instrument */}
             <div>
               <label
                 htmlFor="instrument"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                乐器/声部
+                Instrument/Voice Part
               </label>
               <input
                 type="text"
@@ -270,16 +274,16 @@ export default function EditPerformancePage() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                 placeholder={
                   formData.type === "instrumental"
-                    ? "如：钢琴、小提琴、吉他"
-                    : "如：男高音、女中音"
+                    ? "e.g.: Piano, Violin, Guitar"
+                    : "e.g.: Tenor, Alto"
                 }
               />
             </div>
 
-            {/* 当前音频文件信息 */}
+            {/* Current audio file info */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                当前音频文件
+                Current Audio File
               </label>
               <div className="p-3 bg-gray-50 rounded-md">
                 <div className="flex items-center space-x-2">
@@ -296,12 +300,12 @@ export default function EditPerformancePage() {
                   </span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  音频文件无法修改，如需更换请重新上传
+                  Audio file cannot be modified, please re-upload if needed
                 </p>
               </div>
             </div>
 
-            {/* 公开设置 */}
+            {/* Public settings */}
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -320,25 +324,25 @@ export default function EditPerformancePage() {
                 htmlFor="isPublic"
                 className="ml-2 block text-sm text-gray-700"
               >
-                公开演奏，其他用户可以听到
+                Public performance, other users can listen
               </label>
             </div>
 
-            {/* 提交错误 */}
+            {/* Submit error */}
             {errors.submit && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-md">
                 <p className="text-red-600 text-sm">{errors.submit}</p>
               </div>
             )}
 
-            {/* 操作按钮 */}
+            {/* Action buttons */}
             <div className="flex space-x-3 pt-4">
               <button
                 type="button"
                 onClick={() => router.back()}
                 className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
-                取消
+                Cancel
               </button>
               <button
                 type="submit"
@@ -348,10 +352,10 @@ export default function EditPerformancePage() {
                 {saving ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    保存中...
+                    Saving...
                   </div>
                 ) : (
-                  "保存修改"
+                  "Save Changes"
                 )}
               </button>
             </div>

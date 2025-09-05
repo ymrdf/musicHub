@@ -67,8 +67,10 @@ export default function CollaborationList({
         setCollaborations(response.data.data);
       }
     } catch (error: any) {
-      console.error("获取协作请求失败:", error);
-      toast.error(error.response?.data?.error || "获取协作请求失败");
+      console.error("Failed to fetch collaboration requests:", error);
+      toast.error(
+        error.response?.data?.error || "Failed to fetch collaboration requests"
+      );
     } finally {
       setLoading(false);
     }
@@ -77,7 +79,9 @@ export default function CollaborationList({
   const handleReview = async (prId: number, action: "approve" | "reject") => {
     if (
       !confirm(
-        `确定要${action === "approve" ? "接受" : "拒绝"}这个协作请求吗？`
+        `Are you sure you want to ${
+          action === "approve" ? "accept" : "reject"
+        } this collaboration request?`
       )
     ) {
       return;
@@ -96,10 +100,10 @@ export default function CollaborationList({
       if (response.data.success) {
         toast.success(response.data.data.message);
         setReviewComment("");
-        fetchCollaborations(); // 重新获取数据
+        fetchCollaborations(); // Refresh data
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "操作失败");
+      toast.error(error.response?.data?.error || "Operation failed");
     } finally {
       setProcessingId(null);
     }
@@ -123,15 +127,15 @@ export default function CollaborationList({
   const getStatusText = (status: string) => {
     switch (status) {
       case "pending":
-        return "待审核";
+        return "Pending";
       case "approved":
-        return "已接受";
+        return "Approved";
       case "rejected":
-        return "已拒绝";
+        return "Rejected";
       case "merged":
-        return "已合并";
+        return "Merged";
       default:
-        return "未知状态";
+        return "Unknown status";
     }
   };
 
@@ -161,7 +165,7 @@ export default function CollaborationList({
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-          <span className="ml-2 text-gray-600">加载中...</span>
+          <span className="ml-2 text-gray-600">Loading...</span>
         </div>
       </div>
     );
@@ -172,14 +176,14 @@ export default function CollaborationList({
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-900 flex items-center">
           <CodeBracketIcon className="h-5 w-5 mr-2" />
-          协作请求 ({collaborations.length})
+          Collaboration Requests ({collaborations.length})
         </h3>
       </div>
 
       {collaborations.length === 0 ? (
         <div className="text-center py-8">
           <CodeBracketIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500">暂无协作请求</p>
+          <p className="text-gray-500">No collaboration requests</p>
         </div>
       ) : (
         <div className="space-y-4">

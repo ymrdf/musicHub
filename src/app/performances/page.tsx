@@ -26,7 +26,7 @@ export default function PerformancesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 筛选状态
+  // Filter state
   const [filters, setFilters] = useState({
     type: "",
     workId: "",
@@ -54,7 +54,7 @@ export default function PerformancesPage() {
         const data = await response.json();
         setPerformances(data.data.performances);
       } else {
-        throw new Error("获取演奏列表失败");
+        throw new Error("Failed to fetch performance list");
       }
     } catch (error: any) {
       setError(error.message);
@@ -64,7 +64,7 @@ export default function PerformancesPage() {
   };
 
   const handleSearch = () => {
-    // 这里可以实现搜索功能
+    // Search functionality can be implemented here
     fetchPerformances();
   };
 
@@ -102,21 +102,23 @@ export default function PerformancesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 页面标题 */}
+        {/* Page title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">演奏列表</h1>
-          <p className="text-gray-600 mt-2">发现优秀的演奏和演唱作品</p>
+          <h1 className="text-3xl font-bold text-gray-900">Performances</h1>
+          <p className="text-gray-600 mt-2">
+            Discover amazing performances and vocal works
+          </p>
         </div>
 
-        {/* 搜索和筛选 */}
+        {/* Search and filters */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <div className="flex flex-col sm:flex-row gap-4">
-            {/* 搜索框 */}
+            {/* Search box */}
             <div className="flex-1">
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="搜索演奏标题、描述或演奏者..."
+                  placeholder="Search performance titles, descriptions, or performers..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -125,31 +127,31 @@ export default function PerformancesPage() {
               </div>
             </div>
 
-            {/* 筛选按钮 */}
+            {/* Filter button */}
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
             >
               <FunnelIcon className="h-5 w-5" />
-              <span>筛选</span>
+              <span>Filter</span>
             </button>
 
-            {/* 搜索按钮 */}
+            {/* Search button */}
             <button
               onClick={handleSearch}
               className="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
             >
-              搜索
+              Search
             </button>
           </div>
 
-          {/* 筛选选项 */}
+          {/* Filter options */}
           {showFilters && (
             <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    演奏类型
+                    Performance Type
                   </label>
                   <select
                     value={filters.type}
@@ -158,19 +160,19 @@ export default function PerformancesPage() {
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                   >
-                    <option value="">全部类型</option>
-                    <option value="instrumental">器乐演奏</option>
-                    <option value="vocal">声乐演唱</option>
+                    <option value="">All Types</option>
+                    <option value="instrumental">Instrumental</option>
+                    <option value="vocal">Vocal</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    作品ID
+                    Work ID
                   </label>
                   <input
                     type="text"
-                    placeholder="输入作品ID"
+                    placeholder="Enter work ID"
                     value={filters.workId}
                     onChange={(e) =>
                       setFilters((prev) => ({
@@ -184,11 +186,11 @@ export default function PerformancesPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    演奏者ID
+                    Performer ID
                   </label>
                   <input
                     type="text"
-                    placeholder="输入演奏者ID"
+                    placeholder="Enter performer ID"
                     value={filters.userId}
                     onChange={(e) =>
                       setFilters((prev) => ({
@@ -206,28 +208,30 @@ export default function PerformancesPage() {
                   onClick={clearFilters}
                   className="px-4 py-2 text-gray-600 hover:text-gray-800"
                 >
-                  清除筛选
+                  Clear Filters
                 </button>
               </div>
             </div>
           )}
         </div>
 
-        {/* 演奏列表 */}
+        {/* Performance list */}
         {error ? (
           <div className="text-center py-8">
             <p className="text-red-600 mb-4">{error}</p>
             <button onClick={fetchPerformances} className="btn-primary">
-              重试
+              Retry
             </button>
           </div>
         ) : performances.length === 0 ? (
           <div className="text-center py-12">
             <MusicalNoteIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              没有找到演奏
+              No performances found
             </h3>
-            <p className="text-gray-500 mb-4">尝试调整筛选条件或搜索关键词</p>
+            <p className="text-gray-500 mb-4">
+              Try adjusting filters or search keywords
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -237,12 +241,12 @@ export default function PerformancesPage() {
                 className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start space-x-6">
-                  {/* 播放按钮 */}
+                  {/* Play button */}
                   <div className="flex-shrink-0 w-16 h-16 bg-primary-100 hover:bg-primary-200 rounded-full flex items-center justify-center transition-colors cursor-pointer">
                     <PlayIcon className="h-8 w-8 text-primary-600" />
                   </div>
 
-                  {/* 演奏信息 */}
+                  {/* Performance info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-3 mb-3">
                       <Link
@@ -254,7 +258,9 @@ export default function PerformancesPage() {
                         </h3>
                       </Link>
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
-                        {performance.type === "instrumental" ? "器乐" : "声乐"}
+                        {performance.type === "instrumental"
+                          ? "Instrumental"
+                          : "Vocal"}
                       </span>
                     </div>
 
@@ -265,7 +271,9 @@ export default function PerformancesPage() {
                         ) : (
                           <MicrophoneIcon className="h-4 w-4" />
                         )}
-                        <span>{performance.instrument || "未知乐器"}</span>
+                        <span>
+                          {performance.instrument || "Unknown instrument"}
+                        </span>
                       </div>
 
                       {performance.duration && (
@@ -283,7 +291,7 @@ export default function PerformancesPage() {
                       </p>
                     )}
 
-                    {/* 演奏者信息 */}
+                    {/* Performer info */}
                     <div className="flex items-center space-x-3 mb-4">
                       {performance.user?.avatarUrl ? (
                         <img
@@ -302,7 +310,7 @@ export default function PerformancesPage() {
                       </span>
                     </div>
 
-                    {/* 统计信息 */}
+                    {/* Statistics */}
                     <div className="flex items-center space-x-6 text-sm text-gray-500">
                       <div className="flex items-center space-x-2">
                         <HeartIcon className="h-4 w-4" />

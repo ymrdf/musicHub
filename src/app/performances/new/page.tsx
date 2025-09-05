@@ -18,7 +18,7 @@ export default function NewPerformancePage() {
   const { user: currentUser, loading } = useAuth();
   const workId = searchParams.get("workId");
 
-  // 调试信息
+  // Debug info
   console.log("NewPerformancePage - currentUser:", currentUser);
   console.log("NewPerformancePage - loading:", loading);
 
@@ -36,7 +36,7 @@ export default function NewPerformancePage() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [work, setWork] = useState<any>(null);
 
-  // 获取作品信息
+  // Get work info
   useEffect(() => {
     if (workId) {
       fetchWorkInfo();
@@ -48,14 +48,14 @@ export default function NewPerformancePage() {
       const response = await axios.get(`/api/works/${workId}`);
       if (response.data.success) {
         setWork(response.data.data);
-        // 设置默认标题
+        // Set default title
         setFormData((prev) => ({
           ...prev,
-          title: `${response.data.data.title} - 我的演奏`,
+          title: `${response.data.data.title} - My Performance`,
         }));
       }
     } catch (error) {
-      console.error("获取作品信息失败:", error);
+      console.error("Failed to fetch work info:", error);
     }
   };
 
@@ -69,7 +69,7 @@ export default function NewPerformancePage() {
       ...prev,
       [name]: value,
     }));
-    // 清除错误
+    // Clear errors
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -78,14 +78,20 @@ export default function NewPerformancePage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // 验证文件类型
+      // Validate file type
       if (!file.type.startsWith("audio/")) {
-        setErrors((prev) => ({ ...prev, audioFile: "请选择音频文件" }));
+        setErrors((prev) => ({
+          ...prev,
+          audioFile: "Please select an audio file",
+        }));
         return;
       }
-      // 验证文件大小 (50MB)
+      // Validate file size (50MB)
       if (file.size > 50 * 1024 * 1024) {
-        setErrors((prev) => ({ ...prev, audioFile: "文件大小不能超过 50MB" }));
+        setErrors((prev) => ({
+          ...prev,
+          audioFile: "File size cannot exceed 50MB",
+        }));
         return;
       }
       setAudioFile(file);
@@ -108,13 +114,16 @@ export default function NewPerformancePage() {
       }
 
       if (!audioFile) {
-        setErrors((prev) => ({ ...prev, audioFile: "请选择音频文件" }));
+        setErrors((prev) => ({
+          ...prev,
+          audioFile: "Please select an audio file",
+        }));
         return false;
       }
       return true;
     } catch (error: any) {
-      console.error("表单验证错误:", error);
-      setErrors((prev) => ({ ...prev, submit: "表单验证失败" }));
+      console.error("Form validation error:", error);
+      setErrors((prev) => ({ ...prev, submit: "Form validation failed" }));
       return false;
     }
   };
@@ -128,7 +137,7 @@ export default function NewPerformancePage() {
 
     setIsUploading(true);
     try {
-      // 先上传音频文件
+      // Upload audio file first
       const audioFormData = new FormData();
       audioFormData.append("file", audioFile!);
       audioFormData.append("type", "audio");
@@ -140,12 +149,12 @@ export default function NewPerformancePage() {
       });
 
       if (!uploadResponse.data.success) {
-        throw new Error(uploadResponse.data.error || "音频上传失败");
+        throw new Error(uploadResponse.data.error || "Audio upload failed");
       }
 
       const uploadResult = uploadResponse.data.data;
 
-      // 创建演奏记录
+      // Create performance record
       const performanceData = {
         ...formData,
         workId: parseInt(workId!),
@@ -160,10 +169,12 @@ export default function NewPerformancePage() {
       );
 
       if (!createResponse.data.success) {
-        throw new Error(createResponse.data.error || "创建演奏失败");
+        throw new Error(
+          createResponse.data.error || "Failed to create performance"
+        );
       }
 
-      // 跳转到作品页面
+      // Navigate to work page
       router.push(`/works/${workId}`);
     } catch (error: any) {
       setErrors((prev) => ({ ...prev, submit: error.message }));
@@ -172,13 +183,13 @@ export default function NewPerformancePage() {
     }
   };
 
-  // 显示加载状态
+  // Show loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-lg shadow p-6">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-center">正在验证登录状态...</p>
+          <p className="text-gray-600 text-center">Verifying login status...</p>
         </div>
       </div>
     );
@@ -188,13 +199,17 @@ export default function NewPerformancePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-lg shadow p-6">
-          <h1 className="text-xl font-semibold text-gray-900 mb-4">请先登录</h1>
-          <p className="text-gray-600 mb-4">您需要登录后才能上传演奏</p>
+          <h1 className="text-xl font-semibold text-gray-900 mb-4">
+            Please Login First
+          </h1>
+          <p className="text-gray-600 mb-4">
+            You need to login to upload performances
+          </p>
           <button
             onClick={() => router.push("/auth/login")}
             className="w-full btn-primary"
           >
-            去登录
+            Go to Login
           </button>
         </div>
       </div>
@@ -205,10 +220,12 @@ export default function NewPerformancePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-lg shadow p-6">
-          <h1 className="text-xl font-semibold text-gray-900 mb-4">参数错误</h1>
-          <p className="text-gray-600 mb-4">缺少作品ID参数</p>
+          <h1 className="text-xl font-semibold text-gray-900 mb-4">
+            Parameter Error
+          </h1>
+          <p className="text-gray-600 mb-4">Missing work ID parameter</p>
           <button onClick={() => router.back()} className="w-full btn-primary">
-            返回
+            Go Back
           </button>
         </div>
       </div>
@@ -220,22 +237,24 @@ export default function NewPerformancePage() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow p-6">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">上传演奏</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Upload Performance
+            </h1>
             {work && (
               <p className="text-gray-600 mt-2">
-                为作品「{work.title}」添加演奏
+                Add performance for work "{work.title}"
               </p>
             )}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* 演奏标题 */}
+            {/* Performance title */}
             <div>
               <label
                 htmlFor="title"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                演奏标题 *
+                Performance Title *
               </label>
               <input
                 type="text"
@@ -246,20 +265,20 @@ export default function NewPerformancePage() {
                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                   errors.title ? "border-red-500" : "border-gray-300"
                 }`}
-                placeholder="请输入演奏标题"
+                placeholder="Enter performance title"
               />
               {errors.title && (
                 <p className="text-red-500 text-sm mt-1">{errors.title}</p>
               )}
             </div>
 
-            {/* 演奏描述 */}
+            {/* Performance description */}
             <div>
               <label
                 htmlFor="description"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                演奏描述
+                Performance Description
               </label>
               <textarea
                 id="description"
@@ -268,17 +287,17 @@ export default function NewPerformancePage() {
                 onChange={handleInputChange}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="描述一下您的演奏（可选）"
+                placeholder="Describe your performance (optional)"
               />
             </div>
 
-            {/* 演奏类型 */}
+            {/* Performance type */}
             <div>
               <label
                 htmlFor="type"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                演奏类型 *
+                Performance Type *
               </label>
               <select
                 id="type"
@@ -287,18 +306,18 @@ export default function NewPerformancePage() {
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
-                <option value="instrumental">器乐演奏</option>
-                <option value="vocal">声乐演唱</option>
+                <option value="instrumental">Instrumental</option>
+                <option value="vocal">Vocal</option>
               </select>
             </div>
 
-            {/* 乐器 */}
+            {/* Instrument */}
             <div>
               <label
                 htmlFor="instrument"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                乐器/声部
+                Instrument/Voice Part
               </label>
               <input
                 type="text"
@@ -309,16 +328,16 @@ export default function NewPerformancePage() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                 placeholder={
                   formData.type === "instrumental"
-                    ? "如：钢琴、小提琴、吉他"
-                    : "如：男高音、女中音"
+                    ? "e.g.: Piano, Violin, Guitar"
+                    : "e.g.: Tenor, Alto"
                 }
               />
             </div>
 
-            {/* 音频文件上传 */}
+            {/* Audio file upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                音频文件 *
+                Audio File *
               </label>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                 <input
@@ -338,10 +357,10 @@ export default function NewPerformancePage() {
                     <MicrophoneIcon className="h-12 w-12 mx-auto mb-3" />
                   )}
                   <p className="text-lg font-medium mb-2">
-                    {audioFile ? "已选择文件" : "点击上传音频文件"}
+                    {audioFile ? "File selected" : "Click to upload audio file"}
                   </p>
                   <p className="text-sm text-gray-500">
-                    支持 MP3、WAV 格式，最大 50MB
+                    Supports MP3, WAV formats, max 50MB
                   </p>
                 </label>
               </div>
@@ -363,7 +382,7 @@ export default function NewPerformancePage() {
                       onClick={() => setAudioFile(null)}
                       className="text-red-600 hover:text-red-800 text-sm"
                     >
-                      移除
+                      Remove
                     </button>
                   </div>
                 </div>
@@ -374,7 +393,7 @@ export default function NewPerformancePage() {
               )}
             </div>
 
-            {/* 公开设置 */}
+            {/* Public settings */}
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -393,25 +412,25 @@ export default function NewPerformancePage() {
                 htmlFor="isPublic"
                 className="ml-2 block text-sm text-gray-700"
               >
-                公开演奏，其他用户可以听到
+                Public performance, other users can listen
               </label>
             </div>
 
-            {/* 提交错误 */}
+            {/* Submit error */}
             {errors.submit && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-md">
                 <p className="text-red-600 text-sm">{errors.submit}</p>
               </div>
             )}
 
-            {/* 操作按钮 */}
+            {/* Action buttons */}
             <div className="flex space-x-3 pt-4">
               <button
                 type="button"
                 onClick={() => router.back()}
                 className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
-                取消
+                Cancel
               </button>
               <button
                 type="submit"
@@ -421,12 +440,12 @@ export default function NewPerformancePage() {
                 {isUploading ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    上传中...
+                    Uploading...
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">
                     <PlusIcon className="h-4 w-4 mr-2" />
-                    上传演奏
+                    Upload Performance
                   </div>
                 )}
               </button>

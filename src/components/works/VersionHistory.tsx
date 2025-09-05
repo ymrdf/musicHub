@@ -54,8 +54,10 @@ export default function VersionHistory({ workId }: VersionHistoryProps) {
         setVersions(response.data.data);
       }
     } catch (error: any) {
-      console.error("获取版本历史失败:", error);
-      toast.error(error.response?.data?.error || "获取版本历史失败");
+      console.error("Failed to fetch version history:", error);
+      toast.error(
+        error.response?.data?.error || "Failed to fetch version history"
+      );
     } finally {
       setLoading(false);
     }
@@ -72,7 +74,7 @@ export default function VersionHistory({ workId }: VersionHistoryProps) {
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-          <span className="ml-2 text-gray-600">加载中...</span>
+          <span className="ml-2 text-gray-600">Loading...</span>
         </div>
       </div>
     );
@@ -83,14 +85,14 @@ export default function VersionHistory({ workId }: VersionHistoryProps) {
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-900 flex items-center">
           <ClockIcon className="h-5 w-5 mr-2" />
-          版本历史 ({versions.length})
+          Version History ({versions.length})
         </h3>
       </div>
 
       {versions.length === 0 ? (
         <div className="text-center py-8">
           <ClockIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500">暂无版本历史</p>
+          <p className="text-gray-500">No version history</p>
         </div>
       ) : (
         <div className="space-y-4">

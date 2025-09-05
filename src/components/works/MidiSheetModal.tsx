@@ -44,7 +44,7 @@ export default function MidiSheetModal({
             <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
           </Transition.Child>
 
-          {/* 使浏览器将模态框居中 */}
+          {/* Center modal in browser */}
           <span
             className="hidden sm:inline-block sm:align-middle sm:h-screen"
             aria-hidden="true"
@@ -67,14 +67,14 @@ export default function MidiSheetModal({
                     as="h3"
                     className="text-lg leading-6 font-medium text-gray-900"
                   >
-                    {fileName} - 乐谱查看
+                    {fileName} - Sheet Music View
                   </Dialog.Title>
                   <button
                     type="button"
                     className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
                     onClick={onClose}
                   >
-                    <span className="sr-only">关闭</span>
+                    <span className="sr-only">Close</span>
                     <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
                 </div>
@@ -89,7 +89,7 @@ export default function MidiSheetModal({
                   onClick={onClose}
                   ref={cancelButtonRef}
                 >
-                  关闭
+                  Close
                 </button>
               </div>
             </div>

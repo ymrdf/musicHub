@@ -237,7 +237,9 @@ export default function MidiSheetMusic({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
           <DocumentIcon className="h-5 w-5 text-blue-600" />
-          <span className="text-sm font-medium text-gray-900">MIDI 乐谱</span>
+          <span className="text-sm font-medium text-gray-900">
+            MIDI Sheet Music
+          </span>
         </div>
       </div>
 

@@ -28,7 +28,7 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     const tokenParam = searchParams.get("token");
     if (!tokenParam) {
-      toast.error("重置链接无效");
+      toast.error("Invalid reset link");
       router.push("/auth/forgot-password");
       return;
     }
@@ -46,7 +46,7 @@ export default function ResetPasswordPage() {
 
   const onSubmit = async (data: ResetPasswordFormData) => {
     if (!token) {
-      toast.error("重置链接无效");
+      toast.error("Invalid reset link");
       return;
     }
 
@@ -59,16 +59,16 @@ export default function ResetPasswordPage() {
       });
 
       if (response.data.success) {
-        toast.success("密码重置成功！");
+        toast.success("Password reset successfully!");
         router.push("/auth/login");
       } else {
-        toast.error(response.data.error || "重置失败");
+        toast.error(response.data.error || "Reset failed");
       }
     } catch (error: any) {
       if (error.response?.data?.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("重置失败，请稍后再试");
+        toast.error("Reset failed，try again later");
       }
     } finally {
       setIsLoading(false);

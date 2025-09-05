@@ -42,7 +42,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        {/* Logo 和标题 */}
+        {/* Logo and title */}
         <div className="text-center">
           <Link
             href="/"
@@ -53,36 +53,38 @@ export default function LoginPage() {
               MusicEmit
             </span>
           </Link>
-          <h2 className="text-3xl font-extrabold text-gray-900">欢迎回来</h2>
+          <h2 className="text-3xl font-extrabold text-gray-900">
+            Welcome Back
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
-            登录您的账户，继续您的音乐创作之旅
+            Sign in to your account to continue your musical journey
           </p>
         </div>
 
-        {/* 登录表单 */}
+        {/* Login form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
-            {/* 邮箱 */}
+            {/* Email */}
             <div>
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                邮箱地址
+                Email Address
               </label>
               <div className="mt-1">
                 <input
                   {...register("email", {
-                    required: "邮箱不能为空",
+                    required: "Email is required",
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: "请输入有效的邮箱地址",
+                      message: "Please enter a valid email address",
                     },
                   })}
                   type="email"
                   autoComplete="email"
                   className="input-field"
-                  placeholder="请输入您的邮箱"
+                  placeholder="Enter your email address"
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">
@@ -92,23 +94,23 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* 密码 */}
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
-                密码
+                Password
               </label>
               <div className="mt-1 relative">
                 <input
                   {...register("password", {
-                    required: "密码不能为空",
+                    required: "Password is required",
                   })}
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   className="input-field pr-10"
-                  placeholder="请输入您的密码"
+                  placeholder="Enter your password"
                 />
                 <button
                   type="button"
@@ -130,7 +132,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* 记住密码和忘记密码 */}
+          {/* Remember me and forgot password */}
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <input
@@ -143,7 +145,7 @@ export default function LoginPage() {
                 htmlFor="remember-me"
                 className="ml-2 block text-sm text-gray-900"
               >
-                记住我
+                Remember me
               </label>
             </div>
 
@@ -152,12 +154,12 @@ export default function LoginPage() {
                 href="/auth/forgot-password"
                 className="font-medium text-primary-600 hover:text-primary-500"
               >
-                忘记密码？
+                Forgot password?
               </Link>
             </div>
           </div>
 
-          {/* 登录按钮 */}
+          {/* Login button */}
           <div>
             <button
               type="submit"
@@ -167,75 +169,75 @@ export default function LoginPage() {
               {isLoading ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  登录中...
+                  Signing in...
                 </div>
               ) : (
-                "登录"
+                "Sign In"
               )}
             </button>
           </div>
 
-          {/* 注册链接 */}
+          {/* Register link */}
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              还没有账户？{" "}
+              Don't have an account?{" "}
               <Link
                 href="/auth/register"
                 className="font-medium text-primary-600 hover:text-primary-500"
               >
-                立即注册
+                Sign up now
               </Link>
             </p>
           </div>
         </form>
 
-        {/* 分割线 */}
+        {/* Divider */}
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">或者</span>
+              <span className="px-2 bg-gray-50 text-gray-500">Or</span>
             </div>
           </div>
         </div>
 
-        {/* 第三方登录 */}
+        {/* Third-party login */}
         <div className="mt-6 grid grid-cols-2 gap-3">
           <button
             type="button"
             className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200"
           >
-            <span className="text-lg">微</span>
-            <span className="ml-1">微信</span>
+            <span className="text-lg">G</span>
+            <span className="ml-1">Google</span>
           </button>
 
           <button
             type="button"
             className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200"
           >
-            <span className="text-lg">Q</span>
-            <span className="ml-1">QQ</span>
+            <span className="text-lg">F</span>
+            <span className="ml-1">Facebook</span>
           </button>
         </div>
 
-        {/* 底部提示 */}
+        {/* Footer notice */}
         <div className="text-center text-xs text-gray-500">
           <p>
-            登录即表示您同意我们的{" "}
+            By signing in, you agree to our{" "}
             <Link
               href="/terms"
               className="text-primary-600 hover:text-primary-500"
             >
-              服务条款
+              Terms of Service
             </Link>{" "}
-            和{" "}
+            and{" "}
             <Link
               href="/privacy"
               className="text-primary-600 hover:text-primary-500"
             >
-              隐私政策
+              Privacy Policy
             </Link>
           </p>
         </div>

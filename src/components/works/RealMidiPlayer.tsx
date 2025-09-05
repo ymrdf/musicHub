@@ -56,20 +56,22 @@ export default function RealMidiPlayer({
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  // 初始化音频上下文和合成器
+  // Initialize audio context and synthesizers
   const initializeAudio = async () => {
     try {
       if (!isInitialized) {
         console.log("Initializing audio context...");
 
-        // 确保用户交互后才启动音频上下文
+        // Ensure audio context starts only after user interaction
         try {
           await Tone.start();
           console.log("Audio context started, state:", Tone.context.state);
         } catch (e) {
           console.error("Failed to start Tone.js audio context:", e);
-          setError("需要用户交互才能启动音频。请再次点击播放按钮。");
-          return; // 如果无法启动音频上下文，直接返回
+          setError(
+            "User interaction required to start audio. Please click the play button again."
+          );
+          return; // Return directly if unable to start audio context
         }
 
         if (Tone.context.state !== "running") {
@@ -77,32 +79,34 @@ export default function RealMidiPlayer({
             "Audio context not running after start:",
             Tone.context.state
           );
-          setError("浏览器音频上下文未能正常启动。请再次点击播放按钮。");
+          setError(
+            "Browser audio context failed to start properly. Please click the play button again."
+          );
           return;
         }
 
-        // 创建多个合成器，用于不同音色
+        // Create multiple synthesizers for different timbres
         const synths = [];
 
-        // 主旋律合成器
+        // Main melody synthesizer
         const melodySynth = new Tone.PolySynth(Tone.Synth, {
           oscillator: {
-            type: "sine", // 使用正弦波，更柔和的音色
+            type: "sine", // Use sine wave for softer tone
           },
           envelope: {
-            attack: 0.01, // 立刻出来
-            decay: 0.3, // 稍快衰减
-            sustain: 0.2, // 保持音量较小
-            release: 0.4, // 松开后很快消失
+            attack: 0.01, // Immediate attack
+            decay: 0.3, // Relatively fast decay
+            sustain: 0.2, // Lower sustain volume
+            release: 0.4, // Quick release after note off
           },
-          volume: -6, // 降低音量
+          volume: -6, // Lower volume
         }).toDestination();
         synths.push(melodySynth);
 
-        // 低音合成器
+        // Bass synthesizer
         const bassSynth = new Tone.PolySynth(Tone.Synth, {
           oscillator: {
-            type: "triangle", // 三角波，适合低音
+            type: "triangle", // Triangle wave, suitable for bass
           },
           envelope: {
             attack: 0.02,
@@ -110,7 +114,7 @@ export default function RealMidiPlayer({
             sustain: 0.4,
             release: 0.8,
           },
-          volume: -8, // 音量稍低
+          volume: -8, // Slightly lower volume
         }).toDestination();
         synths.push(bassSynth);
 
@@ -261,7 +265,7 @@ export default function RealMidiPlayer({
     }
   };
 
-  // 播放MIDI
+  // PlayMIDI
   const playMidi = async () => {
     console.log("playMidi called, isPlaying:", isPlaying);
     console.log("midiData:", midiData);
@@ -309,7 +313,7 @@ export default function RealMidiPlayer({
 
     try {
       if (isPlaying) {
-        // 暂停
+        // Pause
         console.log("Pausing playback...");
         transportRef.current.pause();
         setIsPlaying(false);
@@ -322,11 +326,11 @@ export default function RealMidiPlayer({
           progressIntervalRef.current = null;
         }
       } else {
-        // 播放
+        // Play
         console.log("Starting playback...");
         console.log("Transport state:", transportRef.current.state);
 
-        // 检查是否是从暂停状态恢复播放
+        // 检查是否是从Pause状态恢复Play
         if (
           transportRef.current.state !== "started" &&
           transportRef.current.state !== "stopped"
@@ -358,10 +362,10 @@ export default function RealMidiPlayer({
           return;
         }
 
-        // 如果不是从暂停状态恢复，则重新开始播放
+        // 如果不是从Pause状态恢复，则重新开始Play
         console.log("Starting new playback...");
 
-        // 重新调度音符，确保播放
+        // 重新调度音符，确保Play
         transportRef.current.cancel();
         transportRef.current.stop();
 
@@ -430,11 +434,11 @@ export default function RealMidiPlayer({
 
         console.log(`Total notes collected: ${noteCount}`);
 
-        // 对音符进行排序，确保按时间顺序播放
+        // 对音符进行排序，确保按时间顺序Play
         allNotes.sort((a, b) => a.time - b.time);
 
         // 限制音符数量以避免性能问题
-        const maxNotes = 3000; // 增加到3000个音符，提供更完整的播放体验
+        const maxNotes = 3000; // 增加到3000个音符，提供更完整的Play体验
         const notesToPlay = allNotes.slice(0, maxNotes);
 
         if (allNotes.length > maxNotes) {
@@ -451,13 +455,13 @@ export default function RealMidiPlayer({
           }, {})
         );
 
-        // 创建Part对象来播放音符
+        // 创建Part对象来Play音符
         partRef.current = new Tone.Part((time, noteData) => {
           // 根据音轨选择不同的合成器
           const synthIndex = noteData.track % synthsRef.current.length;
           const synth = synthsRef.current[synthIndex];
 
-          // 每次播放音符时，更新当前时间
+          // 每次Play音符时，更新当前时间
           if (transportRef.current) {
             // 使用setTimeout确保在主线程更新UI
             setTimeout(() => {
@@ -518,11 +522,11 @@ export default function RealMidiPlayer({
       }
     } catch (error: any) {
       console.error("Playback error:", error);
-      setError("播放失败，请重试: " + (error.message || String(error)));
+      setError("Play失败，请重试: " + (error.message || String(error)));
     }
   };
 
-  // 停止播放
+  // StopPlay
   const stopMidi = () => {
     if (transportRef.current) {
       transportRef.current.stop();
@@ -540,7 +544,7 @@ export default function RealMidiPlayer({
       progressIntervalRef.current = null;
     }
 
-    // 停止Part
+    // StopPart
     if (partRef.current) {
       partRef.current.stop();
       partRef.current.dispose();
@@ -548,7 +552,7 @@ export default function RealMidiPlayer({
     }
   };
 
-  // 更新播放进度
+  // 更新Play进度
   const updateProgress = () => {
     if (transportRef.current && isPlaying) {
       // 获取当前时间并强制更新状态
@@ -662,12 +666,10 @@ export default function RealMidiPlayer({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
           <MusicalNoteIcon className="h-5 w-5 text-purple-600" />
-          <span className="text-sm font-medium text-gray-900">
-            真实 MIDI 播放器
-          </span>
+          <span className="text-sm font-medium text-gray-900">MIDI Player</span>
         </div>
         <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded">
-          {formatFileSize(fileSize)}
+          {fileSize ? formatFileSize(fileSize) : ""}
         </span>
       </div>
 
@@ -680,7 +682,7 @@ export default function RealMidiPlayer({
             {fileName}
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {midiData ? `${midiData.tracks.length} 个音轨` : "加载中..."}
+            {midiData ? `${midiData.tracks.length} audio tracks` : "Loading..."}
           </p>
         </div>
 
@@ -708,7 +710,7 @@ export default function RealMidiPlayer({
             />
           </div>
 
-          {/* 播放控制 */}
+          {/* Play控制 */}
           <button
             onClick={playMidi}
             disabled={isLoading || !midiData}
@@ -721,7 +723,7 @@ export default function RealMidiPlayer({
             ) : (
               <PlayIcon className="h-4 w-4 mr-1" />
             )}
-            {isLoading ? "加载中" : isPlaying ? "暂停" : "播放"}
+            {isLoading ? "Loading" : isPlaying ? "Pause" : "Play"}
           </button>
 
           <button
@@ -730,7 +732,7 @@ export default function RealMidiPlayer({
             className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <StopIcon className="h-4 w-4 mr-1" />
-            停止
+            Stop
           </button>
 
           <button
@@ -739,7 +741,7 @@ export default function RealMidiPlayer({
             className="inline-flex items-center px-3 py-1.5 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <DocumentTextIcon className="h-4 w-4 mr-1" />
-            乐谱
+            Sheet Music
           </button>
         </div>
       </div>
@@ -783,48 +785,7 @@ export default function RealMidiPlayer({
         </div>
       )}
 
-      {/* 成功提示 */}
-      {midiData && !error && (
-        <div
-          className={`${
-            isInitialized
-              ? "bg-green-50 border-green-200"
-              : "bg-blue-50 border-blue-200"
-          } border rounded-md p-3`}
-        >
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <MusicalNoteIcon
-                className={`h-5 w-5 ${
-                  isInitialized ? "text-green-500" : "text-blue-500"
-                }`}
-              />
-            </div>
-            <div className="ml-3">
-              <p
-                className={`text-sm ${
-                  isInitialized ? "text-green-700" : "text-blue-700"
-                }`}
-              >
-                <strong>
-                  {isInitialized ? "MIDI 文件加载成功！" : "MIDI 元数据已加载"}
-                </strong>
-              </p>
-              <p
-                className={`text-xs ${
-                  isInitialized ? "text-green-600" : "text-blue-600"
-                } mt-1`}
-              >
-                音轨数: {midiData.tracks.length} | 时长: {formatTime(duration)}{" "}
-                {isInitialized
-                  ? "| 使用 Tone.js 引擎播放"
-                  : "| 点击播放按钮初始化音频"}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* 乐谱弹窗 */}
+      {/* Sheet Music弹窗 */}
       <MidiSheetModal
         isOpen={isSheetModalOpen}
         onClose={() => setIsSheetModalOpen(false)}

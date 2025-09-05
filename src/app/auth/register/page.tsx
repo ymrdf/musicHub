@@ -33,11 +33,11 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       await registerUser(data.username, data.email, data.password);
-      toast.success("注册成功！欢迎加入 MusicEmit");
+      toast.success("Registration successful! Welcome to MusicEmit");
       router.push("/");
     } catch (error: any) {
-      console.error("注册错误:", error);
-      toast.error(error.message || "注册失败，请稍后再试");
+      console.error("Registration error:", error);
+      toast.error(error.message || "Registration failed, please try again");
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +46,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        {/* Logo 和标题 */}
+        {/* Logo and title */}
         <div className="text-center">
           <Link
             href="/"
@@ -57,44 +57,47 @@ export default function RegisterPage() {
               MusicEmit
             </span>
           </Link>
-          <h2 className="text-3xl font-extrabold text-gray-900">创建账户</h2>
+          <h2 className="text-3xl font-extrabold text-gray-900">
+            Create Account
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
-            加入音乐创作者社区，开始您的创作之旅
+            Join the music creator community and start your creative journey
           </p>
         </div>
 
-        {/* 注册表单 */}
+        {/* Registration form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
-            {/* 用户名 */}
+            {/* Username */}
             <div>
               <label
                 htmlFor="username"
                 className="block text-sm font-medium text-gray-700"
               >
-                用户名
+                Username
               </label>
               <div className="mt-1">
                 <input
                   {...register("username", {
-                    required: "用户名不能为空",
+                    required: "Username is required",
                     minLength: {
                       value: 3,
-                      message: "用户名至少 3 个字符",
+                      message: "Username must be at least 3 characters",
                     },
                     maxLength: {
                       value: 30,
-                      message: "用户名最多 30 个字符",
+                      message: "Username must be no more than 30 characters",
                     },
                     pattern: {
                       value: /^[a-zA-Z0-9_]+$/,
-                      message: "用户名只能包含字母、数字和下划线",
+                      message:
+                        "Username can only contain letters, numbers and underscores",
                     },
                   })}
                   type="text"
                   autoComplete="username"
                   className="input-field"
-                  placeholder="请输入用户名"
+                  placeholder="Enter your username"
                 />
                 {errors.username && (
                   <p className="mt-1 text-sm text-red-600">
@@ -104,27 +107,27 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* 邮箱 */}
+            {/* Email */}
             <div>
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                邮箱地址
+                Email Address
               </label>
               <div className="mt-1">
                 <input
                   {...register("email", {
-                    required: "邮箱不能为空",
+                    required: "Email is required",
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: "请输入有效的邮箱地址",
+                      message: "Please enter a valid email address",
                     },
                   })}
                   type="email"
                   autoComplete="email"
                   className="input-field"
-                  placeholder="请输入您的邮箱"
+                  placeholder="Enter your email address"
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">
@@ -134,31 +137,32 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* 密码 */}
+            {/* Password */}
             <div>
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
-                密码
+                Password
               </label>
               <div className="mt-1 relative">
                 <input
                   {...register("password", {
-                    required: "密码不能为空",
+                    required: "Password is required",
                     minLength: {
                       value: 8,
-                      message: "密码至少 8 个字符",
+                      message: "Password must be at least 8 characters",
                     },
                     pattern: {
                       value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                      message: "密码必须包含大小写字母和数字",
+                      message:
+                        "Password must contain uppercase, lowercase letters and numbers",
                     },
                   })}
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
                   className="input-field pr-10"
-                  placeholder="请输入密码"
+                  placeholder="Enter your password"
                 />
                 <button
                   type="button"
@@ -179,25 +183,25 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* 确认密码 */}
+            {/* Confirm Password */}
             <div>
               <label
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-gray-700"
               >
-                确认密码
+                Confirm Password
               </label>
               <div className="mt-1 relative">
                 <input
                   {...register("confirmPassword", {
-                    required: "请确认密码",
+                    required: "Please confirm your password",
                     validate: (value) =>
-                      value === password || "两次密码输入不一致",
+                      value === password || "Passwords do not match",
                   })}
                   type={showConfirmPassword ? "text" : "password"}
                   autoComplete="new-password"
                   className="input-field pr-10"
-                  placeholder="请再次输入密码"
+                  placeholder="Confirm your password"
                 />
                 <button
                   type="button"
@@ -219,18 +223,18 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* 密码强度提示 */}
+          {/* Password strength requirements */}
           <div className="text-xs text-gray-500 space-y-1">
-            <p>密码要求：</p>
+            <p>Password requirements:</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>至少 8 个字符</li>
-              <li>包含大写字母</li>
-              <li>包含小写字母</li>
-              <li>包含数字</li>
+              <li>At least 8 characters</li>
+              <li>Contains uppercase letters</li>
+              <li>Contains lowercase letters</li>
+              <li>Contains numbers</li>
             </ul>
           </div>
 
-          {/* 服务条款 */}
+          {/* Terms of Service */}
           <div className="flex items-center">
             <input
               id="agree-terms"
@@ -243,24 +247,24 @@ export default function RegisterPage() {
               htmlFor="agree-terms"
               className="ml-2 block text-sm text-gray-900"
             >
-              我已阅读并同意{" "}
+              I have read and agree to the{" "}
               <Link
                 href="/terms"
                 className="text-primary-600 hover:text-primary-500"
               >
-                服务条款
+                Terms of Service
               </Link>{" "}
-              和{" "}
+              and{" "}
               <Link
                 href="/privacy"
                 className="text-primary-600 hover:text-primary-500"
               >
-                隐私政策
+                Privacy Policy
               </Link>
             </label>
           </div>
 
-          {/* 注册按钮 */}
+          {/* Register button */}
           <div>
             <button
               type="submit"
@@ -270,56 +274,56 @@ export default function RegisterPage() {
               {isLoading ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  注册中...
+                  Creating account...
                 </div>
               ) : (
-                "创建账户"
+                "Create Account"
               )}
             </button>
           </div>
 
-          {/* 登录链接 */}
+          {/* Login link */}
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              已有账户？{" "}
+              Already have an account?{" "}
               <Link
                 href="/auth/login"
                 className="font-medium text-primary-600 hover:text-primary-500"
               >
-                立即登录
+                Sign in
               </Link>
             </p>
           </div>
         </form>
 
-        {/* 分割线 */}
+        {/* Divider */}
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">或者</span>
+              <span className="px-2 bg-gray-50 text-gray-500">or</span>
             </div>
           </div>
         </div>
 
-        {/* 第三方注册 */}
+        {/* Third-party registration */}
         <div className="mt-6 grid grid-cols-2 gap-3">
           <button
             type="button"
             className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200"
           >
-            <span className="text-lg">微</span>
-            <span className="ml-1">微信注册</span>
+            <span className="text-lg">G</span>
+            <span className="ml-1">Google</span>
           </button>
 
           <button
             type="button"
             className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200"
           >
-            <span className="text-lg">Q</span>
-            <span className="ml-1">QQ注册</span>
+            <span className="text-lg">G</span>
+            <span className="ml-1">GitHub</span>
           </button>
         </div>
       </div>

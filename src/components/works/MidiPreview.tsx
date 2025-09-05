@@ -36,17 +36,21 @@ export default function MidiPreview({
 
     setIsLoading(true);
     try {
-      // 创建一个临时的audio元素来播放MIDI文件
-      // 注意：浏览器原生不支持MIDI播放，这里提供一个下载链接
-      // 在实际应用中，可能需要使用Web MIDI API或第三方库
+      // Create a temporary audio element to play MIDI file
+      // Note: Browsers don't natively support MIDI playback, providing download link here
+      // In real applications, might need to use Web MIDI API or third-party libraries
       const audio = new Audio(filePath);
 
-      // 由于浏览器不支持直接播放MIDI，我们显示一个提示
-      alert("浏览器不支持直接播放MIDI文件，请下载后使用专业软件播放");
+      // Since browsers don't support direct MIDI playback, we show a prompt
+      alert(
+        "Browser doesn't support direct MIDI playback, please download and use professional software to play"
+      );
       setIsPlaying(false);
     } catch (error) {
-      console.error("播放失败:", error);
-      alert("播放失败，请下载文件后使用专业软件播放");
+      console.error("Playback failed:", error);
+      alert(
+        "Playback failed, please download file and use professional software to play"
+      );
       setIsPlaying(false);
     } finally {
       setIsLoading(false);

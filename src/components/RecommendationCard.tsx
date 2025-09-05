@@ -46,7 +46,7 @@ interface RecommendationItem {
   instrument?: Category;
   purpose?: Category;
   work?: Work;
-  // 作品相关
+  // Work related
   starsCount?: number;
   performancesCount?: number;
   commentsCount?: number;
@@ -54,7 +54,7 @@ interface RecommendationItem {
   pdfFilePath?: string;
   midiFilePath?: string;
   isStarred?: boolean;
-  // 演奏相关
+  // Performance related
   likesCount?: number;
   playsCount?: number;
   audioFilePath?: string;
@@ -84,7 +84,7 @@ export default function RecommendationCard({
 
   const handleStar = async () => {
     if (!currentUser) {
-      toast.error("请先登录");
+      toast.error("Please login first");
       return;
     }
 
@@ -99,18 +99,18 @@ export default function RecommendationCard({
       if (response.ok) {
         setIsStarred(!isStarred);
         setStarsCount(isStarred ? starsCount - 1 : starsCount + 1);
-        toast.success(isStarred ? "已取消收藏" : "收藏成功");
+        toast.success(isStarred ? "Unstarred" : "Starred successfully");
       } else {
-        toast.error("操作失败");
+        toast.error("Operation failed");
       }
     } catch (error) {
-      toast.error("网络错误");
+      toast.error("Network error");
     }
   };
 
   const handleLike = async () => {
     if (!currentUser) {
-      toast.error("请先登录");
+      toast.error("Please login first");
       return;
     }
 
@@ -125,12 +125,12 @@ export default function RecommendationCard({
       if (response.ok) {
         setIsLiked(!isLiked);
         setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
-        toast.success(isLiked ? "已取消点赞" : "点赞成功");
+        toast.success(isLiked ? "Unliked" : "Liked successfully");
       } else {
-        toast.error("操作失败");
+        toast.error("Operation failed");
       }
     } catch (error) {
-      toast.error("网络错误");
+      toast.error("Network error");
     }
   };
 
@@ -160,16 +160,16 @@ export default function RecommendationCard({
       (now.getTime() - date.getTime()) / (1000 * 60 * 60)
     );
 
-    if (diffInHours < 1) return "刚刚";
-    if (diffInHours < 24) return `${diffInHours}小时前`;
-    if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}天前`;
+    if (diffInHours < 1) return "Just now";
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    if (diffInHours < 24 * 7) return `${Math.floor(diffInHours / 24)}d ago`;
     return date.toLocaleDateString();
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <div className="p-4">
-        {/* 头部信息 */}
+        {/* Header info */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">

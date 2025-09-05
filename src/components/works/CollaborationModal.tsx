@@ -49,15 +49,15 @@ export default function CollaborationModal({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // 验证文件类型
+      // Validate file type
       if (!file.name.toLowerCase().endsWith(".mid")) {
-        toast.error("只支持MIDI文件格式");
+        toast.error("Only MIDI file format is supported");
         return;
       }
 
-      // 验证文件大小（10MB）
+      // Validate file size (10MB)
       if (file.size > 10 * 1024 * 1024) {
-        toast.error("文件大小不能超过10MB");
+        toast.error("File size cannot exceed 10MB");
         return;
       }
 
@@ -67,17 +67,17 @@ export default function CollaborationModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // 清除之前的错误
+    setError(""); // Clear previous errors
 
     if (!selectedFile) {
-      toast.error("请选择MIDI文件");
-      setError("请选择MIDI文件");
+      toast.error("Please select a MIDI file");
+      setError("Please select a MIDI file");
       return;
     }
 
     if (!formData.title.trim() || !formData.commitMessage.trim()) {
-      toast.error("请填写所有必填字段");
-      setError("请填写所有必填字段");
+      toast.error("Please fill in all required fields");
+      setError("Please fill in all required fields");
       return;
     }
 
@@ -102,12 +102,12 @@ export default function CollaborationModal({
       );
 
       if (response.data.success) {
-        toast.success("协作请求提交成功！");
+        toast.success("Collaboration request submitted successfully!");
         handleClose();
         onSuccess();
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.error || "提交失败";
+      const errorMessage = error.response?.data?.error || "Submission failed";
       toast.error(errorMessage);
       setError(errorMessage);
     } finally {
@@ -138,7 +138,7 @@ export default function CollaborationModal({
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 flex items-center">
             <DocumentTextIcon className="h-5 w-5 mr-2" />
-            提交协作请求
+            Submit Collaboration Request
           </h2>
           <button
             onClick={handleClose}
@@ -258,7 +258,7 @@ export default function CollaborationModal({
                     {selectedFile.name}
                   </span>
                 ) : (
-                  "点击选择或拖拽MIDI文件到此处"
+                  "Click to select or drag MIDI file here"
                 )}
               </div>
               <button
@@ -266,26 +266,26 @@ export default function CollaborationModal({
                 onClick={() => fileInputRef.current?.click()}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
               >
-                选择文件
+                Select File
               </button>
               <p className="text-xs text-gray-500 mt-2">
-                支持 .mid 格式，最大 10MB
+                Supports .mid format, max 10MB
               </p>
             </div>
           </div>
 
-          {/* 错误信息显示 */}
+          {/* Error message display */}
           {error && (
             <div
               className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative"
               role="alert"
             >
-              <strong className="font-bold">提交失败：</strong>
+              <strong className="font-bold">Submission failed:</strong>
               <span className="block sm:inline">{error}</span>
             </div>
           )}
 
-          {/* 提交按钮 */}
+          {/* Submit buttons */}
           <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
             <button
               type="button"

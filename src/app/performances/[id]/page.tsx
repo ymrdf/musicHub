@@ -48,7 +48,7 @@ export default function PerformanceDetailPage() {
         const data = await response.json();
         setPerformance(data.data);
       } else {
-        throw new Error("获取演奏详情失败");
+        throw new Error("Failed to fetch performance details");
       }
     } catch (error: any) {
       setError(error.message);
@@ -98,14 +98,18 @@ export default function PerformanceDetailPage() {
         );
       }
     } catch (error) {
-      console.error("点赞失败:", error);
+      console.error("Like failed:", error);
     } finally {
       setLikeLoading(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!performance || !confirm("确定要删除这个演奏吗？")) return;
+    if (
+      !performance ||
+      !confirm("Are you sure you want to delete this performance?")
+    )
+      return;
 
     try {
       const response = await fetch(`/api/performances/${performance.id}`, {
@@ -116,7 +120,7 @@ export default function PerformanceDetailPage() {
         router.push(`/works/${performance.workId}`);
       }
     } catch (error) {
-      console.error("删除失败:", error);
+      console.error("Delete failed:", error);
     }
   };
 
@@ -147,10 +151,10 @@ export default function PerformanceDetailPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-lg shadow p-6 text-center">
           <h1 className="text-xl font-semibold text-gray-900 mb-4">
-            {error || "演奏不存在"}
+            {error || "Performance not found"}
           </h1>
           <button onClick={() => router.back()} className="btn-primary">
-            返回
+            Go Back
           </button>
         </div>
       </div>
@@ -163,7 +167,7 @@ export default function PerformanceDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 头部导航 */}
+      {/* Header navigation */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
@@ -172,7 +176,7 @@ export default function PerformanceDetailPage() {
               className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
             >
               <ArrowLeftIcon className="h-5 w-5" />
-              <span>返回</span>
+              <span>Back</span>
             </button>
 
             {isOwner && (
@@ -182,14 +186,14 @@ export default function PerformanceDetailPage() {
                   className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-900"
                 >
                   <PencilIcon className="h-4 w-4" />
-                  <span>编辑</span>
+                  <span>Edit</span>
                 </Link>
                 <button
                   onClick={handleDelete}
                   className="flex items-center space-x-2 px-3 py-2 text-red-600 hover:text-red-800"
                 >
                   <TrashIcon className="h-4 w-4" />
-                  <span>删除</span>
+                  <span>Delete</span>
                 </button>
               </div>
             )}
@@ -198,10 +202,10 @@ export default function PerformanceDetailPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 演奏信息卡片 */}
+        {/* Performance info card */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <div className="flex items-start space-x-6">
-            {/* 播放按钮 */}
+            {/* Play button */}
             <button
               onClick={handlePlay}
               className="flex-shrink-0 w-20 h-20 bg-primary-100 hover:bg-primary-200 rounded-full flex items-center justify-center transition-colors"
@@ -213,7 +217,7 @@ export default function PerformanceDetailPage() {
               )}
             </button>
 
-            {/* 演奏信息 */}
+            {/* Performance info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-3 mb-3">
                 <h1 className="text-3xl font-bold text-gray-900">
@@ -221,8 +225,8 @@ export default function PerformanceDetailPage() {
                 </h1>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
                   {performance.type === "instrumental"
-                    ? "器乐演奏"
-                    : "声乐演唱"}
+                    ? "Instrumental"
+                    : "Vocal"}
                 </span>
               </div>
 
@@ -233,7 +237,7 @@ export default function PerformanceDetailPage() {
                   ) : (
                     <MicrophoneIcon className="h-5 w-5" />
                   )}
-                  <span>{performance.instrument || "未知乐器"}</span>
+                  <span>{performance.instrument || "Unknown instrument"}</span>
                 </div>
 
                 {performance.duration && (
@@ -255,7 +259,7 @@ export default function PerformanceDetailPage() {
                 </p>
               )}
 
-              {/* 演奏者信息 */}
+              {/* Performer info */}
               <div className="flex items-center space-x-3 mb-4">
                 {performance.user?.avatarUrl ? (
                   <img
@@ -283,7 +287,7 @@ export default function PerformanceDetailPage() {
                 </div>
               </div>
 
-              {/* 统计信息 */}
+              {/* Statistics */}
               <div className="flex items-center space-x-6 text-sm text-gray-500">
                 <button
                   onClick={handleLike}
@@ -314,10 +318,12 @@ export default function PerformanceDetailPage() {
           </div>
         </div>
 
-        {/* 作品信息 */}
+        {/* Work info */}
         {performance.work && (
           <div className="bg-white rounded-lg shadow p-6 mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">原作品</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Original Work
+            </h2>
             <div className="flex items-center space-x-4">
               <div className="flex-1">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -333,16 +339,16 @@ export default function PerformanceDetailPage() {
                 href={`/works/${performance.work.id}`}
                 className="btn-primary"
               >
-                查看作品
+                View Work
               </Link>
             </div>
           </div>
         )}
 
-        {/* 评论区 */}
+        {/* Comments section */}
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            评论 ({performance.commentsCount})
+            Comments ({performance.commentsCount})
           </h2>
 
           <CommentList performanceId={performance.id} />

@@ -21,7 +21,7 @@ import WorkDetailClient from "@/components/client/WorkDetailClient";
 import CollaborationClient from "@/components/client/CollaborationClient";
 import RealMidiPlayer from "@/components/works/RealMidiPlayer";
 
-// 动态生成元数据
+// Dynamically generate metadata
 export async function generateMetadata({
   params,
 }: {
@@ -31,22 +31,25 @@ export async function generateMetadata({
 
   if (!work) {
     return {
-      title: "作品不存在 - MusicEmit",
-      description: "您访问的作品不存在或已被删除",
+      title: "Work Not Found - MusicEmit",
+      description:
+        "The work you're looking for doesn't exist or has been deleted",
     };
   }
 
   return {
     title: `${work.title} - MusicEmit`,
     description:
-      work.description || `由${work.user.username}创作的原创音乐作品`,
+      work.description ||
+      `Original music work created by ${work.user.username}`,
     keywords: `${work.genre?.name || ""},${work.instrument?.name || ""},${
       work.purpose?.name || ""
-    },原创音乐,乐谱,MIDI`,
+    },original music,sheet music,MIDI`,
     openGraph: {
       title: work.title,
       description:
-        work.description || `由${work.user.username}创作的原创音乐作品`,
+        work.description ||
+        `Original music work created by ${work.user.username}`,
       type: "music.song",
       url: `https://musicemit.com/works/${work.id}`,
       images: [
@@ -63,19 +66,19 @@ export async function generateMetadata({
   };
 }
 
-// 预生成热门作品的静态页面
+// Pre-generate static pages for popular works
 export async function generateStaticParams() {
-  // 这里可以获取热门或重要作品的ID列表
+  // Here you can get the ID list of popular or important works
   // const works = await fetchPopularWorks(20);
   // return works.map((work) => ({
   //   id: work.id.toString(),
   // }));
 
-  // 简化版本，暂时不预生成
+  // Simplified version, no pre-generation for now
   return [];
 }
 
-// 格式化文件大小
+// Format file size
 function formatFileSize(bytes?: number) {
   if (!bytes) return "";
   const sizes = ["B", "KB", "MB", "GB"];
@@ -94,7 +97,7 @@ export default async function WorkDetailPage({
     notFound();
   }
 
-  // 结构化数据
+  // Structured data
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "MusicComposition",
@@ -127,24 +130,24 @@ export default async function WorkDetailPage({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 结构化数据 */}
+      {/* Structured data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      {/* 作品头部信息 */}
+      {/* Work header information */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col lg:flex-row lg:items-start lg:space-x-8">
-            {/* 左侧：作品信息 */}
+            {/* Left: Work information */}
             <div className="flex-1">
               <div className="flex items-start justify-between mb-4">
                 <h1 className="text-3xl font-bold text-gray-900 flex-1">
                   {work.title}
                 </h1>
 
-                {/* 操作按钮 - 客户端组件 */}
+                {/* Action buttons - Client component */}
                 <WorkActions
                   workId={work.id}
                   isOwner={work.isOwner}
@@ -155,7 +158,7 @@ export default async function WorkDetailPage({
                 />
               </div>
 
-              {/* 作者信息 */}
+              {/* Author information */}
               <div className="flex items-center space-x-4 mb-6">
                 <Link
                   href={`/users/${work.user.id}`}
@@ -176,7 +179,7 @@ export default async function WorkDetailPage({
                   )}
                   <span className="font-medium">{work.user.username}</span>
                   {work.user.isVerified && (
-                    <span className="text-primary-500" title="已验证用户">
+                    <span className="text-primary-500" title="Verified user">
                       ✓
                     </span>
                   )}
@@ -190,7 +193,7 @@ export default async function WorkDetailPage({
                 </div>
               </div>
 
-              {/* 描述 */}
+              {/* Description */}
               {work.description && (
                 <div className="mb-6">
                   <p className="text-gray-700 whitespace-pre-wrap">
@@ -199,19 +202,19 @@ export default async function WorkDetailPage({
                 </div>
               )}
 
-              {/* 分类和标签 */}
+              {/* Categories and tags */}
               <div className="space-y-3 mb-6">
-                {/* 分类信息 */}
+                {/* Category information */}
                 <div className="flex flex-wrap gap-4 text-sm">
                   {work.genre && (
                     <div className="flex items-center">
-                      <span className="text-gray-500 mr-1">曲种:</span>
+                      <span className="text-gray-500 mr-1">Genre:</span>
                       <span className="font-medium">{work.genre.name}</span>
                     </div>
                   )}
                   {work.instrument && (
                     <div className="flex items-center">
-                      <span className="text-gray-500 mr-1">乐器:</span>
+                      <span className="text-gray-500 mr-1">Instrument:</span>
                       <span className="font-medium">
                         {work.instrument.name}
                       </span>
@@ -219,13 +222,13 @@ export default async function WorkDetailPage({
                   )}
                   {work.purpose && (
                     <div className="flex items-center">
-                      <span className="text-gray-500 mr-1">用途:</span>
+                      <span className="text-gray-500 mr-1">Purpose:</span>
                       <span className="font-medium">{work.purpose.name}</span>
                     </div>
                   )}
                 </div>
 
-                {/* 标签 */}
+                {/* Tags */}
                 {work.tags.length > 0 && (
                   <div className="flex items-center space-x-2">
                     <TagIcon className="h-4 w-4 text-gray-500" />
@@ -249,32 +252,32 @@ export default async function WorkDetailPage({
                 )}
               </div>
 
-              {/* 统计信息 */}
+              {/* Statistics */}
               <div className="flex space-x-6 text-sm text-gray-500">
                 <div className="flex items-center">
                   <EyeIcon className="h-4 w-4 mr-1" />
-                  {work.viewsCount} 浏览
+                  {work.viewsCount} views
                 </div>
                 <div className="flex items-center">
                   <StarIcon className="h-4 w-4 mr-1" />
-                  {work.starsCount} 收藏
+                  {work.starsCount} stars
                 </div>
                 <div className="flex items-center">
                   <PlayIcon className="h-4 w-4 mr-1" />
-                  {work.performancesCount} 演奏
+                  {work.performancesCount} performances
                 </div>
                 <div className="flex items-center">
                   <ChatBubbleLeftIcon className="h-4 w-4 mr-1" />
-                  {work.commentsCount} 评论
+                  {work.commentsCount} comments
                 </div>
               </div>
             </div>
 
-            {/* 右侧：文件下载 */}
+            {/* Right: File downloads */}
             <div className="lg:w-80 mt-8 lg:mt-0">
               <div className="bg-gray-50 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  文件下载
+                  File Downloads
                 </h3>
 
                 <div className="space-y-3">
@@ -288,7 +291,7 @@ export default async function WorkDetailPage({
                         <DocumentArrowDownIcon className="h-8 w-8 text-red-500 mr-3" />
                         <div>
                           <div className="font-medium text-gray-900">
-                            PDF 乐谱
+                            PDF Sheet Music
                           </div>
                           <div className="text-xs text-gray-500">
                             {formatFileSize(work.pdfFileSize)}
@@ -309,7 +312,7 @@ export default async function WorkDetailPage({
                         <MusicalNoteIcon className="h-8 w-8 text-blue-500 mr-3" />
                         <div>
                           <div className="font-medium text-gray-900">
-                            MIDI 文件
+                            MIDI File
                           </div>
                           <div className="text-xs text-gray-500">
                             {formatFileSize(work.midiFileSize)}
@@ -321,28 +324,28 @@ export default async function WorkDetailPage({
                   )}
                 </div>
 
-                {/* 许可证信息 */}
+                {/* License information */}
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <div className="text-sm">
-                    <span className="text-gray-500">许可证: </span>
+                    <span className="text-gray-500">License: </span>
                     <span className="font-medium">{work.license}</span>
                   </div>
                   {work.allowCollaboration && (
                     <div className="mt-2 text-xs text-gray-500">
-                      ✓ 允许协作贡献
+                      ✓ Collaboration allowed
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* 其他操作 */}
+              {/* Other actions */}
               <div className="mt-4 space-y-2">
                 <Link
                   href={`/performances/new?workId=${work.id}`}
                   className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
                 >
                   <PlayIcon className="h-4 w-4 mr-2" />
-                  我要演奏
+                  Record a Cover
                 </Link>
 
                 {work.allowCollaboration && (
@@ -358,21 +361,21 @@ export default async function WorkDetailPage({
         </div>
       </div>
 
-      {/* PDF乐谱预览区域 */}
+      {/* PDF sheet music preview area */}
       {work.pdfFilePath && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-lg shadow">
-            {/* 工具栏 */}
+            {/* Toolbar */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
               <div className="flex items-center space-x-4">
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center">
                   <DocumentArrowDownIcon className="h-6 w-6 text-red-500 mr-2" />
-                  乐谱预览
+                  Sheet Music Preview
                 </h2>
               </div>
             </div>
 
-            {/* PDF查看器 */}
+            {/* PDF viewer */}
             <div className="p-4">
               <div className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
                 <div className="flex justify-center p-4">
@@ -390,7 +393,10 @@ export default async function WorkDetailPage({
 
               {/* 下载提示 */}
               <div className="mt-4 text-center text-sm text-gray-500">
-                <p>💡 提示：您可以点击右上角的下载按钮获取完整PDF文件</p>
+                <p>
+                  💡 tips: you can click the download button in the top right
+                  corner to get the complete PDF file
+                </p>
               </div>
             </div>
           </div>
@@ -401,12 +407,12 @@ export default async function WorkDetailPage({
       {work.midiFilePath && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-lg shadow">
-            {/* 工具栏 */}
+            {/* Toolbar */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
               <div className="flex items-center space-x-4">
                 <h2 className="text-xl font-semibold text-gray-900 flex items-center">
                   <MusicalNoteIcon className="h-6 w-6 text-blue-500 mr-2" />
-                  MIDI播放器
+                  MIDI
                 </h2>
               </div>
             </div>
@@ -421,7 +427,10 @@ export default async function WorkDetailPage({
 
               {/* 下载提示 */}
               <div className="mt-4 text-center text-sm text-gray-500">
-                <p>💡 提示：您也可以点击右上角的下载按钮获取完整MIDI文件</p>
+                <p>
+                  💡 tips: you can click the download button in the top right
+                  corner to get the complete MIDI file
+                </p>
               </div>
             </div>
           </div>

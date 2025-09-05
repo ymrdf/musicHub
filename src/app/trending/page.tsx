@@ -129,7 +129,9 @@ export default function TrendingPage() {
         setItems(formattedItems);
       }
     } catch (error: any) {
-      setError(error.response?.data?.error || "获取热门内容失败");
+      setError(
+        error.response?.data?.error || "Failed to fetch trending content"
+      );
     } finally {
       setLoading(false);
     }
@@ -154,7 +156,7 @@ export default function TrendingPage() {
                 : i
             )
           );
-          toast.success("取消收藏成功");
+          toast.success("Unstarred successfully");
         }
       } else {
         // 收藏
@@ -171,11 +173,11 @@ export default function TrendingPage() {
                 : i
             )
           );
-          toast.success("收藏成功");
+          toast.success("Starred successfully");
         }
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "操作失败");
+      toast.error(error.response?.data?.error || "Operation failed");
     }
   };
 
@@ -201,7 +203,7 @@ export default function TrendingPage() {
         );
       }
     } catch (error: any) {
-      toast.error("操作失败");
+      toast.error("Operation failed");
     }
   };
 
@@ -263,7 +265,7 @@ export default function TrendingPage() {
   };
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("zh-CN", {
+    return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -280,23 +282,26 @@ export default function TrendingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 页面标题 */}
+        {/* Page title */}
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-2">
             <FireIcon className="h-8 w-8 text-orange-500" />
-            <h1 className="text-3xl font-bold text-gray-900">热门榜单</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Trending Charts
+            </h1>
           </div>
           <p className="text-gray-600">
-            发现最受欢迎的音乐作品和演奏，按热度排序
+            Discover the most popular music works and performances, sorted by
+            popularity
           </p>
         </div>
 
-        {/* 筛选器 */}
+        {/* Filters */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
           <div className="flex flex-wrap gap-4 items-center">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                内容类型
+                Content Type
               </label>
               <select
                 value={filters.type}
@@ -305,15 +310,15 @@ export default function TrendingPage() {
                 }
                 className="block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
               >
-                <option value="all">全部内容</option>
-                <option value="work">原创作品</option>
-                <option value="performance">演奏演绎</option>
+                <option value="all">All Content</option>
+                <option value="work">Original Works</option>
+                <option value="performance">Performances</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                时间周期
+                Time Period
               </label>
               <select
                 value={filters.timePeriod}
@@ -325,16 +330,16 @@ export default function TrendingPage() {
                 }
                 className="block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
               >
-                <option value="all">全部时间</option>
-                <option value="daily">今日</option>
-                <option value="weekly">本周</option>
-                <option value="monthly">本月</option>
+                <option value="all">All Time</option>
+                <option value="daily">Today</option>
+                <option value="weekly">This Week</option>
+                <option value="monthly">This Month</option>
               </select>
             </div>
           </div>
         </div>
 
-        {/* 内容列表 */}
+        {/* Content list */}
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
@@ -346,17 +351,17 @@ export default function TrendingPage() {
               onClick={fetchTrendingItems}
               className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             >
-              重试
+              Retry
             </button>
           </div>
         ) : items.length === 0 ? (
           <div className="text-center py-12">
             <FireIcon className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900">
-              暂无热门内容
+              No Trending Content
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              当前时间段内没有热门内容
+              No trending content in the current time period
             </p>
           </div>
         ) : (
@@ -368,7 +373,7 @@ export default function TrendingPage() {
               >
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    {/* 排名和类型 */}
+                    {/* Rank and type */}
                     <div className="flex items-center space-x-4">
                       <div className="text-2xl font-bold text-orange-500">
                         {getRankBadge(index)}
@@ -380,12 +385,14 @@ export default function TrendingPage() {
                           <MicrophoneIcon className="h-5 w-5 text-green-600" />
                         )}
                         <span className="text-xs font-medium text-gray-500 uppercase">
-                          {item.type === "work" ? "原创作品" : "演奏演绎"}
+                          {item.type === "work"
+                            ? "Original Work"
+                            : "Performance"}
                         </span>
                       </div>
                     </div>
 
-                    {/* 操作按钮 */}
+                    {/* Action buttons */}
                     <div className="flex items-center space-x-2">
                       {item.type === "work" && (
                         <button
@@ -404,7 +411,7 @@ export default function TrendingPage() {
                           ) : (
                             <StarIcon className="h-4 w-4 mr-1" />
                           )}
-                          {item.isStarred ? "已收藏" : "收藏"}
+                          {item.isStarred ? "Starred" : "Star"}
                         </button>
                       )}
 
@@ -426,7 +433,7 @@ export default function TrendingPage() {
                     </div>
                   </div>
 
-                  {/* 标题和描述 */}
+                  {/* Title and description */}
                   <Link href={getItemUrl(item)}>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-primary-600 transition-colors duration-200">
                       {item.title}
@@ -439,7 +446,7 @@ export default function TrendingPage() {
                     </p>
                   )}
 
-                  {/* 分类标签 */}
+                  {/* Category tags */}
                   <div className="flex flex-wrap gap-2 mb-4">
                     {item.genre && (
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -458,7 +465,7 @@ export default function TrendingPage() {
                     )}
                   </div>
 
-                  {/* 用户信息 */}
+                  {/* User info */}
                   <div className="flex items-center space-x-3 mb-4">
                     <Link
                       href={`/users/${item.user.id}`}
@@ -484,7 +491,7 @@ export default function TrendingPage() {
                     </Link>
                   </div>
 
-                  {/* 统计信息 */}
+                  {/* Statistics */}
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center space-x-4">
                       {item.type === "work" && (
@@ -530,14 +537,14 @@ export default function TrendingPage() {
                   </div>
                 </div>
 
-                {/* 操作按钮 */}
+                {/* Action buttons */}
                 <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
                   <div className="flex items-center justify-between">
                     <Link
                       href={getItemUrl(item)}
                       className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200"
                     >
-                      查看详情
+                      View Details
                     </Link>
 
                     <div className="flex items-center space-x-2">
@@ -548,7 +555,7 @@ export default function TrendingPage() {
                           className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
                         >
                           <DocumentArrowDownIcon className="h-4 w-4 mr-1" />
-                          下载乐谱
+                          Download Sheet
                         </a>
                       )}
 
@@ -563,8 +570,8 @@ export default function TrendingPage() {
                             <PlayIcon className="h-4 w-4 mr-1" />
                           )}
                           {currentPerformance?.id === item.id && isPlaying
-                            ? "暂停"
-                            : "播放"}
+                            ? "Pause"
+                            : "Play"}
                         </button>
                       )}
                     </div>

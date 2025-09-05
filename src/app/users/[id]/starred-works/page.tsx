@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/components/layout/Providers";
@@ -66,7 +64,9 @@ export default function UserStarredWorksPage() {
         setPagination(response.data.data.pagination);
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "获取收藏作品失败");
+      toast.error(
+        error.response?.data?.error || "Failed to fetch starred works"
+      );
     } finally {
       setLoading(false);
     }
@@ -81,7 +81,7 @@ export default function UserStarredWorksPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">加载中...</p>
+          <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -89,7 +89,7 @@ export default function UserStarredWorksPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 页面头部 */}
+      {/* Page header */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center space-x-4">
@@ -100,16 +100,18 @@ export default function UserStarredWorksPage() {
               <ArrowLeftIcon className="h-5 w-5" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">收藏的作品</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Starred Works
+              </h1>
               <p className="text-gray-600">
-                共收藏了 {pagination?.total || 0} 个作品
+                {pagination?.total || 0} works starred
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 作品列表 */}
+      {/* Works list */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {works.length > 0 ? (
           <div className="space-y-6">
@@ -130,7 +132,8 @@ export default function UserStarredWorksPage() {
                         </Link>
                       </h3>
                       <span className="text-xs text-gray-500">
-                        收藏于 {new Date(work.starredAt).toLocaleDateString()}
+                        Starred on{" "}
+                        {new Date(work.starredAt).toLocaleDateString()}
                       </span>
                     </div>
 
@@ -160,7 +163,7 @@ export default function UserStarredWorksPage() {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm text-gray-500">创作者：</span>
+                      <span className="text-sm text-gray-500">Creator:</span>
                       <Link
                         href={`/users/${work.user.id}`}
                         className="flex items-center space-x-2 text-sm text-primary-600 hover:text-primary-700"
@@ -190,21 +193,21 @@ export default function UserStarredWorksPage() {
           <div className="text-center py-12">
             <StarIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              还没有收藏任何作品
+              No starred works yet
             </h3>
             <p className="text-gray-600 mb-4">
-              去发现页面找到喜欢的作品并收藏吧
+              Go to discover page to find works you like and star them
             </p>
             <Link
               href="/discover"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
             >
-              去发现
+              Discover
             </Link>
           </div>
         )}
 
-        {/* 分页 */}
+        {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
           <div className="mt-8 flex justify-center">
             <nav className="flex items-center space-x-2">
@@ -213,7 +216,7 @@ export default function UserStarredWorksPage() {
                 disabled={currentPage === 1}
                 className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                上一页
+                Previous
               </button>
 
               {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
@@ -246,7 +249,7 @@ export default function UserStarredWorksPage() {
                 disabled={currentPage === pagination.totalPages}
                 className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                下一页
+                Next
               </button>
             </nav>
           </div>
@@ -255,4 +258,3 @@ export default function UserStarredWorksPage() {
     </div>
   );
 }
-

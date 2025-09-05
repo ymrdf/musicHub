@@ -30,15 +30,15 @@ export default function ForgotPasswordPage() {
 
       if (response.data.success) {
         setEmailSent(true);
-        toast.success("密码重置链接已发送");
+        toast.success("Password reset link has been sent");
       } else {
-        toast.error(response.data.error || "发送失败");
+        toast.error(response.data.error || "Send failed");
       }
     } catch (error: any) {
       if (error.response?.data?.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("发送失败，请稍后再试");
+        toast.error("Send failed, please try again later");
       }
     } finally {
       setIsLoading(false);
@@ -60,13 +60,15 @@ export default function ForgotPasswordPage() {
               </span>
             </Link>
             <h2 className="text-3xl font-extrabold text-gray-900">
-              邮件已发送
+              Email Sent
             </h2>
             <p className="mt-4 text-sm text-gray-600">
-              我们已向您的邮箱发送了密码重置链接，请查收邮件并按照说明重置密码。
+              We have sent a password reset link to your email. Please check
+              your email and follow the instructions to reset your password.
             </p>
             <p className="mt-2 text-xs text-gray-500">
-              如果您没有收到邮件，请检查垃圾邮件文件夹，或者等待几分钟后重试。
+              If you don't receive the email, please check your spam folder or
+              wait a few minutes and try again.
             </p>
           </div>
 
@@ -75,13 +77,13 @@ export default function ForgotPasswordPage() {
               href="/auth/login"
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
             >
-              返回登录
+              Back to Login
             </Link>
             <button
               onClick={() => setEmailSent(false)}
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
             >
-              重新发送
+              Resend
             </button>
           </div>
         </div>
@@ -92,7 +94,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        {/* Logo 和标题 */}
+        {/* Logo and title */}
         <div className="text-center">
           <Link
             href="/"
@@ -103,30 +105,32 @@ export default function ForgotPasswordPage() {
               MusicEmit
             </span>
           </Link>
-          <h2 className="text-3xl font-extrabold text-gray-900">忘记密码</h2>
+          <h2 className="text-3xl font-extrabold text-gray-900">
+            Forgot Password
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
-            输入您的邮箱地址，我们将发送密码重置链接给您
+            Enter your email address and we will send you a password reset link
           </p>
         </div>
 
-        {/* 重置表单 */}
+        {/* Reset form */}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label htmlFor="email" className="sr-only">
-              邮箱地址
+              Email Address
             </label>
             <input
               {...register("email", {
-                required: "邮箱不能为空",
+                required: "Email is required",
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "请输入有效的邮箱地址",
+                  message: "Please enter a valid email address",
                 },
               })}
               type="email"
               autoComplete="email"
               className="input-field"
-              placeholder="请输入您的邮箱"
+              placeholder="Enter your email address"
             />
             {errors.email && (
               <p className="mt-1 text-sm text-red-600">
@@ -144,10 +148,10 @@ export default function ForgotPasswordPage() {
               {isLoading ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  发送中...
+                  Sending...
                 </div>
               ) : (
-                "发送重置链接"
+                "Send Reset Link"
               )}
             </button>
           </div>
@@ -157,7 +161,7 @@ export default function ForgotPasswordPage() {
               href="/auth/login"
               className="font-medium text-primary-600 hover:text-primary-500"
             >
-              返回登录
+              Back to Login
             </Link>
           </div>
         </form>

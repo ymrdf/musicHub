@@ -28,10 +28,10 @@ export default function FeedbackPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setErrorMessage(""); // 清除之前的错误信息
+    setErrorMessage(""); // Clear previous error messages
 
     try {
-      // 调用API提交反馈
+      // Call API to submit feedback
       const response = await fetch("/api/feedback", {
         method: "POST",
         headers: {
@@ -43,10 +43,12 @@ export default function FeedbackPage() {
       const data = await response.json();
 
       if (!response.ok || data.success === false) {
-        throw new Error(data.error || data.message || "提交失败");
+        throw new Error(data.error || data.message || "Submission failed");
       }
 
-      toast.success("感谢您的反馈！我们会尽快处理。");
+      toast.success(
+        "Thank you for your feedback! We will process it as soon as possible."
+      );
       setIsSubmitSuccess(true);
       setFormData({
         name: "",
@@ -55,29 +57,31 @@ export default function FeedbackPage() {
         message: "",
       });
     } catch (error) {
-      let friendlyMessage = "未知错误";
+      let friendlyMessage = "Unknown error";
       let technicalMessage = "";
 
       if (error instanceof Error) {
         technicalMessage = error.message;
       }
 
-      // 显示更友好的错误信息
+      // Display user-friendly error messages
       if (
         technicalMessage.includes("Table") &&
         technicalMessage.includes("doesn't exist")
       ) {
-        friendlyMessage = "系统尚未准备好接收反馈，请联系管理员初始化反馈系统";
+        friendlyMessage =
+          "System is not ready to receive feedback, please contact administrator to initialize feedback system";
       } else if (technicalMessage.includes("数据库错误")) {
-        friendlyMessage = "数据库服务暂时不可用，请稍后再试";
+        friendlyMessage =
+          "Database service is temporarily unavailable, please try again later";
       }
 
-      // 设置错误信息状态
+      // Set error message state
       setErrorMessage(friendlyMessage);
 
-      // 显示toast通知
-      toast.error(`提交失败: ${friendlyMessage}`);
-      console.error("提交反馈失败:", error, technicalMessage);
+      // Show toast notification
+      toast.error(`Submission failed: ${friendlyMessage}`);
+      console.error("Failed to submit feedback:", error, technicalMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -95,10 +99,11 @@ export default function FeedbackPage() {
     <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
       <div className="text-center mb-12">
         <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-          提交反馈与建议
+          Submit Feedback & Suggestions
         </h1>
         <p className="mt-4 text-lg text-gray-600">
-          我们非常重视您的意见和建议，这将帮助我们不断改进产品和服务
+          We value your feedback and suggestions, which help us continuously
+          improve our products and services
         </p>
       </div>
 
@@ -122,25 +127,27 @@ export default function FeedbackPage() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              反馈提交成功
+              Feedback Submitted Successfully
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              非常感谢您的宝贵意见和建议！我们会认真阅读并尽快处理您的反馈。
+              Thank you for your valuable feedback and suggestions! We will
+              carefully review and process your feedback as soon as possible.
               <br />
-              您的支持是我们不断进步的动力。
+              Your support is the driving force behind our continuous
+              improvement.
             </p>
             <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
               <button
                 onClick={handleContinueFeedback}
                 className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
-                继续提交反馈
+                Continue Submitting Feedback
               </button>
               <button
                 onClick={handleGoBack}
                 className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
-                返回上一页
+                Go Back
               </button>
             </div>
           </div>
@@ -155,7 +162,7 @@ export default function FeedbackPage() {
                     htmlFor="name"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    您的姓名
+                    Your Name
                   </label>
                   <div className="mt-1">
                     <input
@@ -165,7 +172,7 @@ export default function FeedbackPage() {
                       value={formData.name}
                       onChange={handleChange}
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                      placeholder="请输入您的姓名"
+                      placeholder="Please enter your name"
                     />
                   </div>
                 </div>
@@ -175,7 +182,7 @@ export default function FeedbackPage() {
                     htmlFor="email"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    电子邮箱
+                    Email Address
                   </label>
                   <div className="mt-1">
                     <input
@@ -185,7 +192,7 @@ export default function FeedbackPage() {
                       value={formData.email}
                       onChange={handleChange}
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                      placeholder="请输入您的邮箱"
+                      placeholder="Please enter your email address"
                       required
                     />
                   </div>
@@ -197,7 +204,7 @@ export default function FeedbackPage() {
                   htmlFor="subject"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  反馈类型
+                  Feedback Type
                 </label>
                 <div className="mt-1">
                   <select
@@ -208,12 +215,14 @@ export default function FeedbackPage() {
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                     required
                   >
-                    <option value="">请选择反馈类型</option>
-                    <option value="功能建议">功能建议</option>
-                    <option value="问题报告">问题报告</option>
-                    <option value="内容反馈">内容反馈</option>
-                    <option value="使用体验">使用体验</option>
-                    <option value="其他">其他</option>
+                    <option value="">Please select feedback type</option>
+                    <option value="Feature Suggestion">
+                      Feature Suggestion
+                    </option>
+                    <option value="Bug Report">Bug Report</option>
+                    <option value="Content Feedback">Content Feedback</option>
+                    <option value="User Experience">User Experience</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
               </div>
@@ -223,7 +232,7 @@ export default function FeedbackPage() {
                   htmlFor="message"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  反馈内容
+                  Feedback Content
                 </label>
                 <div className="mt-1">
                   <textarea
@@ -233,7 +242,7 @@ export default function FeedbackPage() {
                     value={formData.message}
                     onChange={handleChange}
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    placeholder="请详细描述您的反馈或建议..."
+                    placeholder="Please describe your feedback or suggestions in detail..."
                     required
                   ></textarea>
                 </div>
@@ -259,7 +268,7 @@ export default function FeedbackPage() {
                     </div>
                     <div className="ml-3">
                       <h3 className="text-sm font-medium text-red-800">
-                        提交失败
+                        Submission Failed
                       </h3>
                       <div className="mt-2 text-sm text-red-700">
                         <p>{errorMessage}</p>
@@ -275,7 +284,7 @@ export default function FeedbackPage() {
                   disabled={isSubmitting}
                   className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? "提交中..." : "提交反馈"}
+                  {isSubmitting ? "Submitting..." : "Submit Feedback"}
                 </button>
               </div>
             </form>
@@ -284,17 +293,22 @@ export default function FeedbackPage() {
       )}
 
       <div className="mt-12 text-center">
-        <h2 className="text-xl font-semibold text-gray-900">其他联系方式</h2>
+        <h2 className="text-xl font-semibold text-gray-900">
+          Other Contact Methods
+        </h2>
         <p className="mt-2 text-gray-600">
-          如果您有紧急问题需要解决，也可以通过以下方式联系我们
+          If you have urgent issues that need to be resolved, you can also
+          contact us through the following methods
         </p>
         <div className="mt-4 flex justify-center space-x-6">
           <div className="text-center">
-            <div className="text-lg font-medium text-gray-900">电子邮箱</div>
+            <div className="text-lg font-medium text-gray-900">Email</div>
             <div className="mt-1 text-gray-600">837856276@qq.com</div>
           </div>
           <div className="text-center">
-            <div className="text-lg font-medium text-gray-900">客服热线</div>
+            <div className="text-lg font-medium text-gray-900">
+              Customer Service
+            </div>
             <div className="mt-1 text-gray-600">+086-15663632812</div>
           </div>
         </div>

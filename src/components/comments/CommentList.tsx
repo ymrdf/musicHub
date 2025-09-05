@@ -17,11 +17,11 @@ export default function CommentList({ performanceId }: CommentListProps) {
   const [hasMore, setHasMore] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // 获取评论列表
+  // Fetch comments list
   const fetchComments = async (pageNum = 1, append = false) => {
     try {
       setLoading(true);
-      // 获取认证令牌
+      // Get authentication token
       const token = localStorage.getItem("token");
 
       const response = await fetch(
@@ -34,7 +34,7 @@ export default function CommentList({ performanceId }: CommentListProps) {
       );
 
       if (!response.ok) {
-        throw new Error("获取评论失败");
+        throw new Error("Failed to fetch comments");
       }
 
       const data: ApiResponse<PaginatedResponse<Comment>> =
@@ -49,7 +49,7 @@ export default function CommentList({ performanceId }: CommentListProps) {
         setHasMore(data.data.page < data.data.totalPages);
         setPage(data.data.page);
       } else {
-        throw new Error(data.error || "获取评论失败");
+        throw new Error(data.error || "Failed to fetch comments");
       }
     } catch (err: any) {
       setError(err.message);
@@ -58,20 +58,20 @@ export default function CommentList({ performanceId }: CommentListProps) {
     }
   };
 
-  // 加载更多评论
+  // Load more comments
   const loadMoreComments = () => {
     if (hasMore && !loading) {
       fetchComments(page + 1, true);
     }
   };
 
-  // 提交新评论
+  // Submit new comment
   const handleSubmitComment = async (content: string) => {
     if (!user) return;
 
     setSubmitting(true);
     try {
-      // 获取认证令牌
+      // Get authentication token
       const token = localStorage.getItem("token");
 
       const response = await fetch(
@@ -87,31 +87,31 @@ export default function CommentList({ performanceId }: CommentListProps) {
       );
 
       if (!response.ok) {
-        throw new Error("提交评论失败");
+        throw new Error("Failed to submit comment");
       }
 
       const data = await response.json();
 
       if (data.success && data.data) {
-        // 将新评论添加到列表顶部
+        // Add new comment to top of list
         setComments((prev) => [data.data, ...prev]);
       } else {
-        throw new Error(data.error || "提交评论失败");
+        throw new Error(data.error || "Failed to submit comment");
       }
     } catch (err: any) {
-      console.error("提交评论失败:", err);
+      console.error("Failed to submit comment:", err);
       alert(err.message);
     } finally {
       setSubmitting(false);
     }
   };
 
-  // 提交回复
+  // Submit reply
   const handleSubmitReply = async (parentId: number, content: string) => {
     if (!user) return;
 
     try {
-      // 获取认证令牌
+      // Get authentication token
       const token = localStorage.getItem("token");
 
       const response = await fetch(
@@ -127,13 +127,13 @@ export default function CommentList({ performanceId }: CommentListProps) {
       );
 
       if (!response.ok) {
-        throw new Error("提交回复失败");
+        throw new Error("Failed to submit reply");
       }
 
       const data = await response.json();
 
       if (data.success && data.data) {
-        // 更新父评论的回复计数
+        // Update parent comment reply count
         setComments((prev) =>
           prev.map((comment) =>
             comment.id === parentId
@@ -142,18 +142,18 @@ export default function CommentList({ performanceId }: CommentListProps) {
           )
         );
       } else {
-        throw new Error(data.error || "提交回复失败");
+        throw new Error(data.error || "Failed to submit reply");
       }
     } catch (err: any) {
-      console.error("提交回复失败:", err);
+      console.error("Failed to submit reply:", err);
       alert(err.message);
     }
   };
 
-  // 删除评论
+  // Delete comment
   const handleDeleteComment = async (commentId: number) => {
     try {
-      // 获取认证令牌
+      // Get authentication token
       const token = localStorage.getItem("token");
 
       const response = await fetch(`/api/comments/${commentId}`, {
@@ -164,38 +164,38 @@ export default function CommentList({ performanceId }: CommentListProps) {
       });
 
       if (!response.ok) {
-        throw new Error("删除评论失败");
+        throw new Error("Failed to delete comment");
       }
 
       const data = await response.json();
 
       if (data.success) {
-        // 从列表中移除评论
+        // Remove comment from list
         setComments((prev) =>
           prev.filter((comment) => comment.id !== commentId)
         );
       } else {
-        throw new Error(data.error || "删除评论失败");
+        throw new Error(data.error || "Failed to delete comment");
       }
     } catch (err: any) {
-      console.error("删除评论失败:", err);
+      console.error("Failed to delete comment:", err);
       alert(err.message);
     }
   };
 
-  // 点赞/取消点赞评论
+  // Like/unlike comment
   const handleLikeComment = async (commentId: number, isLiked: boolean) => {
     if (!user) {
-      alert("请先登录");
+      alert("Please login first");
       return;
     }
 
     try {
-      // 获取认证令牌
+      // Get authentication token
       const token = localStorage.getItem("token");
 
       if (!token) {
-        alert("请先登录");
+        alert("Please login first");
         return;
       }
 
@@ -210,14 +210,14 @@ export default function CommentList({ performanceId }: CommentListProps) {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
-          errorData.error || (isLiked ? "取消点赞失败" : "点赞失败")
+          errorData.error || (isLiked ? "取消Failed to like" : "Failed to like")
         );
       }
 
       const data = await response.json();
 
       if (data.success) {
-        // 更新评论的点赞状态和计数
+        // Update comment like status and count
         setComments((prev) =>
           prev.map((comment) =>
             comment.id === commentId
@@ -232,15 +232,17 @@ export default function CommentList({ performanceId }: CommentListProps) {
           )
         );
       } else {
-        throw new Error(data.error || (isLiked ? "取消点赞失败" : "点赞失败"));
+        throw new Error(
+          data.error || (isLiked ? "取消Failed to like" : "Failed to like")
+        );
       }
     } catch (err: any) {
-      console.error(isLiked ? "取消点赞失败" : "点赞失败", err);
+      console.error(isLiked ? "取消Failed to like" : "Failed to like", err);
       alert(err.message);
     }
   };
 
-  // 初始加载评论
+  // Initial load comments
   useEffect(() => {
     if (performanceId) {
       fetchComments();
@@ -249,12 +251,12 @@ export default function CommentList({ performanceId }: CommentListProps) {
 
   return (
     <div>
-      {/* 评论表单 */}
+      {/* Comment form */}
       <div className="mb-6">
         <CommentForm onSubmit={handleSubmitComment} />
       </div>
 
-      {/* 评论列表 */}
+      {/* Comment list */}
       {loading && comments.length === 0 ? (
         <div className="flex justify-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
@@ -263,7 +265,7 @@ export default function CommentList({ performanceId }: CommentListProps) {
         <div className="text-center py-8 text-red-500">{error}</div>
       ) : comments.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
-          暂无评论，快来发表第一条评论吧！
+          No comments yet, be the first to comment!
         </div>
       ) : (
         <div className="space-y-6">
@@ -277,7 +279,7 @@ export default function CommentList({ performanceId }: CommentListProps) {
             />
           ))}
 
-          {/* 加载更多按钮 */}
+          {/* Load more button */}
           {hasMore && (
             <div className="text-center pt-4">
               <button
@@ -285,7 +287,7 @@ export default function CommentList({ performanceId }: CommentListProps) {
                 disabled={loading}
                 className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
               >
-                {loading ? "加载中..." : "加载更多评论"}
+                {loading ? "Loading..." : "Load More Comments"}
               </button>
             </div>
           )}

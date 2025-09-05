@@ -35,7 +35,7 @@ export default function PerformanceList({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 如果没有初始数据，则获取演奏列表
+  // If no initial data, fetch performance list
   useEffect(() => {
     if (initialPerformances.length === 0) {
       fetchPerformances();
@@ -51,7 +51,7 @@ export default function PerformanceList({
         const data = await response.json();
         setPerformances(data.data.performances);
       } else {
-        throw new Error("获取演奏列表失败");
+        throw new Error("Failed to fetch performance list");
       }
     } catch (error: any) {
       setError(error.message);
@@ -62,14 +62,14 @@ export default function PerformanceList({
 
   const handlePlay = (performance: Performance) => {
     if (currentPerformance?.id === performance.id) {
-      // 如果点击的是当前播放的演奏，则暂停/播放
+      // If clicking on currently playing performance, pause/play
       if (isPlaying) {
         pause();
       } else {
         play();
       }
     } else {
-      // 播放新的演奏
+      // Play new performance
       play(performance);
     }
   };
@@ -87,7 +87,7 @@ export default function PerformanceList({
       });
 
       if (response.ok) {
-        // 更新本地状态
+        // Update local state
         setPerformances((prev) =>
           prev.map((p) =>
             p.id === performance.id
@@ -101,7 +101,7 @@ export default function PerformanceList({
         );
       }
     } catch (error) {
-      console.error("点赞失败:", error);
+      console.error("Like failed:", error);
     }
   };
 
@@ -136,7 +136,7 @@ export default function PerformanceList({
       <div className="text-center py-8">
         <p className="text-red-600 mb-4">{error}</p>
         <button onClick={fetchPerformances} className="btn-primary">
-          重试
+          Retry
         </button>
       </div>
     );
@@ -147,15 +147,17 @@ export default function PerformanceList({
       <div className="text-center py-12">
         <MusicalNoteIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-gray-900 mb-2">
-          还没有人演奏过这首作品
+          No one has performed this work yet
         </h3>
-        <p className="text-gray-500 mb-4">成为第一个分享演奏的人吧！</p>
+        <p className="text-gray-500 mb-4">
+          Be the first to share a performance!
+        </p>
         {currentUser && (
           <button
             onClick={() => router.push(`/performances/new?workId=${workId}`)}
             className="btn-primary"
           >
-            上传我的演奏
+            Upload My Performance
           </button>
         )}
       </div>
@@ -174,7 +176,7 @@ export default function PerformanceList({
             className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
           >
             <div className="flex items-start space-x-4">
-              {/* 播放按钮 */}
+              {/* Play button */}
               <button
                 onClick={() => handlePlay(performance)}
                 className="flex-shrink-0 w-12 h-12 bg-primary-100 hover:bg-primary-200 rounded-full flex items-center justify-center transition-colors"
@@ -186,7 +188,7 @@ export default function PerformanceList({
                 )}
               </button>
 
-              {/* 演奏信息 */}
+              {/* Performance info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2 mb-2">
                   <Link
@@ -198,7 +200,9 @@ export default function PerformanceList({
                     </h3>
                   </Link>
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                    {performance.type === "instrumental" ? "器乐" : "声乐"}
+                    {performance.type === "instrumental"
+                      ? "Instrumental"
+                      : "Vocal"}
                   </span>
                 </div>
 
@@ -209,7 +213,9 @@ export default function PerformanceList({
                     ) : (
                       <MicrophoneIcon className="h-4 w-4" />
                     )}
-                    <span>{performance.instrument || "未知乐器"}</span>
+                    <span>
+                      {performance.instrument || "Unknown instrument"}
+                    </span>
                   </div>
 
                   {performance.duration && (
@@ -227,7 +233,7 @@ export default function PerformanceList({
                   </p>
                 )}
 
-                {/* 演奏者信息 */}
+                {/* Performer info */}
                 <div className="flex items-center space-x-2 mb-3">
                   {performance.user?.avatarUrl ? (
                     <img
@@ -246,7 +252,7 @@ export default function PerformanceList({
                   </span>
                 </div>
 
-                {/* 统计信息 */}
+                {/* Statistics */}
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
                   <button
                     onClick={() => handleLike(performance)}

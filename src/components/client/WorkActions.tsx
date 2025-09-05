@@ -41,24 +41,24 @@ export default function WorkActions({
       setStarLoading(true);
 
       if (isStarred) {
-        // 取消收藏
+        // Unstar
         const response = await axios.delete(`/api/works/${workId}/star`);
         if (response.data.success) {
           setIsStarred(false);
           setStarsCount(response.data.data.starsCount);
-          toast.success("取消收藏成功");
+          toast.success("Unstarred successfully");
         }
       } else {
-        // 收藏
+        // Star
         const response = await axios.post(`/api/works/${workId}/star`);
         if (response.data.success) {
           setIsStarred(true);
           setStarsCount(response.data.data.starsCount);
-          toast.success("收藏成功");
+          toast.success("Starred successfully");
         }
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "操作失败");
+      toast.error(error.response?.data?.error || "Operation failed");
     } finally {
       setStarLoading(false);
     }
@@ -73,18 +73,20 @@ export default function WorkActions({
       });
     } else {
       navigator.clipboard.writeText(window.location.href);
-      toast.success("链接已复制到剪贴板");
+      toast.success("Link copied to clipboard");
     }
   };
 
   const handleDelete = async () => {
-    // 第一次确认
-    if (!confirm("确定要删除这个作品吗？")) {
+    // First confirmation
+    if (!confirm("Are you sure you want to delete this work?")) {
       return;
     }
 
-    // 第二次确认，防止误操作
-    if (!confirm("此操作不可恢复，再次确认要删除吗？")) {
+    // Second confirmation to prevent accidental deletion
+    if (
+      !confirm("This action cannot be undone. Are you sure you want to delete?")
+    ) {
       return;
     }
 
@@ -94,19 +96,21 @@ export default function WorkActions({
       const response = await axios.delete(`/api/works/${workId}`);
 
       if (response.data.success) {
-        toast.success("作品删除成功");
+        toast.success("Work deleted successfully");
         router.push(`/users/${response.data.data.userId}`);
       } else {
-        toast.error(response.data.error || "删除失败");
+        toast.error(response.data.error || "Delete failed");
       }
     } catch (error: any) {
-      console.error("删除作品失败:", error);
+      console.error("Failed to delete work:", error);
       if (error.response?.status === 403) {
-        toast.error("您没有权限删除此作品");
+        toast.error("You don't have permission to delete this work");
       } else if (error.response?.status === 404) {
-        toast.error("作品不存在");
+        toast.error("Work does not exist");
       } else {
-        toast.error(error.response?.data?.error || "删除失败，请稍后重试");
+        toast.error(
+          error.response?.data?.error || "Delete failed, please try again later"
+        );
       }
     } finally {
       setDeleteLoading(false);
@@ -122,7 +126,7 @@ export default function WorkActions({
             className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
           >
             <PencilIcon className="h-4 w-4 mr-1" />
-            编辑
+            Edit
           </Link>
           <button
             onClick={handleDelete}
@@ -134,7 +138,7 @@ export default function WorkActions({
             ) : (
               <TrashIcon className="h-4 w-4 mr-1" />
             )}
-            {deleteLoading ? "删除中..." : "删除"}
+            {deleteLoading ? "Deleting..." : "Delete"}
           </button>
         </>
       )}
@@ -155,7 +159,7 @@ export default function WorkActions({
         ) : (
           <StarIcon className="h-4 w-4 mr-2" />
         )}
-        {isStarred ? "已收藏" : "收藏"} ({starsCount})
+        {isStarred ? "Starred" : "Star"} ({starsCount})
       </button>
 
       <button
@@ -163,7 +167,7 @@ export default function WorkActions({
         className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
       >
         <ShareIcon className="h-4 w-4 mr-1" />
-        分享
+        Share
       </button>
     </div>
   );

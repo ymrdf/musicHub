@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN">
+    <html lang="en">
       <body className={inter.className} suppressHydrationWarning={true}>
         <Providers>
           <div className="min-h-screen flex flex-col bg-gray-50">

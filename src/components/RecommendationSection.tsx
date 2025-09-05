@@ -71,7 +71,7 @@ export default function RecommendationSection({
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
             <button className="flex items-center text-primary-600 hover:text-primary-700 font-medium">
-              查看全部
+              View All
               <ArrowRightIcon className="h-4 w-4 ml-1" />
             </button>
           </div>
@@ -119,7 +119,7 @@ export default function RecommendationSection({
             onClick={handleViewAll}
             className="flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors"
           >
-            查看全部
+            View All
             <ArrowRightIcon className="h-4 w-4 ml-1" />
           </button>
         </div>

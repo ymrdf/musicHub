@@ -113,7 +113,7 @@ export default function WorkForm({
     },
   });
 
-  // 获取分类和标签数据
+  // Fetch categories and tags data
   useEffect(() => {
     fetchCategories();
     fetchTags();
@@ -124,7 +124,7 @@ export default function WorkForm({
   }, [mode, initialData]);
 
   const initializeFormData = (workData: WorkDetail) => {
-    // 设置表单默认值
+    // Set form default values
     reset({
       title: workData.title,
       description: workData.description || "",
@@ -136,10 +136,10 @@ export default function WorkForm({
       license: workData.license,
     });
 
-    // 设置标签
+    // Set tags
     setSelectedTags(workData.tags.map((tag) => tag.name));
 
-    // 设置文件URL
+    // Set file URLs
     if (workData.pdfFilePath) {
       setPdfUrl(workData.pdfFilePath);
     }
@@ -157,7 +157,7 @@ export default function WorkForm({
         setCategories(response.data.data);
       }
     } catch (error) {
-      console.error("获取分类失败:", error);
+      console.error("Failed to fetch categories:", error);
     }
   };
 
@@ -168,7 +168,7 @@ export default function WorkForm({
         setTags(response.data.data);
       }
     } catch (error) {
-      console.error("获取标签失败:", error);
+      console.error("Failed to fetch tags:", error);
     }
   };
 
@@ -185,13 +185,13 @@ export default function WorkForm({
       if (response.data.success) {
         setPdfUrl(response.data.data.url);
         setPdfFile(null);
-        toast.success("PDF文件上传成功");
+        toast.success("PDF file uploaded successfully");
       } else {
-        toast.error(response.data.error || "PDF文件上传失败");
+        toast.error(response.data.error || "PDF file upload failed");
       }
     } catch (error: any) {
-      console.error("PDF文件上传失败:", error);
-      toast.error(error.response?.data?.error || "PDF文件上传失败");
+      console.error("PDF file upload failed:", error);
+      toast.error(error.response?.data?.error || "PDF file upload failed");
     } finally {
       setPdfUploading(false);
     }
@@ -210,13 +210,13 @@ export default function WorkForm({
       if (response.data.success) {
         setMidiUrl(response.data.data.url);
         setMidiFile(null);
-        toast.success("MIDI文件上传成功");
+        toast.success("MIDI file uploaded successfully");
       } else {
-        toast.error(response.data.error || "MIDI文件上传失败");
+        toast.error(response.data.error || "MIDI file upload failed");
       }
     } catch (error: any) {
-      console.error("MIDI文件上传失败:", error);
-      toast.error(error.response?.data?.error || "MIDI文件上传失败");
+      console.error("MIDI file upload failed:", error);
+      toast.error(error.response?.data?.error || "MIDI file upload failed");
     } finally {
       setMidiUploading(false);
     }
@@ -253,17 +253,25 @@ export default function WorkForm({
 
       if (response.data.success) {
         const successMessage =
-          mode === "create" ? "作品创建成功" : "作品更新成功";
+          mode === "create"
+            ? "Work created successfully"
+            : "Work updated successfully";
         toast.success(successMessage);
 
         const newWorkId = mode === "create" ? response.data.data.id : workId!;
         onSuccess(newWorkId);
       } else {
-        toast.error(response.data.error || "操作失败");
+        toast.error(response.data.error || "Operation failed");
       }
     } catch (error: any) {
-      console.error(`${mode === "create" ? "创建" : "更新"}作品失败:`, error);
-      toast.error(error.response?.data?.error || "操作失败，请稍后重试");
+      console.error(
+        `${mode === "create" ? "Create" : "Update"} work failed:`,
+        error
+      );
+      toast.error(
+        error.response?.data?.error ||
+          "Operation failed, please try again later"
+      );
     } finally {
       setSaving(false);
     }
@@ -274,7 +282,7 @@ export default function WorkForm({
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">加载中...</p>
+          <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -282,23 +290,25 @@ export default function WorkForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* 基本信息 */}
+      {/* Basic Information */}
       <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">基本信息</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Basic Information
+        </h3>
         <div className="grid grid-cols-1 gap-4">
           <div>
             <label
               htmlFor="title"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              作品标题 *
+              Work Title *
             </label>
             <input
               type="text"
               id="title"
-              {...register("title", { required: "请输入作品标题" })}
+              {...register("title", { required: "Please enter work title" })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="请输入作品标题"
+              placeholder="Enter work title"
             />
             {errors.title && (
               <p className="mt-1 text-sm text-red-600">
@@ -312,36 +322,38 @@ export default function WorkForm({
               htmlFor="description"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              作品描述
+              Work Description
             </label>
             <textarea
               id="description"
               rows={4}
               {...register("description")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="请输入作品描述（可选）"
+              placeholder="Enter work description (optional)"
             />
           </div>
         </div>
       </div>
 
-      {/* 分类信息 */}
+      {/* Category Information */}
       <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">分类信息</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Category Information
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label
               htmlFor="genreId"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              曲种
+              Genre
             </label>
             <select
               id="genreId"
               {...register("genreId")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
-              <option value="">选择曲种</option>
+              <option value="">Select Genre</option>
               {categories.genre.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -355,14 +367,14 @@ export default function WorkForm({
               htmlFor="instrumentId"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              乐器
+              Instrument
             </label>
             <select
               id="instrumentId"
               {...register("instrumentId")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
-              <option value="">选择乐器</option>
+              <option value="">Select Instrument</option>
               {categories.instrument.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -376,14 +388,14 @@ export default function WorkForm({
               htmlFor="purposeId"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              用途
+              Purpose
             </label>
             <select
               id="purposeId"
               {...register("purposeId")}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
-              <option value="">选择用途</option>
+              <option value="">Select Purpose</option>
               {categories.purpose.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -394,9 +406,9 @@ export default function WorkForm({
         </div>
       </div>
 
-      {/* 标签 */}
+      {/* Tags */}
       <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">标签</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Tags</h3>
         <div className="space-y-3">
           <div className="flex space-x-2">
             <input
@@ -407,7 +419,7 @@ export default function WorkForm({
                 e.key === "Enter" && (e.preventDefault(), addTag())
               }
               className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="输入标签名称，按回车添加"
+              placeholder="Enter tag name, press Enter to add"
             />
             <button
               type="button"
@@ -440,33 +452,37 @@ export default function WorkForm({
         </div>
       </div>
 
-      {/* 文件上传 */}
+      {/* File upload */}
       <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">文件管理</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          File Management
+        </h3>
         <div className="space-y-4">
-          {/* PDF文件 */}
+          {/* PDF file */}
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <DocumentArrowUpIcon className="h-6 w-6 text-red-500 mr-2" />
-                <span className="font-medium text-gray-900">PDF乐谱</span>
+                <span className="font-medium text-gray-900">
+                  PDF Sheet Music
+                </span>
               </div>
               {pdfUrl && (
-                <span className="text-sm text-green-600">✓ 已上传</span>
+                <span className="text-sm text-green-600">✓ Uploaded</span>
               )}
             </div>
 
             {pdfUrl ? (
               <div className="mb-3">
                 <p className="text-sm text-gray-600 mb-2">
-                  当前文件：{pdfUrl.split("/").pop()}
+                  Current file:{pdfUrl.split("/").pop()}
                 </p>
                 <button
                   type="button"
                   onClick={() => setPdfUrl("")}
                   className="text-sm text-red-600 hover:text-red-800"
                 >
-                  移除文件
+                  Remove File
                 </button>
               </div>
             ) : (
@@ -483,7 +499,7 @@ export default function WorkForm({
                   className="cursor-pointer text-primary-600 hover:text-primary-800"
                 >
                   <DocumentArrowUpIcon className="h-8 w-8 mx-auto mb-2" />
-                  <p>点击上传PDF文件</p>
+                  <p>Click to upload PDF file</p>
                 </label>
               </div>
             )}
@@ -496,35 +512,35 @@ export default function WorkForm({
                   disabled={pdfUploading}
                   className="w-full px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
                 >
-                  {pdfUploading ? "上传中..." : "上传PDF文件"}
+                  {pdfUploading ? "Uploading..." : "Upload PDF File"}
                 </button>
               </div>
             )}
           </div>
 
-          {/* MIDI文件 */}
+          {/* MIDI file */}
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <MusicalNoteIcon className="h-6 w-6 text-blue-500 mr-2" />
-                <span className="font-medium text-gray-900">MIDI文件</span>
+                <span className="font-medium text-gray-900">MIDI File</span>
               </div>
               {midiUrl && (
-                <span className="text-sm text-green-600">✓ 已上传</span>
+                <span className="text-sm text-green-600">✓ Uploaded</span>
               )}
             </div>
 
             {midiUrl ? (
               <div className="mb-3">
                 <p className="text-sm text-gray-600 mb-2">
-                  当前文件：{midiUrl.split("/").pop()}
+                  Current file:{midiUrl.split("/").pop()}
                 </p>
                 <button
                   type="button"
                   onClick={() => setMidiUrl("")}
                   className="text-sm text-red-600 hover:text-red-800"
                 >
-                  移除文件
+                  Remove File
                 </button>
               </div>
             ) : (
@@ -541,7 +557,7 @@ export default function WorkForm({
                   className="cursor-pointer text-primary-600 hover:text-primary-800"
                 >
                   <MusicalNoteIcon className="h-8 w-8 mx-auto mb-2" />
-                  <p>点击上传MIDI文件</p>
+                  <p>Click to upload MIDI file</p>
                 </label>
               </div>
             )}
@@ -554,7 +570,7 @@ export default function WorkForm({
                   disabled={midiUploading}
                   className="w-full px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
                 >
-                  {midiUploading ? "上传中..." : "上传MIDI文件"}
+                  {midiUploading ? "Uploading..." : "Upload MIDI File"}
                 </button>
               </div>
             )}
@@ -562,9 +578,9 @@ export default function WorkForm({
         </div>
       </div>
 
-      {/* 设置 */}
+      {/* Settings */}
       <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">设置</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Settings</h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
@@ -572,10 +588,10 @@ export default function WorkForm({
                 htmlFor="isPublic"
                 className="text-sm font-medium text-gray-700"
               >
-                公开作品
+                Public Work
               </label>
               <p className="text-sm text-gray-500">
-                其他用户可以查看和下载此作品
+                Other users can view and download this work
               </p>
             </div>
             <input
@@ -592,10 +608,10 @@ export default function WorkForm({
                 htmlFor="allowCollaboration"
                 className="text-sm font-medium text-gray-700"
               >
-                允许协作
+                Allow Collaboration
               </label>
               <p className="text-sm text-gray-500">
-                其他用户可以为此作品贡献演奏
+                Other users can contribute performances to this work
               </p>
             </div>
             <input
@@ -611,7 +627,7 @@ export default function WorkForm({
               htmlFor="license"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              许可证
+              License
             </label>
             <select
               id="license"
@@ -619,34 +635,40 @@ export default function WorkForm({
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="CC BY-SA 4.0">
-                CC BY-SA 4.0 (署名-相同方式共享)
+                CC BY-SA 4.0 (Attribution-ShareAlike)
               </option>
-              <option value="CC BY 4.0">CC BY 4.0 (署名)</option>
+              <option value="CC BY 4.0">CC BY 4.0 (Attribution)</option>
               <option value="CC BY-NC 4.0">
-                CC BY-NC 4.0 (署名-非商业性使用)
+                CC BY-NC 4.0 (Attribution-NonCommercial)
               </option>
-              <option value="CC BY-ND 4.0">CC BY-ND 4.0 (署名-禁止演绎)</option>
-              <option value="CC0 1.0">CC0 1.0 (公共领域)</option>
+              <option value="CC BY-ND 4.0">
+                CC BY-ND 4.0 (Attribution-NoDerivs)
+              </option>
+              <option value="CC0 1.0">CC0 1.0 (Public Domain)</option>
             </select>
           </div>
         </div>
       </div>
 
-      {/* 提交按钮 */}
+      {/* Submit buttons */}
       <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
         <button
           type="button"
           onClick={onCancel}
           className="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
         >
-          取消
+          Cancel
         </button>
         <button
           type="submit"
           disabled={saving}
           className="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50"
         >
-          {saving ? "保存中..." : mode === "create" ? "创建作品" : "保存更改"}
+          {saving
+            ? "Saving..."
+            : mode === "create"
+            ? "Create Work"
+            : "Save Changes"}
         </button>
       </div>
     </form>

@@ -14,9 +14,11 @@ export default function PrivacyPolicyPage() {
           <div className="flex justify-center mb-4">
             <ShieldCheckIcon className="h-12 w-12 text-primary-600" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">隐私政策</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Privacy Policy
+          </h1>
           <p className="text-lg text-gray-600">
-            最后更新时间：{new Date().toLocaleDateString("zh-CN")}
+            Last updated: {new Date().toLocaleDateString("en-US")}
           </p>
         </div>
 
@@ -26,12 +28,15 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
               <DocumentTextIcon className="h-6 w-6 mr-2 text-primary-600" />
-              概述
+              Overview
             </h2>
             <div className="prose prose-gray max-w-none">
               <p className="text-gray-700 leading-relaxed">
-                MusicEmit（以下简称"我们"）非常重视您的隐私保护。本隐私政策说明了我们如何收集、使用、存储和保护您的个人信息。
-                通过使用我们的服务，您同意我们按照本政策处理您的信息。
+                MusicEmit (referred to as "we," "us," or "our") takes your
+                privacy seriously. This privacy policy explains how we collect,
+                use, store, and protect your personal information. By using our
+                services, you agree to our processing of your information in
+                accordance with this policy.
               </p>
             </div>
           </section>
@@ -40,29 +45,42 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
               <EyeIcon className="h-6 w-6 mr-2 text-primary-600" />
-              我们收集的信息
+              Information We Collect
             </h2>
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  您主动提供的信息
+                  Information You Provide
                 </h3>
                 <ul className="list-disc list-inside text-gray-700 space-y-1 ml-4">
-                  <li>注册信息：用户名、邮箱地址、密码</li>
-                  <li>个人资料：头像、个人简介、音乐偏好</li>
-                  <li>音乐作品：乐谱文件（PDF）、MIDI文件、音频文件</li>
-                  <li>演奏作品：录音文件、演奏描述</li>
-                  <li>互动内容：评论、点赞、收藏记录</li>
+                  <li>
+                    Registration information: username, email address, password
+                  </li>
+                  <li>Profile information: avatar, bio, music preferences</li>
+                  <li>
+                    Musical works: sheet music files (PDF), MIDI files, audio
+                    files
+                  </li>
+                  <li>
+                    Performance works: recording files, performance descriptions
+                  </li>
+                  <li>Interactive content: comments, likes, favorites</li>
                 </ul>
               </div>
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  自动收集的信息
+                  Automatically Collected Information
                 </h3>
                 <ul className="list-disc list-inside text-gray-700 space-y-1 ml-4">
-                  <li>设备信息：IP地址、浏览器类型、操作系统</li>
-                  <li>使用数据：访问时间、页面浏览、功能使用情况</li>
-                  <li>Cookies：用于改善用户体验和网站功能</li>
+                  <li>
+                    Device information: IP address, browser type, operating
+                    system
+                  </li>
+                  <li>Usage data: access times, page views, feature usage</li>
+                  <li>
+                    Cookies: used to improve user experience and website
+                    functionality
+                  </li>
                 </ul>
               </div>
             </div>
@@ -71,21 +89,23 @@ export default function PrivacyPolicyPage() {
           {/* 信息使用 */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              信息使用
+              How We Use Information
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                我们使用收集的信息用于以下目的：
+                We use the collected information for the following purposes:
               </p>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                <li>提供和改进我们的音乐分享服务</li>
-                <li>处理您的注册、登录和账户管理</li>
-                <li>展示您的音乐作品和演奏内容</li>
-                <li>促进用户之间的互动和协作</li>
-                <li>发送服务通知和重要更新</li>
-                <li>分析使用情况以改善用户体验</li>
-                <li>防止欺诈和滥用行为</li>
-                <li>遵守法律法规要求</li>
+                <li>Providing and improving our music sharing services</li>
+                <li>
+                  Processing your registration, login, and account management
+                </li>
+                <li>Displaying your musical works and performance content</li>
+                <li>Facilitating user interaction and collaboration</li>
+                <li>Sending service notifications and important updates</li>
+                <li>Analyzing usage to improve user experience</li>
+                <li>Preventing fraud and abuse</li>
+                <li>Complying with legal and regulatory requirements</li>
               </ul>
             </div>
           </section>
@@ -93,19 +113,31 @@ export default function PrivacyPolicyPage() {
           {/* 信息共享 */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              信息共享
+              Information Sharing
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                我们不会出售、出租或交易您的个人信息。在以下情况下，我们可能会共享您的信息：
+                We do not sell, rent, or trade your personal information. We may
+                share your information in the following circumstances:
               </p>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                <li>获得您的明确同意</li>
-                <li>与您主动分享的音乐作品和演奏内容（根据您的隐私设置）</li>
-                <li>与我们的服务提供商合作（如云存储、分析服务）</li>
-                <li>遵守法律法规或政府要求</li>
-                <li>保护我们的权利、财产或安全</li>
-                <li>在业务转让或合并时（会提前通知您）</li>
+                <li>With your explicit consent</li>
+                <li>
+                  Musical works and performance content you actively share
+                  (according to your privacy settings)
+                </li>
+                <li>
+                  With our service providers (such as cloud storage, analytics
+                  services)
+                </li>
+                <li>
+                  To comply with legal regulations or government requirements
+                </li>
+                <li>To protect our rights, property, or safety</li>
+                <li>
+                  In case of business transfer or merger (we will notify you in
+                  advance)
+                </li>
               </ul>
             </div>
           </section>
@@ -114,22 +146,31 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
               <LockClosedIcon className="h-6 w-6 mr-2 text-primary-600" />
-              数据安全
+              Data Security
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                我们采用行业标准的安全措施保护您的信息：
+                We implement industry-standard security measures to protect your
+                information:
               </p>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                <li>使用加密技术保护数据传输和存储</li>
-                <li>实施访问控制和身份验证机制</li>
-                <li>定期安全审计和漏洞扫描</li>
-                <li>员工安全培训和保密协议</li>
-                <li>数据备份和灾难恢复计划</li>
+                <li>
+                  Using encryption technology to protect data transmission and
+                  storage
+                </li>
+                <li>
+                  Implementing access controls and authentication mechanisms
+                </li>
+                <li>Regular security audits and vulnerability scanning</li>
+                <li>
+                  Employee security training and confidentiality agreements
+                </li>
+                <li>Data backup and disaster recovery plans</li>
               </ul>
               <p className="text-gray-700 leading-relaxed">
-                尽管我们采取了这些措施，但请注意互联网传输和电子存储方法并非100%安全。
-                我们无法保证信息的绝对安全。
+                While we take these measures, please note that internet
+                transmission and electronic storage methods are not 100% secure.
+                We cannot guarantee absolute security of information.
               </p>
             </div>
           </section>
@@ -137,22 +178,25 @@ export default function PrivacyPolicyPage() {
           {/* 您的权利 */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              您的权利
+              Your Rights
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                根据适用法律，您享有以下权利：
+                Under applicable law, you have the following rights:
               </p>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                <li>访问和查看我们持有的您的个人信息</li>
-                <li>更正或更新不准确的信息</li>
-                <li>删除您的账户和相关数据</li>
-                <li>限制或反对处理您的信息</li>
-                <li>数据可携带性（以结构化格式获取您的数据）</li>
-                <li>撤回同意（如果处理基于同意）</li>
+                <li>Access and view your personal information we hold</li>
+                <li>Correct or update inaccurate information</li>
+                <li>Delete your account and related data</li>
+                <li>Restrict or object to processing of your information</li>
+                <li>
+                  Data portability (obtain your data in a structured format)
+                </li>
+                <li>Withdraw consent (if processing is based on consent)</li>
               </ul>
               <p className="text-gray-700 leading-relaxed">
-                如需行使这些权利，请通过以下方式联系我们。
+                To exercise these rights, please contact us using the methods
+                below.
               </p>
             </div>
           </section>
@@ -160,20 +204,21 @@ export default function PrivacyPolicyPage() {
           {/* Cookies */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Cookies 和类似技术
+              Cookies and Similar Technologies
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                我们使用 Cookies 和类似技术来：
+                We use cookies and similar technologies to:
               </p>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                <li>记住您的登录状态和偏好设置</li>
-                <li>分析网站使用情况和性能</li>
-                <li>提供个性化内容和推荐</li>
-                <li>改善网站功能和用户体验</li>
+                <li>Remember your login status and preferences</li>
+                <li>Analyze website usage and performance</li>
+                <li>Provide personalized content and recommendations</li>
+                <li>Improve website functionality and user experience</li>
               </ul>
               <p className="text-gray-700 leading-relaxed">
-                您可以通过浏览器设置管理 Cookies，但这可能影响某些功能的使用。
+                You can manage cookies through your browser settings, but this
+                may affect the use of certain features.
               </p>
             </div>
           </section>
@@ -181,12 +226,15 @@ export default function PrivacyPolicyPage() {
           {/* 儿童隐私 */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              儿童隐私
+              Children's Privacy
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                我们的服务不面向13岁以下的儿童。我们不会故意收集13岁以下儿童的个人信息。
-                如果您是父母或监护人，发现您的孩子向我们提供了个人信息，请立即联系我们。
+                Our services are not directed to children under 13 years of age.
+                We do not knowingly collect personal information from children
+                under 13. If you are a parent or guardian and discover that your
+                child has provided us with personal information, please contact
+                us immediately.
               </p>
             </div>
           </section>
@@ -194,12 +242,14 @@ export default function PrivacyPolicyPage() {
           {/* 国际传输 */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              国际数据传输
+              International Data Transfer
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                您的信息可能被传输到您所在国家/地区以外的服务器进行处理和存储。
-                我们会确保这些传输符合适用的数据保护法律，并采取适当的安全措施。
+                Your information may be transferred to servers outside your
+                country/region for processing and storage. We ensure these
+                transfers comply with applicable data protection laws and
+                implement appropriate security measures.
               </p>
             </div>
           </section>
@@ -207,19 +257,21 @@ export default function PrivacyPolicyPage() {
           {/* 政策更新 */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              政策更新
+              Policy Updates
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                我们可能会不时更新本隐私政策。重大变更时，我们会：
+                We may update this privacy policy from time to time. For
+                significant changes, we will:
               </p>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-                <li>在网站上发布更新后的政策</li>
-                <li>通过邮件或应用内通知您</li>
-                <li>在政策顶部更新"最后更新时间"</li>
+                <li>Post the updated policy on our website</li>
+                <li>Notify you via email or in-app notification</li>
+                <li>Update the "Last updated" date at the top of the policy</li>
               </ul>
               <p className="text-gray-700 leading-relaxed">
-                建议您定期查看本政策以了解我们如何处理您的信息。
+                We recommend that you review this policy regularly to understand
+                how we handle your information.
               </p>
             </div>
           </section>
@@ -227,25 +279,26 @@ export default function PrivacyPolicyPage() {
           {/* 联系我们 */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              联系我们
+              Contact Us
             </h2>
             <div className="space-y-4">
               <p className="text-gray-700 leading-relaxed">
-                如果您对本隐私政策有任何疑问、意见或投诉，请通过以下方式联系我们：
+                If you have any questions, comments, or complaints about this
+                privacy policy, please contact us through the following methods:
               </p>
               <div className="bg-gray-50 rounded-lg p-4">
                 <p className="text-gray-700">
-                  <strong>邮箱：</strong> 837856276@qq.com
+                  <strong>Email:</strong> 837856276@qq.com
                 </p>
                 <p className="text-gray-700">
-                  <strong>地址：</strong> 中国上海
+                  <strong>Address:</strong> Shanghai, China
                 </p>
                 <p className="text-gray-700">
-                  <strong>电话：</strong> +086-15663632812
+                  <strong>Phone:</strong> +86-15663632812
                 </p>
               </div>
               <p className="text-gray-700 leading-relaxed">
-                我们会在合理时间内回复您的询问。
+                We will respond to your inquiries within a reasonable time.
               </p>
             </div>
           </section>
@@ -257,7 +310,7 @@ export default function PrivacyPolicyPage() {
             href="/"
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-colors duration-200"
           >
-            返回首页
+            Back to Home
           </a>
         </div>
       </div>

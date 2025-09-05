@@ -8,22 +8,22 @@ export function Footer() {
 
   const footerLinks = {
     product: [
-      { name: "发现音乐", href: "/discover" },
-      { name: "热榜", href: "/trending" },
-      { name: "创建作品", href: "/works/new" },
-      { name: "用户指南", href: "/help" },
+      { name: "Discover", href: "/discover" },
+      { name: "Trending", href: "/trending" },
+      { name: "Create Work", href: "/works/new" },
+      { name: "User Guide", href: "/help" },
     ],
     community: [
-      { name: "音乐论坛", href: "/forum" },
-      { name: "创作者中心", href: "/creators" },
-      { name: "音乐教程", href: "/tutorials" },
-      { name: "活动公告", href: "/events" },
+      { name: "Music Forum", href: "/forum" },
+      { name: "Creator Center", href: "/creators" },
+      { name: "Music Tutorials", href: "/tutorials" },
+      { name: "Events", href: "/events" },
     ],
     company: [
-      { name: "关于我们", href: "/about" },
-      { name: "意见反馈", href: "/feedback" },
-      { name: "隐私政策", href: "/privacy" },
-      { name: "服务条款", href: "/terms" },
+      { name: "About Us", href: "/about" },
+      { name: "Feedback", href: "/feedback" },
+      { name: "Privacy Policy", href: "/privacy" },
+      { name: "Terms of Service", href: "/terms" },
     ],
   };
 
@@ -31,7 +31,7 @@ export function Footer() {
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Logo 和描述 */}
+          {/* Logo and description */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center space-x-2 mb-4">
               <MusicalNoteIcon className="h-8 w-8 text-primary-400" />
@@ -40,7 +40,9 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-gray-400 text-sm leading-6 mb-4">
-              连接全球音乐创作者的原创音乐分享平台。在这里分享你的创作，发现优秀作品，与志同道合的音乐人协作创作。
+              The original music sharing platform connecting global creators.
+              Share your compositions, discover amazing works, and collaborate
+              with like-minded musicians.
             </p>
             <div className="flex space-x-4">
               {/* <a
@@ -86,9 +88,9 @@ export function Footer() {
           </div>
           <div></div>
 
-          {/* 产品链接 */}
+          {/* Product links */}
           <div>
-            <h3 className="text-white font-semibold mb-4">产品</h3>
+            <h3 className="text-white font-semibold mb-4">Product</h3>
             <ul className="space-y-2">
               {footerLinks.product.map((link) => (
                 <li key={link.name}>
@@ -103,9 +105,9 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* 社区链接 */}
+          {/* Community links */}
           {/* <div>
-            <h3 className="text-white font-semibold mb-4">社区</h3>
+            <h3 className="text-white font-semibold mb-4">Community</h3>
             <ul className="space-y-2">
               {footerLinks.community.map((link) => (
                 <li key={link.name}>
@@ -120,9 +122,9 @@ export function Footer() {
             </ul>
           </div> */}
 
-          {/* 公司链接 */}
+          {/* Company links */}
           <div>
-            <h3 className="text-white font-semibold mb-4">公司</h3>
+            <h3 className="text-white font-semibold mb-4">Company</h3>
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
@@ -138,30 +140,30 @@ export function Footer() {
           </div>
         </div>
 
-        {/* 底部分割线和版权信息 */}
+        {/* Bottom divider and copyright */}
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {currentYear} MusicEmit. 保留所有权利.
+              © {currentYear} MusicEmit. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link
                 href="/privacy"
                 className="text-gray-400 hover:text-white text-sm transition-colors duration-200"
               >
-                隐私政策
+                Privacy Policy
               </Link>
               <Link
                 href="/terms"
                 className="text-gray-400 hover:text-white text-sm transition-colors duration-200"
               >
-                服务条款
+                Terms of Service
               </Link>
               <Link
                 href="/help"
                 className="text-gray-400 hover:text-white text-sm transition-colors duration-200"
               >
-                帮助中心
+                Help Center
               </Link>
             </div>
           </div>

@@ -10,7 +10,7 @@ export default function NewWorkPage() {
   const { user } = useAuth();
   const router = useRouter();
 
-  // 检查用户是否已登录
+  // Check if user is logged in
   useEffect(() => {
     if (!user) {
       router.push("/auth/login");
@@ -29,20 +29,22 @@ export default function NewWorkPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 页面头部 */}
+        {/* Page header */}
         <div className="mb-8">
           <div className="flex items-center space-x-4">
             <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
               <MusicalNoteIcon className="h-6 w-6 text-primary-600" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">创建新作品</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Create New Work
+            </h1>
           </div>
           <p className="mt-2 text-gray-600">
-            上传您的乐谱和MIDI文件，分享给音乐爱好者
+            Upload your sheet music and MIDI files to share with music lovers
           </p>
         </div>
 
-        {/* 创建表单 */}
+        {/* Create form */}
         <div className="bg-white rounded-lg shadow">
           <div className="p-6">
             <WorkForm

@@ -13,8 +13,8 @@ interface CommentFormProps {
 
 export default function CommentForm({
   onSubmit,
-  placeholder = "写下你的评论...",
-  submitButtonText = "发表评论",
+  placeholder = "Write your comment...",
+  submitButtonText = "Post Comment",
   autoFocus = false,
 }: CommentFormProps) {
   const { user } = useAuth();
@@ -37,27 +37,27 @@ export default function CommentForm({
       await onSubmit(content);
       setContent("");
     } catch (error) {
-      console.error("提交评论失败:", error);
+      console.error("Failed to submit comment:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // 自动调整文本框高度
+  // Auto-adjust textarea height
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const textarea = e.target;
     setContent(textarea.value);
 
-    // 重置高度
+    // Reset height
     textarea.style.height = "auto";
-    // 设置新高度
+    // Set new height
     textarea.style.height = `${textarea.scrollHeight}px`;
   };
 
   if (!user) {
     return (
       <div className="flex items-center justify-center py-4 bg-gray-50 rounded-lg">
-        <p className="text-gray-500">请先登录后发表评论</p>
+        <p className="text-gray-500">Please login to post comments</p>
       </div>
     );
   }
@@ -90,7 +90,7 @@ export default function CommentForm({
             disabled={!content.trim() || isSubmitting}
             className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "提交中..." : submitButtonText}
+            {isSubmitting ? "Submitting..." : submitButtonText}
           </button>
         </div>
       </div>

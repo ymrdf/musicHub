@@ -22,26 +22,26 @@ export function Header() {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const navigation = [
-    { name: "首页", href: "/", icon: HomeIcon, current: false },
+    { name: "Home", href: "/", icon: HomeIcon, current: false },
     {
-      name: "发现音乐",
+      name: "Discover",
       href: "/discover",
       icon: MusicalNoteIcon,
       current: false,
     },
     {
-      name: "演奏列表",
+      name: "Performances",
       href: "/performances",
       icon: MusicalNoteIcon,
       current: false,
     },
-    { name: "热榜", href: "/trending", icon: FireIcon, current: false },
+    { name: "Trending", href: "/trending", icon: FireIcon, current: false },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // 跳转到搜索页面
+      // Navigate to search page
       const params = new URLSearchParams();
       params.set("q", searchQuery);
       window.location.href = `/search?${params.toString()}`;
@@ -94,7 +94,7 @@ export function Header() {
                 </div>
                 <input
                   type="text"
-                  placeholder="搜索作品、用户..."
+                  placeholder="Search works, users..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setShowSuggestions(true)}
@@ -120,7 +120,7 @@ export function Header() {
                   className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
                 >
                   <PlusIcon className="h-4 w-4 mr-1" />
-                  创建
+                  Create
                 </Link>
 
                 {/* 用户头像和菜单 */}
@@ -147,7 +147,7 @@ export function Header() {
                   onClick={logout}
                   className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
                 >
-                  退出
+                  Logout
                 </button>
               </>
             ) : (
@@ -156,13 +156,13 @@ export function Header() {
                   href="/auth/login"
                   className="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
                 >
-                  登录
+                  Login
                 </Link>
                 <Link
                   href="/auth/register"
                   className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200"
                 >
-                  注册
+                  Sign Up
                 </Link>
               </div>
             )}
@@ -173,7 +173,7 @@ export function Header() {
               className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              <span className="sr-only">打开主菜单</span>
+              <span className="sr-only">Open main menu</span>
               {isMobileMenuOpen ? (
                 <XMarkIcon className="block h-6 w-6" />
               ) : (
@@ -188,7 +188,7 @@ export function Header() {
       {isMobileMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-            {/* 移动端搜索 */}
+            {/* Mobile search */}
             <div className="px-3 py-2">
               <form onSubmit={handleSearch}>
                 <div className="relative">
@@ -197,7 +197,7 @@ export function Header() {
                   </div>
                   <input
                     type="text"
-                    placeholder="搜索作品、用户..."
+                    placeholder="Search works, users..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 text-sm"
@@ -206,7 +206,7 @@ export function Header() {
               </form>
             </div>
 
-            {/* 移动端导航 */}
+            {/* Mobile navigation */}
             {navigation.map((item) => {
               const Icon = item.icon;
               return (

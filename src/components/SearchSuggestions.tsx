@@ -38,7 +38,7 @@ export function SearchSuggestions({
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 获取最近搜索
+  // Get recent searches
   useEffect(() => {
     const recent = localStorage.getItem("recentSearches");
     if (recent) {
@@ -46,7 +46,7 @@ export function SearchSuggestions({
     }
   }, []);
 
-  // 搜索建议
+  // Search suggestions
   useEffect(() => {
     if (!query.trim() || !isVisible) {
       setSuggestions([]);
@@ -64,7 +64,7 @@ export function SearchSuggestions({
         if (data.success) {
           const newSuggestions: SearchSuggestion[] = [];
 
-          // 添加作品建议
+          // Add work suggestions
           if (data.data.results.works?.items) {
             data.data.results.works.items.forEach((work: any) => {
               newSuggestions.push({
@@ -78,7 +78,7 @@ export function SearchSuggestions({
             });
           }
 
-          // 添加用户建议
+          // Add user suggestions
           if (data.data.results.users?.items) {
             data.data.results.users.items.forEach((user: any) => {
               newSuggestions.push({
@@ -92,7 +92,7 @@ export function SearchSuggestions({
             });
           }
 
-          // 添加演奏建议
+          // Add performance suggestions
           if (data.data.results.performances?.items) {
             data.data.results.performances.items.forEach((performance: any) => {
               newSuggestions.push({
@@ -106,10 +106,10 @@ export function SearchSuggestions({
             });
           }
 
-          setSuggestions(newSuggestions.slice(0, 8)); // 限制最多8个建议
+          setSuggestions(newSuggestions.slice(0, 8)); // Limit to 8 suggestions max
         }
       } catch (error) {
-        console.error("获取搜索建议失败:", error);
+        console.error("Failed to fetch search suggestions:", error);
       } finally {
         setLoading(false);
       }
@@ -119,7 +119,7 @@ export function SearchSuggestions({
     return () => clearTimeout(debounceTimer);
   }, [query, isVisible]);
 
-  // 点击外部关闭
+  // Click outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -139,7 +139,7 @@ export function SearchSuggestions({
     };
   }, [isVisible, onClose]);
 
-  // 保存搜索历史
+  // Save search history
   const saveSearchHistory = (searchTerm: string) => {
     const recent = JSON.parse(localStorage.getItem("recentSearches") || "[]");
     const newRecent = [
@@ -176,14 +176,14 @@ export function SearchSuggestions({
       {loading && (
         <div className="p-4 text-center text-gray-500">
           <div className="loading-spinner mx-auto mb-2"></div>
-          搜索中...
+          Searching...
         </div>
       )}
 
       {!loading && suggestions.length > 0 && (
         <div className="py-2">
           <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
-            搜索结果
+            Search Results
           </div>
           {suggestions.map((suggestion) => {
             const Icon = suggestion.icon;
@@ -214,15 +214,15 @@ export function SearchSuggestions({
       {!loading && suggestions.length === 0 && query.trim() && (
         <div className="p-4 text-center text-gray-500">
           <MagnifyingGlassIcon className="h-8 w-8 mx-auto mb-2 text-gray-300" />
-          <p>未找到相关结果</p>
-          <p className="text-sm">尝试使用不同的关键词</p>
+          <p>No results found</p>
+          <p className="text-sm">Try using different keywords</p>
         </div>
       )}
 
       {!loading && recentSearches.length > 0 && (
         <div className="border-t border-gray-100 py-2">
           <div className="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
-            最近搜索
+            Recent Searches
           </div>
           {recentSearches.map((searchTerm, index) => (
             <button
@@ -246,7 +246,7 @@ export function SearchSuggestions({
           >
             <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
             <span className="text-sm text-gray-700">
-              搜索 "{query}" 的所有结果
+              Search all results for "{query}"
             </span>
           </Link>
         </div>
