@@ -291,11 +291,11 @@ export default function FeedbackPage() {
         <div className="mt-4 flex justify-center space-x-6">
           <div className="text-center">
             <div className="text-lg font-medium text-gray-900">电子邮箱</div>
-            <div className="mt-1 text-gray-600">support@MusicEmit.com</div>
+            <div className="mt-1 text-gray-600">837856276@qq.com</div>
           </div>
           <div className="text-center">
             <div className="text-lg font-medium text-gray-900">客服热线</div>
-            <div className="mt-1 text-gray-600">400-123-4567</div>
+            <div className="mt-1 text-gray-600">+086-15663632812</div>
           </div>
         </div>
       </div>

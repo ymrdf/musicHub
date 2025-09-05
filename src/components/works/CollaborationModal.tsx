@@ -26,6 +26,7 @@ export default function CollaborationModal({
   onSuccess,
 }: CollaborationModalProps) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -66,14 +67,17 @@ export default function CollaborationModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(""); // 清除之前的错误
 
     if (!selectedFile) {
       toast.error("请选择MIDI文件");
+      setError("请选择MIDI文件");
       return;
     }
 
     if (!formData.title.trim() || !formData.commitMessage.trim()) {
       toast.error("请填写所有必填字段");
+      setError("请填写所有必填字段");
       return;
     }
 
@@ -103,7 +107,9 @@ export default function CollaborationModal({
         onSuccess();
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "提交失败");
+      const errorMessage = error.response?.data?.error || "提交失败";
+      toast.error(errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -117,6 +123,7 @@ export default function CollaborationModal({
       changesSummary: "",
     });
     setSelectedFile(null);
+    setError("");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -266,6 +273,17 @@ export default function CollaborationModal({
               </p>
             </div>
           </div>
+
+          {/* 错误信息显示 */}
+          {error && (
+            <div
+              className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative"
+              role="alert"
+            >
+              <strong className="font-bold">提交失败：</strong>
+              <span className="block sm:inline">{error}</span>
+            </div>
+          )}
 
           {/* 提交按钮 */}
           <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">

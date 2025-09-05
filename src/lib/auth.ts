@@ -128,7 +128,7 @@ export const isValidUsername = (
 
 // 生成随机头像 URL
 export const generateAvatarUrl = (username: string): string => {
-  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(
-    username
-  )}`;
+  // 使用正确的编码方式，确保特殊字符被正确处理
+  const encodedUsername = encodeURIComponent(username);
+  return `https://api.dicebear.com/7.x/avatars/svg?seed=${encodedUsername}`;
 };

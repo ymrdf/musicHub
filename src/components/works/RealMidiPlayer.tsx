@@ -61,8 +61,25 @@ export default function RealMidiPlayer({
     try {
       if (!isInitialized) {
         console.log("Initializing audio context...");
-        await Tone.start();
-        console.log("Audio context started, state:", Tone.context.state);
+
+        // 确保用户交互后才启动音频上下文
+        try {
+          await Tone.start();
+          console.log("Audio context started, state:", Tone.context.state);
+        } catch (e) {
+          console.error("Failed to start Tone.js audio context:", e);
+          setError("需要用户交互才能启动音频。请再次点击播放按钮。");
+          return; // 如果无法启动音频上下文，直接返回
+        }
+
+        if (Tone.context.state !== "running") {
+          console.warn(
+            "Audio context not running after start:",
+            Tone.context.state
+          );
+          setError("浏览器音频上下文未能正常启动。请再次点击播放按钮。");
+          return;
+        }
 
         // 创建多个合成器，用于不同音色
         const synths = [];
@@ -142,16 +159,13 @@ export default function RealMidiPlayer({
     }
   };
 
-  // 加载MIDI文件
-  const loadMidiFile = async () => {
+  // 只加载MIDI文件元数据，不初始化音频
+  const loadMidiMetadata = async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      console.log("Loading MIDI file from:", filePath);
-
-      // 初始化音频
-      await initializeAudio();
+      console.log("Loading MIDI metadata from:", filePath);
 
       // 获取MIDI文件
       const response = await fetch(filePath);
@@ -168,7 +182,7 @@ export default function RealMidiPlayer({
       setMidiData(midi);
       setDuration(midi.duration);
 
-      console.log("MIDI loaded successfully:", {
+      console.log("MIDI metadata loaded successfully:", {
         duration: midi.duration,
         tracks: midi.tracks.length,
         name: midi.name,
@@ -191,9 +205,56 @@ export default function RealMidiPlayer({
         });
       });
     } catch (error: any) {
-      console.error("Failed to load MIDI:", error);
+      console.error("Failed to load MIDI metadata:", error);
       setError(
         "MIDI文件加载失败，请检查文件格式: " + (error.message || String(error))
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 完整加载MIDI文件（包括初始化音频）
+  const loadMidiFile = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      console.log("Loading MIDI file with audio from:", filePath);
+
+      // 初始化音频
+      await initializeAudio();
+
+      // 如果已经加载了元数据，不需要重新加载
+      if (!midiData) {
+        // 获取MIDI文件
+        const response = await fetch(filePath);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        console.log("MIDI file loaded, size:", arrayBuffer.byteLength, "bytes");
+
+        const midi = new Midi(arrayBuffer);
+        console.log("MIDI parsed successfully");
+
+        setMidiData(midi);
+        setDuration(midi.duration);
+
+        console.log("MIDI loaded successfully:", {
+          duration: midi.duration,
+          tracks: midi.tracks.length,
+          name: midi.name,
+        });
+      } else {
+        console.log("Using already loaded MIDI data");
+      }
+    } catch (error: any) {
+      console.error("Failed to load MIDI with audio:", error);
+      setError(
+        "MIDI文件加载失败，请检查文件格式或浏览器权限: " +
+          (error.message || String(error))
       );
     } finally {
       setIsLoading(false);
@@ -207,10 +268,43 @@ export default function RealMidiPlayer({
     console.log("synthRef.current:", synthRef.current);
     console.log("transportRef.current:", transportRef.current);
 
-    if (!midiData || !synthRef.current || !transportRef.current) {
-      console.log("Missing dependencies, loading MIDI file...");
-      await loadMidiFile();
-      return;
+    // 检查是否已初始化音频
+    if (!isInitialized) {
+      console.log("Audio not initialized, initializing now...");
+      try {
+        // 显示加载状态
+        setIsLoading(true);
+
+        // 初始化音频并加载MIDI
+        await loadMidiFile();
+
+        // 初始化成功后不再递归调用，而是继续执行
+        setIsLoading(false);
+
+        // 如果初始化成功但仍然缺少必要组件，直接返回
+        if (!midiData || !synthRef.current || !transportRef.current) {
+          console.log("Audio initialized but still missing dependencies");
+          return;
+        }
+
+        // 继续执行，不要递归调用
+      } catch (error) {
+        console.error("Failed to initialize audio:", error);
+        setIsLoading(false);
+        return;
+      }
+    } else if (!midiData || !synthRef.current || !transportRef.current) {
+      // 已初始化但缺少其他依赖
+      console.log("Audio initialized but missing other dependencies");
+      try {
+        await loadMidiFile();
+        if (!midiData || !synthRef.current || !transportRef.current) {
+          return; // 仍然缺少依赖，无法继续
+        }
+      } catch (error) {
+        console.error("Failed to load MIDI:", error);
+        return;
+      }
     }
 
     try {
@@ -541,9 +635,9 @@ export default function RealMidiPlayer({
     };
   }, []);
 
-  // 自动加载MIDI文件
+  // 仅加载MIDI文件元数据，不初始化音频
   useEffect(() => {
-    loadMidiFile();
+    loadMidiMetadata();
   }, [filePath]);
 
   // 计算进度百分比，确保值在0-100之间
@@ -691,18 +785,40 @@ export default function RealMidiPlayer({
 
       {/* 成功提示 */}
       {midiData && !error && (
-        <div className="bg-green-50 border border-green-200 rounded-md p-3">
+        <div
+          className={`${
+            isInitialized
+              ? "bg-green-50 border-green-200"
+              : "bg-blue-50 border-blue-200"
+          } border rounded-md p-3`}
+        >
           <div className="flex">
             <div className="flex-shrink-0">
-              <MusicalNoteIcon className="h-5 w-5 text-green-500" />
+              <MusicalNoteIcon
+                className={`h-5 w-5 ${
+                  isInitialized ? "text-green-500" : "text-blue-500"
+                }`}
+              />
             </div>
             <div className="ml-3">
-              <p className="text-sm text-green-700">
-                <strong>MIDI 文件加载成功！</strong>
+              <p
+                className={`text-sm ${
+                  isInitialized ? "text-green-700" : "text-blue-700"
+                }`}
+              >
+                <strong>
+                  {isInitialized ? "MIDI 文件加载成功！" : "MIDI 元数据已加载"}
+                </strong>
               </p>
-              <p className="text-xs text-green-600 mt-1">
+              <p
+                className={`text-xs ${
+                  isInitialized ? "text-green-600" : "text-blue-600"
+                } mt-1`}
+              >
                 音轨数: {midiData.tracks.length} | 时长: {formatTime(duration)}{" "}
-                | 使用 Tone.js 引擎播放
+                {isInitialized
+                  ? "| 使用 Tone.js 引擎播放"
+                  : "| 点击播放按钮初始化音频"}
               </p>
             </div>
           </div>

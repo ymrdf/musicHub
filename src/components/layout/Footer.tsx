@@ -43,7 +43,7 @@ export function Footer() {
               连接全球音乐创作者的原创音乐分享平台。在这里分享你的创作，发现优秀作品，与志同道合的音乐人协作创作。
             </p>
             <div className="flex space-x-4">
-              <a
+              {/* <a
                 href="#"
                 className="text-gray-400 hover:text-primary-400 transition-colors duration-200"
               >
@@ -81,7 +81,7 @@ export function Footer() {
                 >
                   <path d="M12 2.02c2.74 0 4.99 2.25 4.99 4.99v.02c0 .55-.45 1-1 1s-1-.45-1-1v-.02c0-1.65-1.34-2.99-2.99-2.99s-2.99 1.34-2.99 2.99v.02c0 .55-.45 1-1 1s-1-.45-1-1v-.02c0-2.74 2.25-4.99 4.99-4.99z" />
                 </svg>
-              </a>
+              </a> */}
             </div>
           </div>
           <div></div>

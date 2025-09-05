@@ -67,7 +67,9 @@ export async function POST(request: NextRequest) {
       username,
       email,
       passwordHash,
-      avatarUrl: `https://api.dicebear.com/7.x/initials/svg?seed=${username}`,
+      avatarUrl: `https://api.dicebear.com/7.x/avatars/svg?seed=${encodeURIComponent(
+        username
+      )}`,
       isVerified: false,
       isActive: true,
       followersCount: 0,

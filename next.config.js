@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["localhost"],
+    domains: ["localhost", "api.dicebear.com"],
   },
   // 支持音频文件上传
   webpack: (config) => {

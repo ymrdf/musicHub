@@ -57,10 +57,30 @@ export function AudioPlayer() {
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isDragging || !duration) return;
 
+    // 阻止事件冒泡，防止其他事件处理程序干扰
+    e.stopPropagation();
+    e.preventDefault();
+
+    // 计算点击位置对应的时间
     const rect = e.currentTarget.getBoundingClientRect();
-    const percent = (e.clientX - rect.left) / rect.width;
+    const percent = Math.max(
+      0,
+      Math.min(1, (e.clientX - rect.left) / rect.width)
+    );
     const newTime = percent * duration;
-    seekTo(newTime);
+
+    // 确保时间在有效范围内
+    if (
+      !isNaN(newTime) &&
+      isFinite(newTime) &&
+      newTime >= 0 &&
+      newTime <= duration
+    ) {
+      // 使用 requestAnimationFrame 确保 UI 更新后再调用 seekTo
+      requestAnimationFrame(() => {
+        seekTo(newTime);
+      });
+    }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {

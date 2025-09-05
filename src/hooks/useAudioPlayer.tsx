@@ -242,8 +242,50 @@ export function AudioPlayerProvider({ children }: AudioPlayerProviderProps) {
     const audio = audioRef.current;
     if (!audio) return;
 
-    audio.currentTime = time;
-    setState((prev) => ({ ...prev, currentTime: time }));
+    // 保存当前状态
+    const wasPlaying = state.isPlaying;
+
+    // 暂停音频，防止某些浏览器在设置 currentTime 时自动从头开始播放
+    if (wasPlaying) {
+      audio.pause();
+    }
+
+    // 确保音频元数据已加载
+    const setTime = () => {
+      if (audio.duration > 0) {
+        try {
+          const aa = Math.min(Math.max(0, time), audio.duration);
+          audio.currentTime = aa;
+          // setState((prev) => ({ ...prev, currentTime: aa }));
+
+          // 如果之前是播放状态，确保继续播放
+          if (wasPlaying) {
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  console.log("Audio resumed after seeking");
+                })
+                .catch((error) => {
+                  console.error("播放失败:", error);
+                });
+            }
+          }
+        } catch (error) {
+          console.error("设置播放时间失败:", error);
+        }
+      } else {
+        console.error("音频持续时间无效，无法设置 currentTime");
+      }
+    };
+
+    if (audio.readyState >= 1) {
+      // 元数据已加载
+      setTime();
+    } else {
+      // 等待元数据加载完成
+      audio.addEventListener("loadedmetadata", setTime, { once: true });
+    }
   };
 
   const setVolume = (volume: number) => {

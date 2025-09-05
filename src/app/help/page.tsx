@@ -291,7 +291,7 @@ export default function HelpPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="font-medium text-gray-900 mb-2">邮箱支持</h3>
-              <p className="text-gray-600">support@MusicEmit.com</p>
+              <p className="text-gray-600">837856276@qq.com</p>
               <p className="text-sm text-gray-500 mt-1">通常在24小时内回复</p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
@@ -301,12 +301,12 @@ export default function HelpPage() {
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="font-medium text-gray-900 mb-2">版权问题</h3>
-              <p className="text-gray-600">copyright@MusicEmit.com</p>
+              <p className="text-gray-600">837856276@qq.com</p>
               <p className="text-sm text-gray-500 mt-1">专门处理版权相关事务</p>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <h3 className="font-medium text-gray-900 mb-2">技术问题</h3>
-              <p className="text-gray-600">tech@MusicEmit.com</p>
+              <p className="text-gray-600">837856276@qq.com</p>
               <p className="text-sm text-gray-500 mt-1">处理技术故障和bug</p>
             </div>
           </div>

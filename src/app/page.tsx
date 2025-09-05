@@ -1,6 +1,4 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { Metadata } from "next";
 import {
   MusicalNoteIcon,
   StarIcon,
@@ -10,118 +8,35 @@ import {
   FireIcon,
 } from "@heroicons/react/24/outline";
 import RecommendationSection from "@/components/RecommendationSection";
+import StatsDisplay from "@/components/client/StatsDisplay";
+import { fetchStats, fetchRecommendations } from "@/lib/api-utils";
 
-interface Stats {
-  users: number;
-  works: number;
-  performances: number;
-  stars: number;
-}
+export const metadata: Metadata = {
+  title: "MusicEmit - 原创音乐分享平台",
+  description:
+    "连接全球音乐创作者的原创音乐分享平台，分享你的原创作品，发现优秀音乐，与志同道合的音乐人协作创作。",
+  keywords: "音乐创作,乐谱分享,MIDI,演奏,演唱,音乐社区,原创音乐,音乐协作",
+  openGraph: {
+    title: "MusicEmit - 原创音乐分享平台",
+    description:
+      "连接全球音乐创作者的原创音乐分享平台，在这里分享你的原创作品，发现优秀音乐，与志同道合的音乐人协作创作。",
+    type: "website",
+    url: "https://musicemit.com",
+    images: [
+      {
+        url: "https://musicemit.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "MusicEmit - 原创音乐分享平台",
+      },
+    ],
+  },
+};
 
-interface RecommendationItem {
-  id: number;
-  type: "work" | "performance";
-  title: string;
-  description?: string;
-  user: {
-    id: number;
-    username: string;
-    avatarUrl?: string;
-    isVerified: boolean;
-  };
-  genre?: {
-    id: number;
-    name: string;
-  };
-  instrument?: {
-    id: number;
-    name: string;
-  };
-  purpose?: {
-    id: number;
-    name: string;
-  };
-  work?: {
-    id: number;
-    title: string;
-  };
-  starsCount?: number;
-  performancesCount?: number;
-  commentsCount?: number;
-  viewsCount?: number;
-  pdfFilePath?: string;
-  midiFilePath?: string;
-  isStarred?: boolean;
-  likesCount?: number;
-  playsCount?: number;
-  audioFilePath?: string;
-  isLiked?: boolean;
-  createdAt: string;
-}
-
-interface Recommendations {
-  hotWorks: RecommendationItem[];
-  latestWorks: RecommendationItem[];
-  hotPerformances: RecommendationItem[];
-  latestPerformances: RecommendationItem[];
-}
-
-export default function HomePage() {
-  const [stats, setStats] = useState<Stats>({
-    users: 0,
-    works: 0,
-    performances: 0,
-    stars: 0,
-  });
-  const [recommendations, setRecommendations] = useState<Recommendations>({
-    hotWorks: [],
-    latestWorks: [],
-    hotPerformances: [],
-    latestPerformances: [],
-  });
-  const [statsLoading, setStatsLoading] = useState(true);
-  const [recommendationsLoading, setRecommendationsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      // 获取统计数据
-      try {
-        const statsResponse = await fetch("/api/stats");
-        const statsData = await statsResponse.json();
-        if (statsData.success) {
-          setStats(statsData.data);
-        }
-      } catch (error) {
-        console.error("获取统计数据失败:", error);
-      } finally {
-        setStatsLoading(false);
-      }
-
-      // 获取推荐内容
-      try {
-        const recommendationsResponse = await fetch(
-          "/api/home/recommendations"
-        );
-        const recommendationsData = await recommendationsResponse.json();
-        if (recommendationsData.success) {
-          setRecommendations(recommendationsData.data);
-        }
-      } catch (error) {
-        console.error("获取推荐内容失败:", error);
-      } finally {
-        setRecommendationsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const statsData = [
-    { name: "注册用户", value: stats.users.toString(), icon: UserGroupIcon },
-    { name: "原创作品", value: stats.works.toString(), icon: MusicalNoteIcon },
-    { name: "演奏作品", value: stats.performances.toString(), icon: PlayIcon },
-    { name: "作品收藏", value: stats.stars.toString(), icon: StarIcon },
-  ];
+export default async function HomePage() {
+  // 服务器端数据获取
+  const stats = await fetchStats();
+  const recommendations = await fetchRecommendations();
 
   return (
     <div className="min-h-screen">
@@ -168,22 +83,7 @@ export default function HomePage() {
       {/* 统计数据 */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {statsData.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <div key={stat.name} className="text-center">
-                  <div className="flex justify-center mb-4">
-                    <Icon className="h-8 w-8 text-primary-600" />
-                  </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">
-                    {statsLoading ? "..." : stat.value}
-                  </div>
-                  <div className="text-sm text-gray-600">{stat.name}</div>
-                </div>
-              );
-            })}
-          </div>
+          <StatsDisplay initialStats={stats} />
         </div>
       </section>
 
@@ -245,28 +145,28 @@ export default function HomePage() {
         title="🔥 热门创作"
         items={recommendations.hotWorks}
         viewAllLink="/trending?type=work"
-        loading={recommendationsLoading}
+        loading={false}
       />
 
       <RecommendationSection
         title="🎵 热门演奏"
         items={recommendations.hotPerformances}
         viewAllLink="/discover?sortBy=likesCount&sortOrder=desc"
-        loading={recommendationsLoading}
+        loading={false}
       />
 
       <RecommendationSection
         title="✨ 最新创作"
         items={recommendations.latestWorks}
         viewAllLink="/works?sortBy=createdAt&sortOrder=desc"
-        loading={recommendationsLoading}
+        loading={false}
       />
 
       <RecommendationSection
         title="🎤 最新演奏"
         items={recommendations.latestPerformances}
         viewAllLink="/discover?sortBy=createdAt&sortOrder=desc"
-        loading={recommendationsLoading}
+        loading={false}
       />
 
       {/* CTA Section */}

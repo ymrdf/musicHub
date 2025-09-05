@@ -44,6 +44,19 @@ export async function GET(
     headers.set("Content-Type", contentType);
     headers.set("Cache-Control", "public, max-age=31536000"); // 缓存一年
 
+    // 检查是否为 audio 目录中的文件
+    const isAudioFile = params.path[0] === "audio";
+
+    if (isAudioFile) {
+      // 为音频文件添加特定的响应头
+      const fileSize = fileBuffer.length;
+      headers.set("Accept-Ranges", "bytes");
+      headers.set("Content-Length", fileSize.toString());
+      headers.set("Content-Range", `bytes 0-${fileSize - 1}/${fileSize}`);
+      // 确保音频文件的 content-type 为 audio/mp3
+      headers.set("Content-Type", "audio/mp3");
+    }
+
     // 如果是下载请求，设置下载头
     const download = request.nextUrl.searchParams.get("download");
     if (download === "true") {
@@ -51,7 +64,7 @@ export async function GET(
       headers.set("Content-Disposition", `attachment; filename="${filename}"`);
     }
 
-    return new NextResponse(fileBuffer, { headers });
+    return new NextResponse(fileBuffer as any, { headers });
   } catch (error) {
     console.error("文件服务错误:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

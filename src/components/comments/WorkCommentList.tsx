@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Comment, ApiResponse, PaginatedResponse } from "@/types";
 import CommentItem from "./CommentItem";

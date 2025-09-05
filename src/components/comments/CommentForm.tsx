@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/components/layout/Providers";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
