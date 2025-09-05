@@ -34,30 +34,35 @@ export async function POST(request: NextRequest) {
         type: "genre" as const,
         description: "包括交响乐、协奏曲、奏鸣曲等古典作品",
         sortOrder: 1,
+        isActive: true,
       },
       {
         name: "流行音乐",
         type: "genre" as const,
         description: "现代流行音乐作品",
         sortOrder: 2,
+        isActive: true,
       },
       {
         name: "摇滚音乐",
         type: "genre" as const,
         description: "摇滚风格的音乐作品",
         sortOrder: 3,
+        isActive: true,
       },
       {
         name: "爵士音乐",
         type: "genre" as const,
         description: "爵士风格的音乐作品",
         sortOrder: 4,
+        isActive: true,
       },
       {
         name: "民族音乐",
         type: "genre" as const,
         description: "各民族传统音乐",
         sortOrder: 5,
+        isActive: true,
       },
 
       // 乐器分类
@@ -66,30 +71,35 @@ export async function POST(request: NextRequest) {
         type: "instrument" as const,
         description: "钢琴独奏或钢琴为主的作品",
         sortOrder: 1,
+        isActive: true,
       },
       {
         name: "吉他",
         type: "instrument" as const,
         description: "古典吉他、民谣吉他、电吉他",
         sortOrder: 2,
+        isActive: true,
       },
       {
         name: "小提琴",
         type: "instrument" as const,
         description: "小提琴独奏或小提琴为主的作品",
         sortOrder: 3,
+        isActive: true,
       },
       {
         name: "大提琴",
         type: "instrument" as const,
         description: "大提琴独奏或大提琴为主的作品",
         sortOrder: 4,
+        isActive: true,
       },
       {
         name: "长笛",
         type: "instrument" as const,
         description: "长笛独奏或长笛为主的作品",
         sortOrder: 5,
+        isActive: true,
       },
 
       // 用途分类
@@ -98,30 +108,35 @@ export async function POST(request: NextRequest) {
         type: "purpose" as const,
         description: "用于技巧练习的作品",
         sortOrder: 1,
+        isActive: true,
       },
       {
         name: "表演曲",
         type: "purpose" as const,
         description: "适合舞台表演的作品",
         sortOrder: 2,
+        isActive: true,
       },
       {
         name: "教学曲",
         type: "purpose" as const,
         description: "用于音乐教学的作品",
         sortOrder: 3,
+        isActive: true,
       },
       {
         name: "考级曲",
         type: "purpose" as const,
         description: "音乐考级使用的作品",
         sortOrder: 4,
+        isActive: true,
       },
       {
         name: "背景音乐",
         type: "purpose" as const,
         description: "适合作为背景音乐的作品",
         sortOrder: 5,
+        isActive: true,
       },
     ];
 
@@ -129,16 +144,16 @@ export async function POST(request: NextRequest) {
 
     // 初始化常用标签
     const tags = [
-      { name: "原创", color: "#007bff" },
-      { name: "改编", color: "#28a745" },
-      { name: "初学者", color: "#ffc107" },
-      { name: "中级", color: "#fd7e14" },
-      { name: "高级", color: "#dc3545" },
-      { name: "温柔", color: "#e83e8c" },
-      { name: "激昂", color: "#20c997" },
-      { name: "忧伤", color: "#6f42c1" },
-      { name: "欢快", color: "#17a2b8" },
-      { name: "浪漫", color: "#f8f9fa" },
+      { name: "原创", color: "#007bff", usageCount: 0 },
+      { name: "改编", color: "#28a745", usageCount: 0 },
+      { name: "初学者", color: "#ffc107", usageCount: 0 },
+      { name: "中级", color: "#fd7e14", usageCount: 0 },
+      { name: "高级", color: "#dc3545", usageCount: 0 },
+      { name: "温柔", color: "#e83e8c", usageCount: 0 },
+      { name: "激昂", color: "#20c997", usageCount: 0 },
+      { name: "忧伤", color: "#6f42c1", usageCount: 0 },
+      { name: "欢快", color: "#17a2b8", usageCount: 0 },
+      { name: "浪漫", color: "#f8f9fa", usageCount: 0 },
     ];
 
     await Tag.bulkCreate(tags);

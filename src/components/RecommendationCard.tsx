@@ -22,8 +22,19 @@ import { toast } from "react-hot-toast";
 interface User {
   id: number;
   username: string;
+  email: string;
+  passwordHash: string;
   avatarUrl?: string;
+  bio?: string;
+  website?: string;
   isVerified: boolean;
+  isActive: boolean;
+  followersCount: number;
+  followingCount: number;
+  worksCount: number;
+  performancesCount: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface Category {
@@ -138,10 +149,19 @@ export default function RecommendationCard({
     if (isPerformance && item.audioFilePath) {
       play({
         id: item.id,
+        workId: item.work?.id || 0,
+        userId: item.user.id,
         title: item.title,
         audioFilePath: item.audioFilePath,
+        type: "instrumental",
+        likesCount: item.likesCount || 0,
+        commentsCount: item.commentsCount || 0,
+        playsCount: item.playsCount || 0,
+        isPublic: true,
+        createdAt: new Date(item.createdAt),
+        updatedAt: new Date(item.createdAt),
         user: item.user,
-      });
+      } as any);
     }
   };
 

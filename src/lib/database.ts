@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+import { Sequelize, QueryTypes } from "sequelize";
 
 // Database connection configuration
 const sequelize = new Sequelize({
@@ -37,3 +37,4 @@ export const testConnection = async () => {
 };
 
 export default sequelize;
+export { QueryTypes };

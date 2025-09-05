@@ -82,16 +82,16 @@ export async function GET(
 
     // 格式化返回数据
     const users = following.map((follow) => ({
-      id: follow.following.id,
-      username: follow.following.username,
-      avatarUrl: follow.following.avatarUrl,
-      bio: follow.following.bio,
-      isVerified: follow.following.isVerified,
-      followersCount: follow.following.followersCount,
-      followingCount: follow.following.followingCount,
-      worksCount: follow.following.worksCount,
-      performancesCount: follow.following.performancesCount,
-      createdAt: follow.following.createdAt,
+      id: (follow as any).following.id,
+      username: (follow as any).following.username,
+      avatarUrl: (follow as any).following.avatarUrl,
+      bio: (follow as any).following.bio,
+      isVerified: (follow as any).following.isVerified,
+      followersCount: (follow as any).following.followersCount,
+      followingCount: (follow as any).following.followingCount,
+      worksCount: (follow as any).following.worksCount,
+      performancesCount: (follow as any).following.performancesCount,
+      createdAt: (follow as any).following.createdAt,
       followedAt: follow.createdAt,
     }));
 

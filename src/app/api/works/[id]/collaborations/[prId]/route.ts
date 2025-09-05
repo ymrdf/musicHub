@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUserFromRequest } from "@/lib/auth";
-import sequelize from "@/lib/database";
+import sequelize, { QueryTypes } from "@/lib/database";
 
 export async function PUT(
   request: NextRequest,
@@ -40,11 +40,11 @@ export async function PUT(
       "SELECT id, user_id, title FROM works WHERE id = ?",
       {
         replacements: [workId],
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       }
     );
 
-    if (work.length === 0) {
+    if ((work as any[]).length === 0) {
       return NextResponse.json(
         { success: false, error: "作品不存在" },
         { status: 404 }
@@ -76,11 +76,11 @@ export async function PUT(
     `,
       {
         replacements: [prId, workId],
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       }
     );
 
-    if (pr.length === 0) {
+    if ((pr as any[]).length === 0) {
       return NextResponse.json(
         { success: false, error: "协作请求不存在" },
         { status: 404 }
@@ -118,7 +118,7 @@ export async function PUT(
             reviewComment || "",
             prId,
           ],
-          type: sequelize.QueryTypes.UPDATE,
+          type: QueryTypes.UPDATE,
           transaction,
         }
       );
@@ -133,7 +133,7 @@ export async function PUT(
         `,
           {
             replacements: [user.id, prData.version_id],
-            type: sequelize.QueryTypes.UPDATE,
+            type: QueryTypes.UPDATE,
             transaction,
           }
         );
@@ -151,7 +151,7 @@ export async function PUT(
               prData.midi_file_size,
               workId,
             ],
-            type: sequelize.QueryTypes.UPDATE,
+            type: QueryTypes.UPDATE,
             transaction,
           }
         );

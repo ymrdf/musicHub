@@ -101,10 +101,10 @@ export async function GET(request: NextRequest) {
       license: work.license,
       createdAt: work.createdAt,
       updatedAt: work.updatedAt,
-      user: work.user,
-      genre: work.genre,
-      instrument: work.instrument,
-      purpose: work.purpose,
+      user: (work as any).user,
+      genre: (work as any).genre,
+      instrument: (work as any).instrument,
+      purpose: (work as any).purpose,
     }));
 
     const response: PaginatedResponse<(typeof formattedWorks)[0]> = {

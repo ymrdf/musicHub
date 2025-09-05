@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUserFromRequest } from "@/lib/auth";
-import sequelize from "@/lib/database";
+import sequelize, { QueryTypes } from "@/lib/database";
 
 export async function GET(
   request: NextRequest,
@@ -28,11 +28,11 @@ export async function GET(
       "SELECT id, user_id, allow_collaboration FROM works WHERE id = ?",
       {
         replacements: [workId],
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       }
     );
 
-    if (work.length === 0) {
+    if ((work as any[]).length === 0) {
       return NextResponse.json(
         { success: false, error: "作品不存在" },
         { status: 404 }
@@ -79,7 +79,7 @@ export async function GET(
     `,
       {
         replacements: [workId],
-        type: sequelize.QueryTypes.SELECT,
+        type: QueryTypes.SELECT,
       }
     );
 

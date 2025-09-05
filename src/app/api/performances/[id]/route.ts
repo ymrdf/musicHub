@@ -234,8 +234,8 @@ export async function DELETE(
     await performance.destroy();
 
     // 更新作品的演奏数量
-    if (performance.work) {
-      await performance.work.decrement("performancesCount");
+    if ((performance as any).work) {
+      await (performance as any).work.decrement("performancesCount");
     }
 
     // 更新用户的演奏数量

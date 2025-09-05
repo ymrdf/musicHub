@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
         attributes: ["performanceId"],
       });
 
-      const likedPerformanceIds = new Set(likes.map((l) => l.performanceId));
+      const likedPerformanceIds = new Set(likes.map((l) => (l as any).performanceId));
 
       rows.forEach((performance) => {
         performance.dataValues.isLiked = likedPerformanceIds.has(

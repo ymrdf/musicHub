@@ -85,19 +85,19 @@ export async function GET(
 
     // 格式化返回数据
     const works = starredWorks.map((star) => ({
-      id: star.work.id,
-      title: star.work.title,
-      description: star.work.description,
-      starsCount: star.work.starsCount,
-      performancesCount: star.work.performancesCount,
-      commentsCount: star.work.commentsCount,
-      viewsCount: star.work.viewsCount,
-      createdAt: star.work.createdAt,
+      id: (star as any).work.id,
+      title: (star as any).work.title,
+      description: (star as any).work.description,
+      starsCount: (star as any).work.starsCount,
+      performancesCount: (star as any).work.performancesCount,
+      commentsCount: (star as any).work.commentsCount,
+      viewsCount: (star as any).work.viewsCount,
+      createdAt: (star as any).work.createdAt,
       starredAt: star.createdAt,
       user: {
-        id: star.work.user.id,
-        username: star.work.user.username,
-        avatarUrl: star.work.user.avatarUrl,
+        id: (star as any).work.user.id,
+        username: (star as any).work.user.username,
+        avatarUrl: (star as any).work.user.avatarUrl,
       },
     }));
 

@@ -89,7 +89,7 @@ export default function EditPerformancePage() {
 
   const validateForm = (): boolean => {
     try {
-      performanceFormSchema.validateSync(formData, { abortEarly: false });
+      performanceFormSchema.validate(formData, { abortEarly: false });
       return true;
     } catch (error: any) {
       const newErrors: { [key: string]: string } = {};
