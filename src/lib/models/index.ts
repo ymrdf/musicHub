@@ -17,10 +17,10 @@ import type {
   TrendingCache as TrendingCacheType,
 } from "../../types";
 
-// 导入Feedback模型
+// Import Feedback model
 import Feedback from "./feedback";
 
-// User 模型
+// User model
 interface UserCreationAttributes
   extends Optional<UserType, "id" | "createdAt" | "updatedAt"> {}
 
@@ -127,7 +127,7 @@ User.init(
   }
 );
 
-// Category 模型
+// Category model
 interface CategoryCreationAttributes
   extends Optional<CategoryType, "id" | "createdAt"> {}
 
@@ -186,7 +186,7 @@ Category.init(
   }
 );
 
-// Tag 模型
+// Tag model
 interface TagCreationAttributes extends Optional<TagType, "id" | "createdAt"> {}
 
 export class Tag
@@ -234,7 +234,7 @@ Tag.init(
   }
 );
 
-// Work 模型
+// Work model
 interface WorkCreationAttributes
   extends Optional<WorkType, "id" | "createdAt" | "updatedAt"> {}
 
@@ -365,7 +365,7 @@ Work.init(
   }
 );
 
-// Performance 模型
+// Performance model
 interface PerformanceCreationAttributes
   extends Optional<PerformanceType, "id" | "createdAt" | "updatedAt"> {}
 
@@ -490,7 +490,7 @@ Performance.init(
   }
 );
 
-// PerformanceLike 模型
+// PerformanceLike model
 interface PerformanceLikeCreationAttributes
   extends Optional<PerformanceLikeType, "id" | "createdAt"> {}
 
@@ -534,7 +534,7 @@ PerformanceLike.init(
   }
 );
 
-// Comment 模型
+// Comment model
 interface CommentCreationAttributes
   extends Optional<CommentType, "id" | "createdAt" | "updatedAt"> {}
 
@@ -621,7 +621,7 @@ Comment.init(
   }
 );
 
-// CommentLike 模型
+// CommentLike model
 interface CommentLikeCreationAttributes
   extends Optional<CommentLikeType, "id" | "createdAt"> {}
 
@@ -665,7 +665,7 @@ CommentLike.init(
   }
 );
 
-// UserFollow 模型
+// UserFollow model
 interface UserFollowCreationAttributes
   extends Optional<UserFollowType, "id" | "createdAt"> {}
 
@@ -709,7 +709,7 @@ UserFollow.init(
   }
 );
 
-// WorkStar 模型
+// WorkStar model
 interface WorkStarCreationAttributes
   extends Optional<WorkStarType, "id" | "createdAt"> {}
 
@@ -753,23 +753,23 @@ WorkStar.init(
   }
 );
 
-// 导出所有模型以便在其他文件中使用
+// Export all models for use in other files
 export { sequelize, Feedback };
 
-// 设置模型关联关系
+// Set up model associations
 export const setupAssociations = () => {
-  // User 关联
+  // User associations
   User.hasMany(Work, { foreignKey: "userId", as: "works" });
   Work.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-  // Performance 关联
+  // Performance associations
   User.hasMany(Performance, { foreignKey: "userId", as: "performances" });
   Performance.belongsTo(User, { foreignKey: "userId", as: "user" });
 
   Work.hasMany(Performance, { foreignKey: "workId", as: "performances" });
   Performance.belongsTo(Work, { foreignKey: "workId", as: "work" });
 
-  // PerformanceLike 关联
+  // PerformanceLike associations
   User.hasMany(PerformanceLike, {
     foreignKey: "userId",
     as: "performanceLikes",
@@ -785,42 +785,42 @@ export const setupAssociations = () => {
     as: "performance",
   });
 
-  // Category 关联
+  // Category associations
   Work.belongsTo(Category, { foreignKey: "genreId", as: "genre" });
   Work.belongsTo(Category, { foreignKey: "instrumentId", as: "instrument" });
   Work.belongsTo(Category, { foreignKey: "purposeId", as: "purpose" });
 
-  // Comment 关联
+  // Comment associations
   User.hasMany(Comment, { foreignKey: "userId", as: "comments" });
   Comment.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-  // 评论回复关联
+  // Comment reply associations
   Comment.hasMany(Comment, { foreignKey: "parentId", as: "replies" });
   Comment.belongsTo(Comment, { foreignKey: "parentId", as: "parent" });
 
-  // CommentLike 关联
+  // CommentLike associations
   User.hasMany(CommentLike, { foreignKey: "userId", as: "commentLikes" });
   CommentLike.belongsTo(User, { foreignKey: "userId", as: "user" });
 
   Comment.hasMany(CommentLike, { foreignKey: "commentId", as: "likes" });
   CommentLike.belongsTo(Comment, { foreignKey: "commentId", as: "comment" });
 
-  // UserFollow 关联
+  // UserFollow associations
   User.hasMany(UserFollow, { foreignKey: "followerId", as: "following" });
   User.hasMany(UserFollow, { foreignKey: "followingId", as: "followers" });
 
   UserFollow.belongsTo(User, { foreignKey: "followerId", as: "follower" });
   UserFollow.belongsTo(User, { foreignKey: "followingId", as: "following" });
 
-  // WorkStar 关联
+  // WorkStar associations
   User.hasMany(WorkStar, { foreignKey: "userId", as: "workStars" });
   WorkStar.belongsTo(User, { foreignKey: "userId", as: "user" });
 
   Work.hasMany(WorkStar, { foreignKey: "workId", as: "stars" });
   WorkStar.belongsTo(Work, { foreignKey: "workId", as: "work" });
 
-  // 其他关联会在各自的模型文件中定义
+  // Other associations will be defined in their respective model files
 };
 
-// 自动设置关联关系
+// Automatically set up associations
 setupAssociations();

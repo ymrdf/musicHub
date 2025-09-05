@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/layout/Providers";
 import { Work, Performance } from "@/types";
 import {
@@ -71,6 +71,7 @@ interface TrendingItem {
 
 export default function TrendingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user: currentUser } = useAuth();
   const { play, pause, isPlaying, currentPerformance } = useAudioPlayer();
 
@@ -78,10 +79,15 @@ export default function TrendingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 筛选状态
+  // Initialize filter state from URL parameters
   const [filters, setFilters] = useState({
-    type: "all", // "all" | "work" | "performance"
-    timePeriod: "all", // "daily" | "weekly" | "monthly" | "all"
+    type: (searchParams.get("type") as "all" | "work" | "performance") || "all",
+    timePeriod:
+      (searchParams.get("timePeriod") as
+        | "daily"
+        | "weekly"
+        | "monthly"
+        | "all") || "all",
   });
 
   useEffect(() => {
@@ -99,7 +105,7 @@ export default function TrendingPage() {
       const response = await axios.get(`/api/trending?${params.toString()}`);
 
       if (response.data.success) {
-        // 格式化数据
+        // Format data
         const formattedItems: TrendingItem[] = response.data.data.items.map(
           (item: any) => ({
             id: item.id,
@@ -142,7 +148,7 @@ export default function TrendingPage() {
 
     try {
       if (item.isStarred) {
-        // 取消收藏
+        // Unstar
         const response = await axios.delete(`/api/works/${item.id}/star`);
         if (response.data.success) {
           setItems((prev) =>
@@ -159,7 +165,7 @@ export default function TrendingPage() {
           toast.success("Unstarred successfully");
         }
       } else {
-        // 收藏
+        // Star
         const response = await axios.post(`/api/works/${item.id}/star`);
         if (response.data.success) {
           setItems((prev) =>
@@ -210,7 +216,7 @@ export default function TrendingPage() {
   const handlePlay = (item: TrendingItem) => {
     if (item.type !== "performance" || !item.audioFilePath) return;
 
-    // 转换为 Performance 格式
+    // Convert to Performance format
     const performance: Performance = {
       id: item.id,
       workId: 0,
@@ -306,7 +312,10 @@ export default function TrendingPage() {
               <select
                 value={filters.type}
                 onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, type: e.target.value }))
+                  setFilters((prev) => ({
+                    ...prev,
+                    type: e.target.value as "all" | "work" | "performance",
+                  }))
                 }
                 className="block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
               >
@@ -325,7 +334,11 @@ export default function TrendingPage() {
                 onChange={(e) =>
                   setFilters((prev) => ({
                     ...prev,
-                    timePeriod: e.target.value,
+                    timePeriod: e.target.value as
+                      | "daily"
+                      | "weekly"
+                      | "monthly"
+                      | "all",
                   }))
                 }
                 className="block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"

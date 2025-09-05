@@ -149,19 +149,19 @@ export default function CollaborationModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* 作品信息 */}
+          {/* Work Information */}
           <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-sm text-gray-600 mb-1">目标作品</div>
+            <div className="text-sm text-gray-600 mb-1">Target Work</div>
             <div className="font-medium text-gray-900">{workTitle}</div>
           </div>
 
-          {/* 请求标题 */}
+          {/* Request Title */}
           <div>
             <label
               htmlFor="title"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              请求标题 <span className="text-red-500">*</span>
+              Request Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -169,38 +169,38 @@ export default function CollaborationModal({
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              placeholder="请简要描述您的修改"
+              placeholder="Briefly describe your changes"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               required
             />
           </div>
 
-          {/* 请求描述 */}
+          {/* Request Description */}
           <div>
             <label
               htmlFor="description"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              请求描述
+              Request Description
             </label>
             <textarea
               id="description"
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="详细描述您的修改内容和原因"
+              placeholder="Describe your changes and reasons in detail"
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
 
-          {/* 提交信息 */}
+          {/* Commit Message */}
           <div>
             <label
               htmlFor="commitMessage"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              提交信息 <span className="text-red-500">*</span>
+              Commit Message <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -208,38 +208,38 @@ export default function CollaborationModal({
               name="commitMessage"
               value={formData.commitMessage}
               onChange={handleInputChange}
-              placeholder="简短描述这次修改（类似Git commit message）"
+              placeholder="Briefly describe this change (like Git commit message)"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               required
             />
           </div>
 
-          {/* 变更摘要 */}
+          {/* Changes Summary */}
           <div>
             <label
               htmlFor="changesSummary"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              变更摘要
+              Changes Summary
             </label>
             <textarea
               id="changesSummary"
               name="changesSummary"
               value={formData.changesSummary}
               onChange={handleInputChange}
-              placeholder="详细说明您对MIDI文件做了哪些修改"
+              placeholder="Detail what changes you made to the MIDI file"
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
 
-          {/* 文件上传 */}
+          {/* File Upload */}
           <div>
             <label
               htmlFor="midiFile"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              MIDI文件 <span className="text-red-500">*</span>
+              MIDI File <span className="text-red-500">*</span>
             </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
               <input
@@ -292,7 +292,7 @@ export default function CollaborationModal({
               onClick={handleClose}
               className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
             >
-              取消
+              Cancel
             </button>
             <button
               type="submit"
@@ -302,10 +302,10 @@ export default function CollaborationModal({
               {loading ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-                  提交中...
+                  Submitting...
                 </div>
               ) : (
-                "提交协作请求"
+                "Submit Collaboration Request"
               )}
             </button>
           </div>

@@ -71,7 +71,7 @@ export default function FeedbackPage() {
       ) {
         friendlyMessage =
           "System is not ready to receive feedback, please contact administrator to initialize feedback system";
-      } else if (technicalMessage.includes("数据库错误")) {
+      } else if (technicalMessage.includes("Database error")) {
         friendlyMessage =
           "Database service is temporarily unavailable, please try again later";
       }
@@ -248,7 +248,7 @@ export default function FeedbackPage() {
                 </div>
               </div>
 
-              {/* 错误信息显示区域 */}
+              {/* Error Message Display Area */}
               {errorMessage && (
                 <div className="rounded-md bg-red-50 p-4 mb-4">
                   <div className="flex">

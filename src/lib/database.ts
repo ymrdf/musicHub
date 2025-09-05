@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 
-// 数据库连接配置
+// Database connection configuration
 const sequelize = new Sequelize({
   host: process.env.DB_HOST || "127.0.0.1",
   port: parseInt(process.env.DB_PORT || "3306"),
@@ -8,7 +8,7 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD || "ymrdf",
   database: process.env.DB_NAME || "MusicEmit",
   dialect: "mysql",
-  dialectModule: require("mysql2"), // 显式指定 mysql2 模块
+  dialectModule: require("mysql2"), // Explicitly specify mysql2 module
   logging: process.env.NODE_ENV === "development" ? console.log : false,
   pool: {
     max: 10,
@@ -24,14 +24,14 @@ const sequelize = new Sequelize({
   },
 });
 
-// 测试数据库连接
+// Test database connection
 export const testConnection = async () => {
   try {
     await sequelize.authenticate();
-    console.log("数据库连接成功");
+    console.log("Database connection successful");
     return true;
   } catch (error) {
-    console.error("数据库连接失败:", error);
+    console.error("Database connection failed:", error);
     return false;
   }
 };

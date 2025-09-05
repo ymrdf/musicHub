@@ -73,7 +73,7 @@ export default function SearchPage() {
       );
       const data: ApiResponse<SearchResult> = await response.json();
 
-      if (data.success) {
+      if (data.success && data.data) {
         setResults(data.data);
       } else {
         setError(data.error || "Search failed");
@@ -109,7 +109,7 @@ export default function SearchPage() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("zh-CN");
+    return new Date(dateString).toLocaleDateString("en-US");
   };
 
   const formatDuration = (seconds: number) => {
@@ -121,11 +121,11 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 搜索表单 */}
+        {/* Search Form */}
         <div className="mb-8">
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* 搜索输入框 */}
+              {/* Search Input */}
               <div className="flex-1">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -133,7 +133,7 @@ export default function SearchPage() {
                   </div>
                   <input
                     type="text"
-                    placeholder="搜索作品、用户、演奏..."
+                    placeholder="Search works, users, performances..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
@@ -141,7 +141,7 @@ export default function SearchPage() {
                 </div>
               </div>
 
-              {/* 搜索类型选择 */}
+              {/* Search Type Selection */}
               <div className="flex gap-2">
                 {searchTypes.map((type) => {
                   const Icon = type.icon;
@@ -163,19 +163,19 @@ export default function SearchPage() {
                 })}
               </div>
 
-              {/* 搜索按钮 */}
+              {/* Search Button */}
               <button
                 type="submit"
                 disabled={loading}
                 className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
-                {loading ? "搜索中..." : "搜索"}
+                {loading ? "Searching..." : "Search"}
               </button>
             </div>
           </form>
         </div>
 
-        {/* 错误信息 */}
+        {/* Error Message */}
         {error && (
           <div className="max-w-2xl mx-auto mb-8">
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -184,15 +184,15 @@ export default function SearchPage() {
           </div>
         )}
 
-        {/* 搜索结果 */}
+        {/* Search Results */}
         {results && (
           <div className="space-y-8">
-            {/* 作品搜索结果 */}
+            {/* Works Search Results */}
             {results.results.works &&
               results.results.works.items.length > 0 && (
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                    作品 ({results.results.works.total})
+                    Works ({results.results.works.total})
                   </h2>
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {results.results.works.items.map((work) => (
@@ -253,12 +253,12 @@ export default function SearchPage() {
                 </div>
               )}
 
-            {/* 用户搜索结果 */}
+            {/* Users Search Results */}
             {results.results.users &&
               results.results.users.items.length > 0 && (
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                    用户 ({results.results.users.total})
+                    Users ({results.results.users.total})
                   </h2>
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {results.results.users.items.map((user) => (
@@ -286,7 +286,7 @@ export default function SearchPage() {
                               </h3>
                               {user.isVerified && (
                                 <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                  已认证
+                                  Verified
                                 </span>
                               )}
                             </div>
@@ -299,15 +299,15 @@ export default function SearchPage() {
                           <div className="flex items-center gap-4 text-sm text-gray-500">
                             <div className="flex items-center gap-1">
                               <UserIcon className="h-4 w-4" />
-                              <span>{user.followersCount} 粉丝</span>
+                              <span>{user.followersCount} followers</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <MusicalNoteIcon className="h-4 w-4" />
-                              <span>{user.worksCount} 作品</span>
+                              <span>{user.worksCount} works</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <PlayIcon className="h-4 w-4" />
-                              <span>{user.performancesCount} 演奏</span>
+                              <span>{user.performancesCount} performances</span>
                             </div>
                           </div>
                         </div>
@@ -317,12 +317,12 @@ export default function SearchPage() {
                 </div>
               )}
 
-            {/* 演奏搜索结果 */}
+            {/* Performances Search Results */}
             {results.results.performances &&
               results.results.performances.items.length > 0 && (
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                    演奏 ({results.results.performances.total})
+                    Performances ({results.results.performances.total})
                   </h2>
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {results.results.performances.items.map((performance) => (
@@ -342,11 +342,13 @@ export default function SearchPage() {
                           )}
                           <div className="mb-4">
                             <p className="text-sm text-gray-500 mb-2">
-                              原作品: {performance.work.title}
+                              Original Work: {performance.work.title}
                             </p>
                             <div className="flex items-center gap-2 text-xs text-gray-500">
                               <span className="px-2 py-1 bg-gray-100 rounded">
-                                {performance.type === "vocal" ? "演唱" : "演奏"}
+                                {performance.type === "vocal"
+                                  ? "Vocal"
+                                  : "Instrumental"}
                               </span>
                               {performance.instrument && (
                                 <span className="px-2 py-1 bg-gray-100 rounded">
@@ -399,14 +401,16 @@ export default function SearchPage() {
                 </div>
               )}
 
-            {/* 无搜索结果 */}
+            {/* No Search Results */}
             {Object.keys(results.results).length === 0 && !loading && (
               <div className="text-center py-12">
                 <MagnifyingGlassIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  未找到相关结果
+                  No results found
                 </h3>
-                <p className="text-gray-600">尝试使用不同的关键词或搜索类型</p>
+                <p className="text-gray-600">
+                  Try using different keywords or search types
+                </p>
               </div>
             )}
           </div>

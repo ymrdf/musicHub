@@ -29,11 +29,11 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await login(data.email, data.password);
-      toast.success("登录成功！");
+      toast.success("Login successful!");
       router.push("/");
     } catch (error: any) {
-      console.error("登录错误:", error);
-      toast.error(error.message || "登录失败，请稍后再试");
+      console.error("Login error:", error);
+      toast.error(error.message || "Login failed, please try again later");
     } finally {
       setIsLoading(false);
     }
@@ -150,12 +150,12 @@ export default function LoginPage() {
             </div>
 
             <div className="text-sm">
-              <Link
+              {/* <Link
                 href="/auth/forgot-password"
                 className="font-medium text-primary-600 hover:text-primary-500"
               >
                 Forgot password?
-              </Link>
+              </Link> */}
             </div>
           </div>
 
@@ -192,7 +192,7 @@ export default function LoginPage() {
         </form>
 
         {/* Divider */}
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300" />
@@ -201,10 +201,10 @@ export default function LoginPage() {
               <span className="px-2 bg-gray-50 text-gray-500">Or</span>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Third-party login */}
-        <div className="mt-6 grid grid-cols-2 gap-3">
+        {/* <div className="mt-6 grid grid-cols-2 gap-3">
           <button
             type="button"
             className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200"
@@ -220,7 +220,7 @@ export default function LoginPage() {
             <span className="text-lg">F</span>
             <span className="ml-1">Facebook</span>
           </button>
-        </div>
+        </div> */}
 
         {/* Footer notice */}
         <div className="text-center text-xs text-gray-500">

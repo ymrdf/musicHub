@@ -39,7 +39,7 @@ export default function TermsOfServicePage() {
             </div>
           </section>
 
-          {/* 服务描述 */}
+          {/* Service Description */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               Service Description
@@ -62,7 +62,7 @@ export default function TermsOfServicePage() {
             </div>
           </section>
 
-          {/* 用户账户 */}
+          {/* User Accounts */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
               <UserIcon className="h-6 w-6 mr-2 text-primary-600" />
@@ -108,7 +108,7 @@ export default function TermsOfServicePage() {
             </div>
           </section>
 
-          {/* 内容政策 */}
+          {/* Content Policy */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               Content Policy
@@ -151,7 +151,7 @@ export default function TermsOfServicePage() {
             </div>
           </section>
 
-          {/* 知识产权 */}
+          {/* Intellectual Property */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               Intellectual Property
@@ -193,7 +193,7 @@ export default function TermsOfServicePage() {
             </div>
           </section>
 
-          {/* 用户行为规范 */}
+          {/* User Conduct Guidelines */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               User Conduct Guidelines
@@ -218,7 +218,7 @@ export default function TermsOfServicePage() {
             </div>
           </section>
 
-          {/* 服务可用性 */}
+          {/* Service Availability */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               Service Availability
@@ -245,7 +245,7 @@ export default function TermsOfServicePage() {
             </div>
           </section>
 
-          {/* 免责声明 */}
+          {/* Disclaimer */}
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               Disclaimer

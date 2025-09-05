@@ -11,13 +11,13 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
@@ -28,16 +28,16 @@ export async function GET(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的作品ID",
+          error: "Invalid work ID",
         },
         { status: 400 }
       );
     }
 
-    // 获取当前用户（如果已登录）
+    // Get current user (if logged in)
     const currentUser = await getUserFromRequest(request);
 
-    // 查询作品详情
+    // Query work details
     const work = await Work.findByPk(workId, {
       include: [
         {
@@ -67,24 +67,24 @@ export async function GET(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "作品不存在",
+          error: "Work not found",
         },
         { status: 404 }
       );
     }
 
-    // 检查访问权限
+    // Check access permissions
     if (!work.isPublic && (!currentUser || currentUser.id !== work.userId)) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无权访问此作品",
+          error: "No permission to access this work",
         },
         { status: 403 }
       );
     }
 
-    // 获取作品标签
+    // Get work tags
     const tags = await sequelize.query(
       `
       SELECT t.id, t.name, t.color 
@@ -99,7 +99,7 @@ export async function GET(
       }
     );
 
-    // 检查当前用户是否已收藏
+    // Check if current user has starred this work
     let isStarred = false;
     if (currentUser) {
       const [star] = await sequelize.query(
@@ -112,12 +112,12 @@ export async function GET(
       isStarred = !!star;
     }
 
-    // 增加浏览次数（异步执行，不影响响应）
+    // Increment view count (async execution, does not affect response)
     work.increment("viewsCount").catch((error) => {
-      console.error("更新浏览次数失败:", error);
+      console.error("Failed to update view count:", error);
     });
 
-    // 构建响应数据
+    // Build response data
     const workData = {
       id: work.id,
       title: work.title,
@@ -129,7 +129,7 @@ export async function GET(
       starsCount: work.starsCount,
       performancesCount: work.performancesCount,
       commentsCount: work.commentsCount,
-      viewsCount: work.viewsCount + 1, // 包含本次浏览
+      viewsCount: work.viewsCount + 1, // Include current view
       isPublic: work.isPublic,
       allowCollaboration: work.allowCollaboration,
       license: work.license,
@@ -149,42 +149,42 @@ export async function GET(
       data: workData,
     });
   } catch (error) {
-    console.error("获取作品详情失败:", error);
+    console.error("Failed to get work details:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );
   }
 }
 
-// 更新作品
+// Update work
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
     }
 
-    // 验证用户身份
+    // Verify user identity
     const currentUser = await getUserFromRequest(request);
     if (!currentUser) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "请先登录",
+          error: "Please login first",
         },
         { status: 401 }
       );
@@ -195,30 +195,30 @@ export async function PUT(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的作品ID",
+          error: "Invalid work ID",
         },
         { status: 400 }
       );
     }
 
-    // 查找作品
+    // Find work
     const work = await Work.findByPk(workId);
     if (!work) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "作品不存在",
+          error: "Work not found",
         },
         { status: 404 }
       );
     }
 
-    // 检查权限
+    // Check permissions
     if (work.userId !== currentUser.id) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无权修改此作品",
+          error: "No permission to modify this work",
         },
         { status: 403 }
       );
@@ -237,11 +237,11 @@ export async function PUT(
       license,
     } = body;
 
-    // 开始事务
+    // Start transaction
     const transaction = await sequelize.transaction();
 
     try {
-      // 更新作品信息
+      // Update work information
       await work.update(
         {
           title: title || work.title,
@@ -261,15 +261,15 @@ export async function PUT(
         { transaction }
       );
 
-      // 更新标签
+      // Update tags
       if (tags.length >= 0) {
-        // 删除现有标签关联
+        // Delete existing tag associations
         await sequelize.query("DELETE FROM work_tags WHERE work_id = ?", {
           replacements: [workId],
           transaction,
         });
 
-        // 添加新标签
+        // Add new tags
         for (const tagName of tags) {
           let [tag] = await Tag.findOrCreate({
             where: { name: tagName.trim() },
@@ -297,49 +297,49 @@ export async function PUT(
 
       return NextResponse.json<ApiResponse>({
         success: true,
-        message: "作品更新成功",
+        message: "Work updated successfully",
       });
     } catch (error) {
       await transaction.rollback();
       throw error;
     }
   } catch (error) {
-    console.error("更新作品失败:", error);
+    console.error("Failed to update work:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );
   }
 }
 
-// 删除作品
+// Delete work
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
     }
 
-    // 验证用户身份
+    // Verify user identity
     const currentUser = await getUserFromRequest(request);
     if (!currentUser) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "请先登录",
+          error: "Please login first",
         },
         { status: 401 }
       );
@@ -350,61 +350,61 @@ export async function DELETE(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的作品ID",
+          error: "Invalid work ID",
         },
         { status: 400 }
       );
     }
 
-    // 查找作品
+    // Find work
     const work = await Work.findByPk(workId);
     if (!work) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "作品不存在",
+          error: "Work not found",
         },
         { status: 404 }
       );
     }
 
-    // 检查权限
+    // Check permissions
     if (work.userId !== currentUser.id) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无权删除此作品",
+          error: "No permission to delete this work",
         },
         { status: 403 }
       );
     }
 
-    // 开始事务
+    // Start transaction
     const transaction = await sequelize.transaction();
 
     try {
-      // 删除作品（级联删除相关数据）
+      // Delete work (cascade delete related data)
       await work.destroy({ transaction });
 
-      // 更新用户作品数
+      // Update user works count
       await currentUser.decrement("worksCount", { transaction });
 
       await transaction.commit();
 
       return NextResponse.json<ApiResponse>({
         success: true,
-        message: "作品删除成功",
+        message: "Work deleted successfully",
       });
     } catch (error) {
       await transaction.rollback();
       throw error;
     }
   } catch (error) {
-    console.error("删除作品失败:", error);
+    console.error("Failed to delete work:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );

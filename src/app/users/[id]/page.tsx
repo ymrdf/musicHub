@@ -11,6 +11,7 @@ import {
   CalendarIcon,
 } from "@heroicons/react/24/outline";
 import { fetchUserProfile } from "@/lib/api-utils";
+import { getUserFromRequest } from "@/lib/auth";
 import UserProfileActions from "@/components/client/UserProfileActions";
 
 // Dynamically generate metadata
@@ -64,6 +65,11 @@ export default async function UserProfilePage({
   if (!profile) {
     notFound();
   }
+
+  // 获取当前用户信息（用于判断是否为自己的页面和follow状态）
+  // 在服务端组件中，我们无法直接获取当前用户信息
+  // 客户端组件会通过useAuth hook获取用户信息
+  const currentUser: { id: number } | null = null;
 
   // Structured data
   const structuredData = {
@@ -184,6 +190,7 @@ export default async function UserProfilePage({
             <div className="flex-shrink-0">
               <UserProfileActions
                 userId={profile.id}
+                currentUserId={null}
                 initialIsFollowing={false} // This value needs to be fetched in client component
                 initialFollowersCount={profile.followersCount}
               />

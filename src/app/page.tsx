@@ -11,7 +11,7 @@ import StatsDisplay from "@/components/client/StatsDisplay";
 import { fetchStats, fetchRecommendations } from "@/lib/api-utils";
 import dynamic from "next/dynamic";
 
-// 动态导入客户端组件，禁用服务器端渲染
+// Dynamically import client component, disable server-side rendering
 const RecommendationSection = dynamic(
   () => import("@/components/RecommendationSection"),
   { ssr: false }

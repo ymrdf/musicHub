@@ -233,7 +233,7 @@ export default function HelpPage() {
           </div>
         </div>
 
-        {/* 分类筛选 */}
+        {/* Category Filter */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Frequently Asked Questions
@@ -258,7 +258,7 @@ export default function HelpPage() {
             })}
           </div>
 
-          {/* FAQ 列表 */}
+          {/* FAQ List */}
           <div className="space-y-4">
             {filteredFAQs.map((faq, index) => {
               const isExpanded = expandedItems.has(index);
@@ -293,7 +293,7 @@ export default function HelpPage() {
           </div>
         </div>
 
-        {/* 联系客服 */}
+        {/* Contact Support */}
         <div id="contact" className="bg-white rounded-lg shadow-sm p-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">
             Contact Support
@@ -338,7 +338,7 @@ export default function HelpPage() {
           </div>
         </div>
 
-        {/* 返回首页 */}
+        {/* Back to Home */}
         <div className="text-center mt-8">
           <a
             href="/"

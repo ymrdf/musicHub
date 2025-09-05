@@ -1,11 +1,11 @@
 // src/lib/api-utils.ts
-// 用于服务器组件中的数据获取函数
+// Data fetching functions for server components
 
 export async function fetchStats() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/stats`,
     {
-      cache: "no-store", // 或使用revalidate选项
+      cache: "no-store", // or use revalidate option
     }
   );
   const data = await response.json();
@@ -20,7 +20,7 @@ export async function fetchRecommendations() {
       process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
     }/api/home/recommendations`,
     {
-      next: { revalidate: 3600 }, // 每小时重新验证一次
+      next: { revalidate: 3600 }, // Revalidate every hour
     }
   );
   const data = await response.json();
@@ -40,7 +40,7 @@ export async function fetchWorkById(id: string) {
       process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
     }/api/works/${id}`,
     {
-      next: { revalidate: 3600 }, // 每小时重新验证一次
+      next: { revalidate: 3600 }, // Revalidate every hour
     }
   );
 
@@ -58,7 +58,7 @@ export async function fetchUserProfile(id: string) {
       process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
     }/api/users/${id}`,
     {
-      next: { revalidate: 3600 }, // 每小时重新验证一次
+      next: { revalidate: 3600 }, // Revalidate every hour
     }
   );
 
@@ -76,7 +76,7 @@ export async function fetchPopularWorks(limit = 10) {
       process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
     }/api/works?sortBy=starsCount&sortOrder=desc&limit=${limit}`,
     {
-      next: { revalidate: 86400 }, // 每天重新验证一次
+      next: { revalidate: 86400 }, // Revalidate daily
     }
   );
   const data = await response.json();

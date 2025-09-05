@@ -3,14 +3,14 @@ import path from "path";
 import fs from "fs";
 import { validateFile } from "@/utils/validation";
 
-// 确保上传目录存在
+// Ensure upload directory exists
 const ensureUploadDir = (dir: string) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 };
 
-// 生成唯一文件名
+// Generate unique filename
 const generateFileName = (originalName: string): string => {
   const timestamp = Date.now();
   const randomStr = Math.random().toString(36).substring(2, 15);
@@ -18,7 +18,7 @@ const generateFileName = (originalName: string): string => {
   return `${timestamp}_${randomStr}${ext}`;
 };
 
-// 配置存储
+// Configure storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     let uploadPath = "";
@@ -49,7 +49,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// 文件过滤器
+// File filter
 const fileFilter = (
   req: any,
   file: Express.Multer.File,
@@ -74,14 +74,14 @@ const fileFilter = (
 
   const validation = validateFile(file, fileType);
   if (!validation.valid) {
-    cb(new Error(validation.message || "文件验证失败"));
+    cb(new Error(validation.message || "File validation failed"));
     return;
   }
 
   cb(null, true);
 };
 
-// 创建 multer 实例
+// Create multer instance
 export const upload = multer({
   storage,
   fileFilter,
@@ -90,14 +90,14 @@ export const upload = multer({
   },
 });
 
-// 单文件上传中间件
+// Single file upload middleware
 export const uploadSingle = (fieldName: string) => upload.single(fieldName);
 
-// 多文件上传中间件
+// Multiple file upload middleware
 export const uploadMultiple = (fields: { name: string; maxCount: number }[]) =>
   upload.fields(fields);
 
-// 删除文件
+// Delete file
 export const deleteFile = async (filePath: string): Promise<boolean> => {
   try {
     if (fs.existsSync(filePath)) {
@@ -106,12 +106,12 @@ export const deleteFile = async (filePath: string): Promise<boolean> => {
     }
     return false;
   } catch (error) {
-    console.error("删除文件失败:", error);
+    console.error("Failed to delete file:", error);
     return false;
   }
 };
 
-// 获取文件信息
+// Get file information
 export const getFileInfo = (filePath: string) => {
   try {
     if (!fs.existsSync(filePath)) {
@@ -125,25 +125,25 @@ export const getFileInfo = (filePath: string) => {
       modifiedAt: stats.mtime,
     };
   } catch (error) {
-    console.error("获取文件信息失败:", error);
+    console.error("Failed to get file information:", error);
     return null;
   }
 };
 
-// 生成文件访问 URL
+// Generate file access URL
 export const getFileUrl = (filePath: string): string => {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const relativePath = filePath.replace(process.cwd(), "").replace(/\\/g, "/");
   return `${baseUrl}${relativePath}`;
 };
 
-// 文件上传函数（用于Next.js API）
+// File upload function (for Next.js API)
 export const uploadFile = async (
   file: File,
   type: "audio" | "pdf" | "midi" | "image"
 ): Promise<{ success: boolean; filePath?: string; error?: string }> => {
   try {
-    // 验证文件类型 - 创建兼容的对象
+    // Validate file type - create compatible object
     const mockMulterFile = {
       fieldname: type,
       originalname: file.name,

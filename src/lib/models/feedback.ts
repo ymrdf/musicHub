@@ -32,7 +32,7 @@ Feedback.init(
     },
     name: {
       type: DataTypes.STRING(255),
-      defaultValue: "匿名用户",
+      defaultValue: "Anonymous User",
     },
     email: {
       type: DataTypes.STRING(255),

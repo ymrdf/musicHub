@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import Link from "next/link";
 import { UserPlusIcon, UserMinusIcon } from "@heroicons/react/24/outline";
+import { useAuth } from "@/components/layout/Providers";
 
 interface UserProfileActionsProps {
   userId: number;
@@ -19,14 +20,35 @@ export default function UserProfileActions({
   initialIsFollowing,
   initialFollowersCount,
 }: UserProfileActionsProps) {
+  const { user } = useAuth();
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const [followersCount, setFollowersCount] = useState(initialFollowersCount);
   const [followLoading, setFollowLoading] = useState(false);
 
-  const isOwnProfile = currentUserId === userId;
+  // 使用客户端获取的用户信息，如果服务端没有提供的话
+  const actualCurrentUserId = currentUserId || user?.id || null;
+  const isOwnProfile = actualCurrentUserId === userId;
+
+  // 检查是否已经关注了该用户
+  useEffect(() => {
+    const checkFollowStatus = async () => {
+      if (!actualCurrentUserId || isOwnProfile) return;
+
+      try {
+        const response = await axios.get(`/api/users/${userId}/follow-status`);
+        if (response.data.success) {
+          setIsFollowing(response.data.data.isFollowing);
+        }
+      } catch (error) {
+        console.error("检查关注状态失败:", error);
+      }
+    };
+
+    checkFollowStatus();
+  }, [actualCurrentUserId, userId, isOwnProfile]);
 
   const handleFollow = async () => {
-    if (!currentUserId) {
+    if (!actualCurrentUserId) {
       toast.error("Please login first");
       return;
     }
@@ -59,17 +81,18 @@ export default function UserProfileActions({
   };
 
   if (isOwnProfile) {
-    return (
-      <Link
-        href="/settings/profile"
-        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-      >
-        Edit Profile
-      </Link>
-    );
+    return null;
+    // return (
+    //   <Link
+    //     href="/settings/profile"
+    //     className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+    //   >
+    //     Edit Profile
+    //   </Link>
+    // );
   }
 
-  if (!currentUserId) {
+  if (!actualCurrentUserId) {
     return (
       <Link
         href="/auth/login"
