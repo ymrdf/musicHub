@@ -12,7 +12,7 @@ import {
 } from "@/lib/models";
 import { Op } from "sequelize";
 
-// 获取演奏列表
+// Get performances list
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
 
-    // 获取当前用户信息
+    // Get current user information
     const currentUser = await getUserFromRequest(request);
 
     const where: any = { isPublic: true };
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       where.type = type;
     }
 
-    // 构建作品筛选条件
+    // Build work filter conditions
     const workWhere: any = {};
     if (genreId) {
       workWhere.genreId = parseInt(genreId);
@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
       offset,
     });
 
-    // 如果用户已登录，检查点赞状态
+    // If user is logged in, check like status
     if (currentUser) {
       const performanceIds = rows.map((p) => p.id);
       const likes = await PerformanceLike.findAll({
@@ -139,27 +139,27 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("获取演奏列表失败:", error);
+    console.error("Failed to get performances list:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "获取演奏列表失败",
+        error: "Failed to get performances list",
       },
       { status: 500 }
     );
   }
 }
 
-// 创建演奏
+// Create performance
 export async function POST(request: NextRequest) {
   try {
-    // 验证用户身份
+    // Verify user identity
     const currentUser = await getUserFromRequest(request);
     if (!currentUser) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "请先登录",
+          error: "Please login first",
         },
         { status: 401 }
       );
@@ -167,7 +167,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    // 验证请求数据
+    // Validate request data
     const { error } = performanceSchema.validate(body);
     if (error) {
       return NextResponse.json<ApiResponse>(
@@ -192,19 +192,19 @@ export async function POST(request: NextRequest) {
       fileFormat,
     } = body;
 
-    // 验证作品是否存在
+    // Check if work exists
     const work = await Work.findByPk(workId);
     if (!work) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "作品不存在",
+          error: "Work not found",
         },
         { status: 404 }
       );
     }
 
-    // 创建演奏记录
+    // Create performance record
     const performance = await Performance.create({
       workId,
       userId: currentUser.id,
@@ -222,13 +222,13 @@ export async function POST(request: NextRequest) {
       playsCount: 0,
     });
 
-    // 更新作品的演奏数量
+    // Update work performances count
     await work.increment("performancesCount");
 
-    // 更新用户的演奏数量
+    // Update user performances count
     await currentUser.increment("performancesCount");
 
-    // 返回创建的演奏记录
+    // Return created performance record
     const createdPerformance = await Performance.findByPk(performance.id, {
       include: [
         {
@@ -248,16 +248,16 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         data: createdPerformance,
-        message: "演奏上传成功",
+        message: "Performance uploaded successfully",
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error("创建演奏失败:", error);
+    console.error("Failed to create performance:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "创建演奏失败",
+        error: "Failed to create performance",
       },
       { status: 500 }
     );

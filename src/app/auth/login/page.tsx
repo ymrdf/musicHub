@@ -29,11 +29,17 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await login(data.email, data.password);
-      toast.success("Login successful!");
+
+      toast.success("Login successful！");
       router.push("/");
     } catch (error: any) {
       console.error("Login error:", error);
-      toast.error(error.message || "Login failed, please try again later");
+      // 特别处理401错误（邮箱或密码错误）
+      if (error.message === "Invalid email or password") {
+        toast.error("Email or password error，please check and try again");
+      } else {
+        toast.error(error.message || "Login failed，please try again later");
+      }
     } finally {
       setIsLoading(false);
     }

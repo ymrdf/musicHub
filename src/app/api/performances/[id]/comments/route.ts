@@ -4,7 +4,7 @@ import { getUserFromRequest } from "@/lib/auth";
 import { ApiResponse, Comment, PaginatedResponse } from "@/types";
 import { QueryTypes } from "sequelize";
 
-// 获取演奏评论列表
+// Get performance comments list
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -13,7 +13,7 @@ export async function GET(
     const performanceId = parseInt(params.id);
     if (isNaN(performanceId)) {
       return NextResponse.json(
-        { success: false, error: "无效的演奏ID" },
+        { success: false, error: "Invalid performance ID" },
         { status: 400 }
       );
     }
@@ -29,7 +29,7 @@ export async function GET(
 
     if (!performance) {
       return NextResponse.json(
-        { success: false, error: "演奏不存在" },
+        { success: false, error: "Performance not found" },
         { status: 404 }
       );
     }
@@ -178,7 +178,7 @@ export async function POST(
     const performanceId = parseInt(params.id);
     if (isNaN(performanceId)) {
       return NextResponse.json(
-        { success: false, error: "无效的演奏ID" },
+        { success: false, error: "Invalid performance ID" },
         { status: 400 }
       );
     }
@@ -194,7 +194,7 @@ export async function POST(
 
     if (!performance) {
       return NextResponse.json(
-        { success: false, error: "演奏不存在" },
+        { success: false, error: "Performance not found" },
         { status: 404 }
       );
     }

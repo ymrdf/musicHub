@@ -6,13 +6,13 @@ import { testConnection } from "@/lib/database";
 
 export async function POST(request: NextRequest) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
@@ -25,57 +25,57 @@ export async function POST(request: NextRequest) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "验证令牌不能为空",
+          error: "Verification token cannot be empty",
         },
         { status: 400 }
       );
     }
 
-    // 验证令牌
+    // Verify token
     const decoded = verifyToken(token);
     if (!decoded) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "验证链接无效或已过期",
+          error: "Verification link is invalid or has expired",
         },
         { status: 400 }
       );
     }
 
-    // 查找用户
+    // Find user
     const user = await User.findByPk(decoded.userId);
     if (!user) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "用户不存在",
+          error: "User not found",
         },
         { status: 404 }
       );
     }
 
-    // 检查用户是否已经验证
+    // Check if user is already verified
     if (user.isVerified) {
       return NextResponse.json<ApiResponse>({
         success: true,
-        message: "邮箱已经验证过了",
+        message: "Email has already been verified",
       });
     }
 
-    // 更新用户验证状态
+    // Update user verification status
     await user.update({ isVerified: true });
 
     return NextResponse.json<ApiResponse>({
       success: true,
-      message: "邮箱验证成功！",
+      message: "Email verification successful!",
     });
   } catch (error) {
-    console.error("邮箱验证失败:", error);
+    console.error("Email verification failed:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );

@@ -8,13 +8,13 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
@@ -25,32 +25,32 @@ export async function GET(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的用户ID",
+          error: "Invalid user ID",
         },
         { status: 400 }
       );
     }
 
-    // 获取用户信息
+    // Get user information
     const user = await User.findByPk(userId);
     if (!user) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "用户不存在",
+          error: "User not found",
         },
         { status: 404 }
       );
     }
 
-    // 获取用户的作品列表
+    // Get user works list
     const works = await Work.findAll({
       where: { userId: user.id, isPublic: true },
       order: [["createdAt", "DESC"]],
       limit: 10,
     });
 
-    // 返回用户信息（不包含敏感信息）
+    // Return user information (excluding sensitive data)
     const userResponse = {
       id: user.id,
       username: user.username,
@@ -78,11 +78,11 @@ export async function GET(
       data: userResponse,
     });
   } catch (error) {
-    console.error("获取用户信息失败:", error);
+    console.error("Failed to get user information:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );

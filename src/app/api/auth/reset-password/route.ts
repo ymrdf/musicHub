@@ -6,13 +6,13 @@ import { testConnection } from "@/lib/database";
 
 export async function POST(request: NextRequest) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
@@ -25,29 +25,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "请填写所有必填字段",
+          error: "Please fill in all required fields",
         },
         { status: 400 }
       );
     }
 
-    // 验证密码匹配
+    // Verify password match
     if (password !== confirmPassword) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "两次密码输入不一致",
+          error: "Passwords do not match",
         },
         { status: 400 }
       );
     }
 
-    // 验证密码强度
+    // Validate password strength
     if (password.length < 8) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "密码至少需要8个字符",
+          error: "Password must be at least 8 characters long",
         },
         { status: 400 }
       );
@@ -57,50 +57,51 @@ export async function POST(request: NextRequest) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "密码必须包含大小写字母和数字",
+          error:
+            "Password must contain uppercase letters, lowercase letters, and numbers",
         },
         { status: 400 }
       );
     }
 
-    // 验证重置令牌
+    // Verify reset token
     const decoded = verifyToken(token);
     if (!decoded) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "重置链接无效或已过期",
+          error: "Reset link is invalid or has expired",
         },
         { status: 400 }
       );
     }
 
-    // 查找用户
+    // Find user
     const user = await User.findByPk(decoded.userId);
     if (!user || !user.isActive) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "用户不存在或账户已被禁用",
+          error: "User not found or account has been disabled",
         },
         { status: 404 }
       );
     }
 
-    // 更新密码
+    // Update password
     const passwordHash = await hashPassword(password);
     await user.update({ passwordHash });
 
     return NextResponse.json<ApiResponse>({
       success: true,
-      message: "密码重置成功，请使用新密码登录",
+      message: "Password reset successful. Please login with your new password",
     });
   } catch (error) {
-    console.error("密码重置失败:", error);
+    console.error("Password reset failed:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );

@@ -8,13 +8,13 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
@@ -25,31 +25,31 @@ export async function GET(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的用户ID",
+          error: "Invalid user ID",
         },
         { status: 400 }
       );
     }
 
-    // 检查用户是否存在
+    // Check if user exists
     const user = await User.findByPk(userId);
     if (!user) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "用户不存在",
+          error: "User not found",
         },
         { status: 404 }
       );
     }
 
-    // 获取查询参数
+    // Get query parameters
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
     const offset = (page - 1) * limit;
 
-    // 获取用户的粉丝
+    // Get user followers
     const followers = await UserFollow.findAll({
       where: { followingId: user.id },
       include: [
@@ -75,12 +75,12 @@ export async function GET(
       offset,
     });
 
-    // 获取总数
+    // Get total count
     const totalCount = await UserFollow.count({
       where: { followingId: user.id },
     });
 
-    // 格式化返回数据
+    // Format return data
     const users = followers.map((follow) => ({
       id: (follow as any).follower.id,
       username: (follow as any).follower.username,
@@ -108,14 +108,13 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("获取用户粉丝列表失败:", error);
+    console.error("Failed to get user followers list:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );
   }
 }
-

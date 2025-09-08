@@ -7,13 +7,13 @@ import { testConnection } from "@/lib/database";
 
 export async function POST(request: NextRequest) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    // 验证请求数据
+    // Validate request data
     const { error, value } = loginSchema.validate(body);
     if (error) {
       return NextResponse.json<ApiResponse>(
@@ -35,45 +35,45 @@ export async function POST(request: NextRequest) {
 
     const { email, password } = value;
 
-    // 查找用户
+    // Find user
     const user = await User.findOne({ where: { email } });
     if (!user) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "邮箱或密码错误",
+          error: "Invalid email or password",
         },
         { status: 401 }
       );
     }
 
-    // 检查账户是否激活
+    // Check if account is active
     if (!user.isActive) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "账户已被禁用，请联系管理员",
+          error: "Account has been disabled. Please contact administrator",
         },
         { status: 403 }
       );
     }
 
-    // 验证密码
+    // Verify password
     const isPasswordValid = await comparePassword(password, user.passwordHash);
     if (!isPasswordValid) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "邮箱或密码错误",
+          error: "Invalid email or password",
         },
         { status: 401 }
       );
     }
 
-    // 生成 JWT token
+    // Generate JWT token
     const token = generateToken(user.id);
 
-    // 返回用户信息（不包含密码）
+    // Return user information (excluding password)
     const userResponse = {
       id: user.id,
       username: user.username,
@@ -95,14 +95,14 @@ export async function POST(request: NextRequest) {
         user: userResponse,
         token,
       },
-      message: "登录成功",
+      message: "Login successful",
     });
   } catch (error) {
-    console.error("登录失败:", error);
+    console.error("Login failed:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );

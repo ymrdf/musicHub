@@ -6,31 +6,31 @@ import type { ApiResponse } from "@/types";
 import sequelize from "@/lib/database";
 import { QueryTypes } from "sequelize";
 
-// 收藏作品
+// Star work
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
     }
 
-    // 验证用户身份
+    // Verify user identity
     const currentUser = await getUserFromRequest(request);
     if (!currentUser) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "请先登录",
+          error: "Please login first",
         },
         { status: 401 }
       );
@@ -41,36 +41,36 @@ export async function POST(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的作品ID",
+          error: "Invalid work ID",
         },
         { status: 400 }
       );
     }
 
-    // 检查作品是否存在
+    // Check if work exists
     const work = await Work.findByPk(workId);
     if (!work) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "作品不存在",
+          error: "Work not found",
         },
         { status: 404 }
       );
     }
 
-    // 不能收藏自己的作品
+    // Cannot star own work
     if (work.userId === currentUser.id) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "不能收藏自己的作品",
+          error: "Cannot star your own work",
         },
         { status: 400 }
       );
     }
 
-    // 检查是否已经收藏
+    // Check if already starred
     const [existingStar] = await sequelize.query(
       "SELECT id FROM work_stars WHERE work_id = ? AND user_id = ?",
       {
@@ -83,17 +83,17 @@ export async function POST(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "已经收藏过该作品",
+          error: "Work already starred",
         },
         { status: 400 }
       );
     }
 
-    // 开始事务
+    // Start transaction
     const transaction = await sequelize.transaction();
 
     try {
-      // 创建收藏记录
+      // Create star record
       await sequelize.query(
         "INSERT INTO work_stars (work_id, user_id) VALUES (?, ?)",
         {
@@ -102,14 +102,14 @@ export async function POST(
         }
       );
 
-      // 更新作品收藏数
+      // Update work stars count
       await work.increment("starsCount", { transaction });
 
       await transaction.commit();
 
       return NextResponse.json<ApiResponse>({
         success: true,
-        message: "收藏成功",
+        message: "Work starred successfully",
         data: {
           isStarred: true,
           starsCount: work.starsCount + 1,
@@ -120,42 +120,42 @@ export async function POST(
       throw error;
     }
   } catch (error) {
-    console.error("收藏作品失败:", error);
+    console.error("Failed to star work:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );
   }
 }
 
-// 取消收藏
+// Unstar work
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
     }
 
-    // 验证用户身份
+    // Verify user identity
     const currentUser = await getUserFromRequest(request);
     if (!currentUser) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "请先登录",
+          error: "Please login first",
         },
         { status: 401 }
       );
@@ -166,25 +166,25 @@ export async function DELETE(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的作品ID",
+          error: "Invalid work ID",
         },
         { status: 400 }
       );
     }
 
-    // 检查作品是否存在
+    // Check if work exists
     const work = await Work.findByPk(workId);
     if (!work) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "作品不存在",
+          error: "Work not found",
         },
         { status: 404 }
       );
     }
 
-    // 检查是否已经收藏
+    // Check if already starred
     const [existingStar] = await sequelize.query(
       "SELECT id FROM work_stars WHERE work_id = ? AND user_id = ?",
       {
@@ -197,17 +197,17 @@ export async function DELETE(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "尚未收藏该作品",
+          error: "Work not starred yet",
         },
         { status: 400 }
       );
     }
 
-    // 开始事务
+    // Start transaction
     const transaction = await sequelize.transaction();
 
     try {
-      // 删除收藏记录
+      // Delete star record
       await sequelize.query(
         "DELETE FROM work_stars WHERE work_id = ? AND user_id = ?",
         {
@@ -216,14 +216,14 @@ export async function DELETE(
         }
       );
 
-      // 更新作品收藏数
+      // Update work stars count
       await work.decrement("starsCount", { transaction });
 
       await transaction.commit();
 
       return NextResponse.json<ApiResponse>({
         success: true,
-        message: "取消收藏成功",
+        message: "Work unstarred successfully",
         data: {
           isStarred: false,
           starsCount: Math.max(0, work.starsCount - 1),
@@ -234,11 +234,11 @@ export async function DELETE(
       throw error;
     }
   } catch (error) {
-    console.error("取消收藏失败:", error);
+    console.error("Failed to unstar work:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );

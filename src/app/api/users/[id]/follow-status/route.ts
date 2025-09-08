@@ -5,31 +5,31 @@ import type { ApiResponse } from "@/types";
 import sequelize from "@/lib/database";
 import { QueryTypes } from "sequelize";
 
-// 检查关注状态
+// Check follow status
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
     }
 
-    // 验证用户身份
+    // Verify user identity
     const currentUser = await getUserFromRequest(request);
     if (!currentUser) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "请先登录",
+          error: "Please login first",
         },
         { status: 401 }
       );
@@ -40,13 +40,13 @@ export async function GET(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的用户ID",
+          error: "Invalid user ID",
         },
         { status: 400 }
       );
     }
 
-    // 检查是否已经关注
+    // Check if already following
     const [existingFollow] = await sequelize.query(
       "SELECT * FROM user_follows WHERE follower_id = ? AND following_id = ?",
       {
@@ -62,11 +62,11 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("检查关注状态失败:", error);
+    console.error("Failed to check follow status:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );

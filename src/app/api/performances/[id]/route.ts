@@ -4,7 +4,7 @@ import { performanceSchema } from "@/utils/validation";
 import type { ApiResponse } from "@/types";
 import { User, Work, Performance, Comment } from "@/lib/models";
 
-// 获取演奏详情
+// Get performance details
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -16,7 +16,7 @@ export async function GET(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的演奏ID",
+          error: "Invalid performance ID",
         },
         { status: 400 }
       );
@@ -41,13 +41,13 @@ export async function GET(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "演奏不存在",
+          error: "Performance not found",
         },
         { status: 404 }
       );
     }
 
-    // 增加播放次数
+    // Increment play count
     await performance.increment("playsCount");
 
     return NextResponse.json<ApiResponse>({
@@ -55,30 +55,30 @@ export async function GET(
       data: performance,
     });
   } catch (error) {
-    console.error("获取演奏详情失败:", error);
+    console.error("Failed to get performance details:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "获取演奏详情失败",
+        error: "Failed to get performance details",
       },
       { status: 500 }
     );
   }
 }
 
-// 更新演奏
+// Update performance
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // 验证用户身份
+    // Verify user identity
     const currentUser = await getUserFromRequest(request);
     if (!currentUser) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "请先登录",
+          error: "Please login first",
         },
         { status: 401 }
       );
@@ -90,30 +90,30 @@ export async function PUT(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的演奏ID",
+          error: "Invalid performance ID",
         },
         { status: 400 }
       );
     }
 
-    // 查找演奏记录
+    // Find performance record
     const performance = await Performance.findByPk(performanceId);
     if (!performance) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "演奏不存在",
+          error: "Performance not found",
         },
         { status: 404 }
       );
     }
 
-    // 检查权限（只有演奏者本人可以编辑）
+    // Check permissions (only performer can edit)
     if (performance.userId !== currentUser.id) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "没有权限编辑此演奏",
+          error: "No permission to edit this performance",
         },
         { status: 403 }
       );
@@ -121,7 +121,7 @@ export async function PUT(
 
     const body = await request.json();
 
-    // 验证请求数据
+    // Validate request data
     const { error } = performanceSchema.validate(body);
     if (error) {
       return NextResponse.json<ApiResponse>(
@@ -133,10 +133,10 @@ export async function PUT(
       );
     }
 
-    // 更新演奏记录
+    // Update performance record
     await performance.update(body);
 
-    // 返回更新后的演奏记录
+    // Return updated performance record
     const updatedPerformance = await Performance.findByPk(performanceId, {
       include: [
         {
@@ -155,33 +155,33 @@ export async function PUT(
     return NextResponse.json<ApiResponse>({
       success: true,
       data: updatedPerformance,
-      message: "演奏更新成功",
+      message: "Performance updated successfully",
     });
   } catch (error) {
-    console.error("更新演奏失败:", error);
+    console.error("Failed to update performance:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "更新演奏失败",
+        error: "Failed to update performance",
       },
       { status: 500 }
     );
   }
 }
 
-// 删除演奏
+// Delete performance
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    // 验证用户身份
+    // Verify user identity
     const currentUser = await getUserFromRequest(request);
     if (!currentUser) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "请先登录",
+          error: "Please login first",
         },
         { status: 401 }
       );
@@ -193,13 +193,13 @@ export async function DELETE(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "无效的演奏ID",
+          error: "Invalid performance ID",
         },
         { status: 400 }
       );
     }
 
-    // 查找演奏记录
+    // Find performance record
     const performance = await Performance.findByPk(performanceId, {
       include: [
         {
@@ -213,44 +213,44 @@ export async function DELETE(
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "演奏不存在",
+          error: "Performance not found",
         },
         { status: 404 }
       );
     }
 
-    // 检查权限（只有演奏者本人可以删除）
+    // Check permissions (only performer can delete)
     if (performance.userId !== currentUser.id) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "没有权限删除此演奏",
+          error: "No permission to delete this performance",
         },
         { status: 403 }
       );
     }
 
-    // 删除演奏记录
+    // Delete performance record
     await performance.destroy();
 
-    // 更新作品的演奏数量
+    // Update work performances count
     if ((performance as any).work) {
       await (performance as any).work.decrement("performancesCount");
     }
 
-    // 更新用户的演奏数量
+    // Update user performances count
     await currentUser.decrement("performancesCount");
 
     return NextResponse.json<ApiResponse>({
       success: true,
-      message: "演奏删除成功",
+      message: "Performance deleted successfully",
     });
   } catch (error) {
-    console.error("删除演奏失败:", error);
+    console.error("Failed to delete performance:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "删除演奏失败",
+        error: "Failed to delete performance",
       },
       { status: 500 }
     );

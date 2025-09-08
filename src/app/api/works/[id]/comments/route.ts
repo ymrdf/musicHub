@@ -4,7 +4,7 @@ import { getUserFromRequest } from "@/lib/auth";
 import { ApiResponse, Comment, PaginatedResponse } from "@/types";
 import { QueryTypes } from "sequelize";
 
-// 获取作品评论列表
+// Get work comments list
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -13,12 +13,12 @@ export async function GET(
     const workId = parseInt(params.id);
     if (isNaN(workId)) {
       return NextResponse.json(
-        { success: false, error: "无效的作品ID" },
+        { success: false, error: "Invalid work ID" },
         { status: 400 }
       );
     }
 
-    // 检查作品是否存在
+    // Check if work exists
     const [works] = await sequelize.query("SELECT id FROM works WHERE id = ?", {
       replacements: [workId],
       type: QueryTypes.SELECT,
@@ -26,26 +26,26 @@ export async function GET(
 
     if (!works) {
       return NextResponse.json(
-        { success: false, error: "作品不存在" },
+        { success: false, error: "Work not found" },
         { status: 404 }
       );
     }
 
-    // 获取URL查询参数
+    // Get URL query parameters
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const parentId = searchParams.get("parentId");
 
-    // 计算分页
+    // Calculate pagination
     const offset = (page - 1) * limit;
 
-    // 构建查询条件
+    // Build query conditions
     const parentCondition = parentId
       ? `AND c.parent_id = ${parseInt(parentId)}`
       : `AND c.parent_id IS NULL`;
 
-    // 获取评论总数
+    // Get total comments count
     const [countResult] = await sequelize.query(
       `SELECT COUNT(*) as total FROM comments c 
        WHERE c.commentable_type = 'work' AND c.commentable_id = ? ${parentCondition}`,
@@ -57,7 +57,7 @@ export async function GET(
 
     const totalCount = countResult ? (countResult as any).total : 0;
 
-    // 获取评论列表
+    // Get comments list
     const comments = await sequelize.query(
       `SELECT c.*, u.username, u.avatar_url,
        (SELECT COUNT(*) FROM comments WHERE parent_id = c.id) as replies_count,
@@ -73,11 +73,11 @@ export async function GET(
       }
     );
 
-    // 获取当前用户
+    // Get current user
     const user = await getUserFromRequest(request);
     const userId = user?.id;
 
-    // 如果用户已登录，检查用户是否已点赞评论
+    // If user is logged in, check if user has liked comments
     let commentsWithLikeStatus = comments;
     if (userId && comments.length > 0) {
       const commentIds = comments.map((comment: any) => comment.id).join(",");
@@ -136,7 +136,7 @@ export async function GET(
       }));
     }
 
-    // 构建分页响应
+    // Build paginated response
     const response: ApiResponse<PaginatedResponse<Comment>> = {
       success: true,
       data: {
@@ -150,15 +150,15 @@ export async function GET(
 
     return NextResponse.json(response);
   } catch (error: any) {
-    console.error("获取评论失败:", error);
+    console.error("Failed to get comments:", error);
     return NextResponse.json(
-      { success: false, error: "获取评论失败" },
+      { success: false, error: "Failed to get comments" },
       { status: 500 }
     );
   }
 }
 
-// 创建新评论
+// Create new comment
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -167,7 +167,7 @@ export async function POST(
     const user = await getUserFromRequest(request);
     if (!user) {
       return NextResponse.json(
-        { success: false, error: "未授权" },
+        { success: false, error: "Unauthorized" },
         { status: 401 }
       );
     }
@@ -175,12 +175,12 @@ export async function POST(
     const workId = parseInt(params.id);
     if (isNaN(workId)) {
       return NextResponse.json(
-        { success: false, error: "无效的作品ID" },
+        { success: false, error: "Invalid work ID" },
         { status: 400 }
       );
     }
 
-    // 检查作品是否存在
+    // Check if work exists
     const [work] = await sequelize.query("SELECT id FROM works WHERE id = ?", {
       replacements: [workId],
       type: QueryTypes.SELECT,
@@ -188,23 +188,23 @@ export async function POST(
 
     if (!work) {
       return NextResponse.json(
-        { success: false, error: "作品不存在" },
+        { success: false, error: "Work not found" },
         { status: 404 }
       );
     }
 
-    // 解析请求体
+    // Parse request body
     const body = await request.json();
     const { content, parentId } = body;
 
     if (!content || content.trim() === "") {
       return NextResponse.json(
-        { success: false, error: "评论内容不能为空" },
+        { success: false, error: "Comment content cannot be empty" },
         { status: 400 }
       );
     }
 
-    // 如果提供了parentId，检查父评论是否存在
+    // If parentId is provided, check if parent comment exists
     if (parentId) {
       const [parentComment] = await sequelize.query(
         "SELECT id, commentable_type, commentable_id FROM comments WHERE id = ?",
@@ -216,24 +216,27 @@ export async function POST(
 
       if (!parentComment) {
         return NextResponse.json(
-          { success: false, error: "父评论不存在" },
+          { success: false, error: "Parent comment not found" },
           { status: 404 }
         );
       }
 
-      // 确保父评论也属于同一个作品
+      // Ensure parent comment belongs to the same work
       if (
         (parentComment as any).commentable_type !== "work" ||
         (parentComment as any).commentable_id !== workId
       ) {
         return NextResponse.json(
-          { success: false, error: "父评论不属于此作品" },
+          {
+            success: false,
+            error: "Parent comment does not belong to this work",
+          },
           { status: 400 }
         );
       }
     }
 
-    // 创建新评论
+    // Create new comment
     const [result] = await sequelize.query(
       `INSERT INTO comments 
        (user_id, commentable_type, commentable_id, content, parent_id, is_public, created_at, updated_at) 
@@ -246,7 +249,7 @@ export async function POST(
 
     const newCommentId = Array.isArray(result) ? result[0] : result;
 
-    // 获取新创建的评论详情
+    // Get newly created comment details
     const [newComment] = await sequelize.query(
       `SELECT c.*, u.username, u.avatar_url 
        FROM comments c 
@@ -258,7 +261,7 @@ export async function POST(
       }
     );
 
-    // 更新作品的评论计数
+    // Update work comments count
     await sequelize.query(
       "UPDATE works SET comments_count = comments_count + 1 WHERE id = ?",
       {
@@ -267,7 +270,7 @@ export async function POST(
       }
     );
 
-    // 如果是回复，更新父评论的回复计数
+    // If it's a reply, update parent comment replies count
     if (parentId) {
       await sequelize.query(
         "UPDATE comments SET replies_count = replies_count + 1 WHERE id = ?",
@@ -301,9 +304,9 @@ export async function POST(
       },
     });
   } catch (error: any) {
-    console.error("创建评论失败:", error);
+    console.error("Failed to create comment:", error);
     return NextResponse.json(
-      { success: false, error: "创建评论失败" },
+      { success: false, error: "Failed to create comment" },
       { status: 500 }
     );
   }

@@ -8,31 +8,31 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
     }
 
-    // 获取当前用户
+    // Get current user
     const user = await getUserFromRequest(request);
     if (!user) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "未授权访问",
+          error: "Unauthorized access",
         },
         { status: 401 }
       );
     }
 
-    // 返回用户信息（不包含密码）
+    // Return user information (excluding password)
     const userResponse = {
       id: user.id,
       username: user.username,
@@ -54,11 +54,11 @@ export async function GET(request: NextRequest) {
       data: userResponse,
     });
   } catch (error) {
-    console.error("获取用户信息失败:", error);
+    console.error("Failed to get user information:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );

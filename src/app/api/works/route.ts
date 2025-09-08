@@ -7,16 +7,16 @@ import type { ApiResponse, PaginatedResponse } from "@/types";
 import sequelize from "@/lib/database";
 import { Op } from "sequelize";
 
-// 获取作品列表
+// Get works list
 export async function GET(request: NextRequest) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     const instrumentId = searchParams.get("instrumentId");
     const userId = searchParams.get("userId");
 
-    // 构建查询条件
+    // Build query conditions
     const whereClause: any = { isPublic: true };
 
     if (search) {
@@ -54,10 +54,10 @@ export async function GET(request: NextRequest) {
       whereClause.userId = parseInt(userId);
     }
 
-    // 计算偏移量
+    // Calculate offset
     const offset = (page - 1) * limit;
 
-    // 查询作品
+    // Query works
     const { count, rows: works } = await Work.findAndCountAll({
       where: whereClause,
       include: [
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
       offset,
     });
 
-    // 格式化数据
+    // Format data
     const formattedWorks = works.map((work) => ({
       id: work.id,
       title: work.title,
@@ -120,39 +120,39 @@ export async function GET(request: NextRequest) {
       data: response,
     });
   } catch (error) {
-    console.error("获取作品列表失败:", error);
+    console.error("Failed to get works list:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );
   }
 }
 
-// 创建作品
+// Create work
 export async function POST(request: NextRequest) {
   try {
-    // 测试数据库连接
+    // Test database connection
     const isConnected = await testConnection();
     if (!isConnected) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "数据库连接失败",
+          error: "Database connection failed",
         },
         { status: 500 }
       );
     }
 
-    // 验证用户身份
+    // Verify user identity
     const currentUser = await getUserFromRequest(request);
     if (!currentUser) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
-          error: "请先登录",
+          error: "Please login first",
         },
         { status: 401 }
       );
@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    // 验证请求数据
+    // Validate request data
     const { error, value } = workSchema.validate(body);
     if (error) {
       return NextResponse.json<ApiResponse>(
@@ -186,11 +186,11 @@ export async function POST(request: NextRequest) {
       license = "CC BY-SA 4.0",
     } = value;
 
-    // 开始事务
+    // Start transaction
     const transaction = await sequelize.transaction();
 
     try {
-      // 创建作品
+      // Create work
       const work = await Work.create(
         {
           title,
@@ -212,10 +212,10 @@ export async function POST(request: NextRequest) {
         { transaction }
       );
 
-      // 处理标签
+      // Handle tags
       if (tags.length > 0) {
         for (const tagName of tags) {
-          // 查找或创建标签
+          // Find or create tag
           let [tag] = await Tag.findOrCreate({
             where: { name: tagName.trim() },
             defaults: {
@@ -226,7 +226,7 @@ export async function POST(request: NextRequest) {
             transaction,
           });
 
-          // 创建作品标签关联
+          // Create work-tag association
           await sequelize.query(
             "INSERT INTO work_tags (work_id, tag_id) VALUES (?, ?)",
             {
@@ -235,15 +235,15 @@ export async function POST(request: NextRequest) {
             }
           );
 
-          // 更新标签使用次数
+          // Update tag usage count
           await tag.increment("usageCount", { transaction });
         }
       }
 
-      // 更新用户作品数
+      // Update user works count
       await currentUser.increment("worksCount", { transaction });
 
-      // 获取完整的作品信息（在事务提交之前）
+      // Get complete work information (before transaction commit)
       const completeWork = await Work.findByPk(work.id, {
         include: [
           {
@@ -270,14 +270,14 @@ export async function POST(request: NextRequest) {
         transaction,
       });
 
-      // 提交事务
+      // Commit transaction
       await transaction.commit();
 
       return NextResponse.json<ApiResponse>(
         {
           success: true,
           data: completeWork,
-          message: "作品创建成功",
+          message: "Work created successfully",
         },
         { status: 201 }
       );
@@ -286,11 +286,11 @@ export async function POST(request: NextRequest) {
       throw error;
     }
   } catch (error) {
-    console.error("创建作品失败:", error);
+    console.error("Failed to create work:", error);
     return NextResponse.json<ApiResponse>(
       {
         success: false,
-        error: "服务器内部错误",
+        error: "Internal server error",
       },
       { status: 500 }
     );
