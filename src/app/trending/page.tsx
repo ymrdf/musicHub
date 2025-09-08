@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/layout/Providers";
 import { Work, Performance } from "@/types";
@@ -69,7 +69,7 @@ interface TrendingItem {
   isLiked?: boolean;
 }
 
-export default function TrendingPage() {
+function TrendingPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user: currentUser } = useAuth();
@@ -596,5 +596,22 @@ export default function TrendingPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function TrendingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
+            <p className="mt-2 text-gray-600">正在加载...</p>
+          </div>
+        </div>
+      }
+    >
+      <TrendingPageContent />
+    </Suspense>
   );
 }

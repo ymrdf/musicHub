@@ -3,7 +3,13 @@ import { getUserFromRequest } from "@/lib/auth";
 import { performanceSchema } from "@/utils/validation";
 import type { ApiResponse } from "@/types";
 import sequelize from "@/lib/database";
-import { User, Work, Performance, Category } from "@/lib/models";
+import {
+  User,
+  Work,
+  Performance,
+  Category,
+  PerformanceLike,
+} from "@/lib/models";
 import { Op } from "sequelize";
 
 // 获取演奏列表
@@ -99,7 +105,7 @@ export async function GET(request: NextRequest) {
     // 如果用户已登录，检查点赞状态
     if (currentUser) {
       const performanceIds = rows.map((p) => p.id);
-      const likes = await sequelize.models.PerformanceLike.findAll({
+      const likes = await PerformanceLike.findAll({
         where: {
           performanceId: performanceIds,
           userId: currentUser.id,
@@ -107,7 +113,9 @@ export async function GET(request: NextRequest) {
         attributes: ["performanceId"],
       });
 
-      const likedPerformanceIds = new Set(likes.map((l) => (l as any).performanceId));
+      const likedPerformanceIds = new Set(
+        likes.map((l) => (l as any).performanceId)
+      );
 
       rows.forEach((performance) => {
         performance.dataValues.isLiked = likedPerformanceIds.has(

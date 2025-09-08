@@ -3,6 +3,9 @@ import type { ApiResponse } from "@/types";
 import { getUserFromRequest } from "@/lib/auth";
 import { testConnection } from "@/lib/database";
 
+// 强制动态渲染
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     // 测试数据库连接

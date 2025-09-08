@@ -6,6 +6,9 @@ import type { ApiResponse } from "@/types";
 import sequelize from "@/lib/database";
 import { QueryTypes } from "sequelize";
 
+// 强制动态渲染
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     // 测试数据库连接

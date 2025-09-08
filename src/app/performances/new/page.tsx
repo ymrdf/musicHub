@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/layout/Providers";
 import { PerformanceFormData } from "@/types";
@@ -12,7 +12,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 
-export default function NewPerformancePage() {
+function NewPerformancePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user: currentUser, loading } = useAuth();
@@ -454,5 +454,20 @@ export default function NewPerformancePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function NewPerformancePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
+          <p className="mt-2 text-gray-600">正在加载...</p>
+        </div>
+      </div>
+    }>
+      <NewPerformancePageContent />
+    </Suspense>
   );
 }

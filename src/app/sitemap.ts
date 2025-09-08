@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import sequelize, { QueryTypes } from "@/lib/database";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -6,11 +7,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 获取所有作品
   let works: any[] = [];
   try {
-    const worksResponse = await fetch(
-      `${baseUrl}/api/works?limit=100&sortBy=updatedAt&sortOrder=desc`
+    const result = await sequelize.query(
+      `SELECT id, created_at, updated_at FROM works 
+       WHERE is_public = true 
+       ORDER BY updated_at DESC 
+       LIMIT 100`,
+      { type: QueryTypes.SELECT }
     );
-    const worksData = await worksResponse.json();
-    works = worksData.success ? worksData.data.works : [];
+    works = result || [];
   } catch (error) {
     console.error("获取作品数据失败:", error);
   }
@@ -18,9 +22,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 获取所有用户
   let users: any[] = [];
   try {
-    const usersResponse = await fetch(`${baseUrl}/api/users?limit=100`);
-    const usersData = await usersResponse.json();
-    users = usersData.success ? usersData.data : [];
+    const result = await sequelize.query(
+      `SELECT id, created_at, updated_at FROM users 
+       WHERE is_active = true 
+       ORDER BY updated_at DESC 
+       LIMIT 100`,
+      { type: QueryTypes.SELECT }
+    );
+    users = result || [];
   } catch (error) {
     console.error("获取用户数据失败:", error);
   }
@@ -43,17 +52,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 作品页面
-  const workPages = works.map((work) => ({
+  const workPages = (works || []).map((work) => ({
     url: `${baseUrl}/works/${work.id}`,
-    lastModified: new Date(work.updatedAt || work.createdAt),
+    lastModified: new Date(work.updated_at || work.created_at),
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
 
   // 用户页面
-  const userPages = users.map((user) => ({
+  const userPages = (users || []).map((user) => ({
     url: `${baseUrl}/users/${user.id}`,
-    lastModified: new Date(user.updatedAt || user.createdAt),
+    lastModified: new Date(user.updated_at || user.created_at),
     changeFrequency: "monthly" as const,
     priority: 0.5,
   }));

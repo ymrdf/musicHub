@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/layout/Providers";
@@ -14,7 +14,6 @@ export const metadata: Metadata = {
     "一个面向音乐创作者的原创音乐分享平台，支持乐谱分享、协作创作、演奏演唱和社区互动。",
   keywords: "音乐创作,乐谱分享,MIDI,演奏,演唱,音乐社区",
   authors: [{ name: "MusicEmit Team" }],
-  viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -25,6 +24,11 @@ export const metadata: Metadata = {
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

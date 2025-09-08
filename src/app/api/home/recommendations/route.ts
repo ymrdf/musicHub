@@ -4,6 +4,9 @@ import { QueryTypes } from "sequelize";
 import { getUserFromRequest } from "@/lib/auth";
 import type { ApiResponse } from "@/types";
 
+// 强制动态渲染
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const currentUser = await getUserFromRequest(request);

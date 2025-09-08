@@ -2,9 +2,11 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { NextRequest } from "next/server";
 import sequelize from "./database";
-import "./models";
+import { User } from "./models";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key";
+const JWT_SECRET =
+  process.env.JWT_SECRET ||
+  "your-super-secret-jwt-key-change-this-in-production";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 // JWT generation and verification
@@ -58,8 +60,7 @@ export const getUserFromRequest = async (
       return null;
     }
 
-    const User = sequelize.models.User;
-    const user = await (User as any).findByPk(decoded.userId);
+    const user = await User.findByPk(decoded.userId);
     if (!user || !(user as any).isActive) {
       return null;
     }
