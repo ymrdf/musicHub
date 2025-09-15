@@ -1,84 +1,57 @@
 // src/lib/api-utils.ts
 // Data fetching functions for server components
 
+import { getStats } from "@/lib/stats";
+import { getRecommendations } from "@/lib/services/recommendations";
+import { getWorkById, getPopularWorks } from "@/lib/services/works";
+import { getUserProfile } from "@/lib/services/users";
+
 export async function fetchStats() {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/stats`,
-    {
-      cache: "no-store", // or use revalidate option
-    }
-  );
-  const data = await response.json();
-  return data.success
-    ? data.data
-    : { users: 0, works: 0, performances: 0, stars: 0 };
+  try {
+    return await getStats();
+  } catch (error) {
+    console.error("获取统计数据失败:", error);
+    return { users: 0, works: 0, performances: 0, stars: 0 };
+  }
 }
 
 export async function fetchRecommendations() {
-  const response = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-    }/api/home/recommendations`,
-    {
-      next: { revalidate: 3600 }, // Revalidate every hour
-    }
-  );
-  const data = await response.json();
-  return data.success
-    ? data.data
-    : {
-        hotWorks: [],
-        latestWorks: [],
-        hotPerformances: [],
-        latestPerformances: [],
-      };
+  try {
+    return await getRecommendations();
+  } catch (error) {
+    console.error("获取推荐内容失败:", error);
+    return {
+      hotWorks: [],
+      latestWorks: [],
+      hotPerformances: [],
+      latestPerformances: [],
+    };
+  }
 }
 
 export async function fetchWorkById(id: string) {
-  const response = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-    }/api/works/${id}`,
-    {
-      next: { revalidate: 3600 }, // Revalidate every hour
-    }
-  );
-
-  if (!response.ok) {
+  try {
+    return await getWorkById(id);
+  } catch (error) {
+    console.error("获取作品详情失败:", error);
     return null;
   }
-
-  const data = await response.json();
-  return data.success ? data.data : null;
 }
 
 export async function fetchUserProfile(id: string) {
-  const response = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-    }/api/users/${id}`,
-    {
-      next: { revalidate: 3600 }, // Revalidate every hour
-    }
-  );
-
-  if (!response.ok) {
+  try {
+    return await getUserProfile(id);
+  } catch (error) {
+    console.error("获取用户信息失败:", error);
     return null;
   }
-
-  const data = await response.json();
-  return data.success ? data.data : null;
 }
 
 export async function fetchPopularWorks(limit = 10) {
-  const response = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-    }/api/works?sortBy=starsCount&sortOrder=desc&limit=${limit}`,
-    {
-      next: { revalidate: 86400 }, // Revalidate daily
-    }
-  );
-  const data = await response.json();
-  return data.success ? data.data.works : [];
+  try {
+    return await getPopularWorks(limit);
+  } catch (error) {
+    console.error("获取热门作品失败:", error);
+    return [];
+  }
 }
