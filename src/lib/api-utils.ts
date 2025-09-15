@@ -31,7 +31,9 @@ export async function fetchRecommendations() {
 
 export async function fetchWorkById(id: string) {
   try {
-    return await getWorkById(id);
+    // 在服务端渲染时，我们不知道当前用户，所以传递 undefined
+    // 这意味着 isOwner 和 isStarred 将为默认值
+    return await getWorkById(id, undefined);
   } catch (error) {
     console.error("获取作品详情失败:", error);
     return null;

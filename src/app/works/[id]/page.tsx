@@ -54,9 +54,7 @@ export async function generateMetadata({
       url: `https://musicemit.com/works/${work.id}`,
       images: [
         {
-          url:
-            work.coverImageUrl ||
-            "https://musicemit.com/default-work-cover.jpg",
+          url: "https://musicemit.com/default-work-cover.jpg",
           width: 1200,
           height: 630,
           alt: work.title,

@@ -32,14 +32,14 @@ export async function getUserProfile(id: string) {
       followingCount: user.followingCount,
       worksCount: user.worksCount,
       performancesCount: user.performancesCount,
-      createdAt: user.createdAt,
+      createdAt: user.createdAt.toISOString(),
       recentWorks: works.map((work) => ({
         id: work.id,
         title: work.title,
         description: work.description,
         starsCount: work.starsCount,
         performancesCount: work.performancesCount,
-        createdAt: work.createdAt,
+        createdAt: work.createdAt.toISOString(),
       })),
     };
   } catch (error) {
