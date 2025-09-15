@@ -12,19 +12,8 @@ interface RecommendationItem {
   user: {
     id: number;
     username: string;
-    email: string;
-    passwordHash: string;
     avatarUrl?: string;
-    bio?: string;
-    website?: string;
     isVerified: boolean;
-    isActive: boolean;
-    followersCount: number;
-    followingCount: number;
-    worksCount: number;
-    performancesCount: number;
-    createdAt: Date;
-    updatedAt: Date;
   };
   genre?: {
     id: number;

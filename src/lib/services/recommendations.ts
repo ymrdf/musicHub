@@ -170,7 +170,7 @@ export async function getRecommendations(currentUser?: User) {
     // 格式化作品数据
     const formatWork = (work: any) => ({
       id: work.id,
-      type: "work",
+      type: "work" as const,
       title: work.title,
       description: work.description,
       starsCount: work.starsCount,
@@ -186,20 +186,22 @@ export async function getRecommendations(currentUser?: User) {
         avatarUrl: work.avatarUrl,
         isVerified: work.isVerified,
       },
-      genre: work.genreId ? { id: work.genreId, name: work.genreName } : null,
+      genre: work.genreId
+        ? { id: work.genreId, name: work.genreName }
+        : undefined,
       instrument: work.instrumentId
         ? { id: work.instrumentId, name: work.instrumentName }
-        : null,
+        : undefined,
       purpose: work.purposeId
         ? { id: work.purposeId, name: work.purposeName }
-        : null,
+        : undefined,
       isStarred: work.isStarred > 0,
     });
 
     // 格式化演奏数据
     const formatPerformance = (performance: any) => ({
       id: performance.id,
-      type: "performance",
+      type: "performance" as const,
       title: performance.title,
       description: performance.description,
       likesCount: performance.likesCount,
@@ -219,13 +221,13 @@ export async function getRecommendations(currentUser?: User) {
       },
       genre: performance.genreId
         ? { id: performance.genreId, name: performance.genreName }
-        : null,
+        : undefined,
       instrument: performance.instrumentId
         ? { id: performance.instrumentId, name: performance.instrumentName }
-        : null,
+        : undefined,
       purpose: performance.purposeId
         ? { id: performance.purposeId, name: performance.purposeName }
-        : null,
+        : undefined,
       isLiked: performance.isLiked > 0,
     });
 
