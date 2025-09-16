@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getStats } from "@/lib/stats";
 
+// 强制动态渲染，确保数据实时更新
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const stats = await getStats();

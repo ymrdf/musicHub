@@ -9,11 +9,21 @@ import {
 } from "@heroicons/react/24/outline";
 import StatsDisplay from "@/components/client/StatsDisplay";
 import { fetchStats, fetchRecommendations } from "@/lib/api-utils";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 
-// Dynamically import client component, disable server-side rendering
-const RecommendationSection = dynamic(
+// 强制动态渲染，确保数据实时更新
+export const dynamic = "force-dynamic";
+// 禁用缓存，每次都重新获取数据
+export const revalidate = 0;
+
+// Dynamically import client components, disable server-side rendering
+const RecommendationSection = nextDynamic(
   () => import("@/components/RecommendationSection"),
+  { ssr: false }
+);
+
+const DynamicRecommendations = nextDynamic(
+  () => import("@/components/client/DynamicRecommendations"),
   { ssr: false }
 );
 
@@ -153,34 +163,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Recommendation sections */}
-      <RecommendationSection
-        title="🔥 Hot Creations"
-        items={recommendations.hotWorks}
-        viewAllLink="/trending?type=work"
-        loading={false}
-      />
-
-      <RecommendationSection
-        title="🎵 Hot Performances"
-        items={recommendations.hotPerformances}
-        viewAllLink="/discover?sortBy=likesCount&sortOrder=desc"
-        loading={false}
-      />
-
-      <RecommendationSection
-        title="✨ Latest Creations"
-        items={recommendations.latestWorks}
-        viewAllLink="/works?sortBy=createdAt&sortOrder=desc"
-        loading={false}
-      />
-
-      <RecommendationSection
-        title="🎤 Latest Performances"
-        items={recommendations.latestPerformances}
-        viewAllLink="/discover?sortBy=createdAt&sortOrder=desc"
-        loading={false}
-      />
+      {/* Recommendation sections - 使用动态组件确保数据实时更新 */}
+      <DynamicRecommendations initialRecommendations={recommendations} />
 
       {/* CTA Section */}
       <section className="py-16 bg-primary-600">

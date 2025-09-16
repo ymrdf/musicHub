@@ -21,23 +21,35 @@ export default function StatsDisplay({ initialStats }: StatsDisplayProps) {
   const [stats, setStats] = useState(initialStats);
   const [loading, setLoading] = useState(false);
 
-  // Can add real-time update functionality
+  // 实时更新统计数据
   useEffect(() => {
     const fetchUpdatedStats = async () => {
       try {
-        const response = await fetch("/api/stats");
+        setLoading(true);
+        const response = await fetch("/api/stats", {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+          },
+        });
         const data = await response.json();
         if (data.success) {
           setStats(data.data);
         }
       } catch (error) {
         console.error("Failed to fetch latest stats:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    // Can add scheduled refresh or other trigger conditions
-    // const interval = setInterval(fetchUpdatedStats, 60000); // Update every minute
-    // return () => clearInterval(interval);
+    // 页面加载时立即更新一次数据
+    fetchUpdatedStats();
+
+    // 每30秒自动更新一次统计数据
+    const interval = setInterval(fetchUpdatedStats, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const statsData = [

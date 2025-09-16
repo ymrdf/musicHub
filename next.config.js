@@ -3,6 +3,16 @@ const nextConfig = {
   images: {
     domains: ["localhost", "api.dicebear.com"],
   },
+  // 实验性功能配置
+  experimental: {
+    // 启用服务器组件缓存优化
+    serverComponentsExternalPackages: ["sequelize", "mysql2"],
+  },
+  // 缓存配置
+  generateBuildId: async () => {
+    // 使用时间戳作为构建ID，确保每次部署都有新的构建ID
+    return `build-${Date.now()}`;
+  },
   // 支持音频文件上传
   webpack: (config) => {
     config.module.rules.push({
