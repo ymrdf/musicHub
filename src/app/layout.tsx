@@ -39,6 +39,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Google tag (gtag.js) */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-5SFNYM4WS8"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-5SFNYM4WS8');
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className} suppressHydrationWarning={true}>
         <Providers>
           <div className="min-h-screen flex flex-col bg-gray-50">
