@@ -1,9 +1,37 @@
+import { Metadata } from "next";
 import {
   DocumentTextIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
+import { canonicalUrls } from "@/utils/canonical";
+
+export const metadata: Metadata = {
+  title: "Terms of Service - MusicEmit",
+  description:
+    "Read MusicEmit's terms of service to understand the rules and guidelines for using our original music sharing platform and community features.",
+  keywords:
+    "terms of service,user agreement,platform rules,music sharing terms,community guidelines",
+  alternates: {
+    canonical: canonicalUrls.terms(),
+  },
+  openGraph: {
+    title: "Terms of Service - MusicEmit",
+    description:
+      "Read MusicEmit's terms of service to understand the rules and guidelines for using our original music sharing platform and community features.",
+    type: "website",
+    url: "https://musicemit.com/terms",
+    images: [
+      {
+        url: "https://musicemit.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Terms of Service - MusicEmit",
+      },
+    ],
+  },
+};
 
 export default function TermsOfServicePage() {
   return (

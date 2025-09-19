@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import StatsDisplay from "@/components/client/StatsDisplay";
 import { fetchStats, fetchRecommendations } from "@/lib/api-utils";
+import { canonicalUrls } from "@/utils/canonical";
 import nextDynamic from "next/dynamic";
 
 // 强制动态渲染，确保数据实时更新
@@ -28,15 +29,20 @@ const DynamicRecommendations = nextDynamic(
 );
 
 export const metadata: Metadata = {
-  title: "MusicEmit - Original Music Sharing Platform",
+  title:
+    "MusicEmit - Original Music Sharing Platform | Music Creation & Collaboration",
   description:
-    "The original music sharing platform connecting global creators. Share your compositions, discover amazing music, and collaborate with like-minded musicians.",
+    "The ultimate platform for original music creation and sharing. Connect with global music creators, share compositions, discover amazing music, collaborate on projects, and showcase performances. Join the GitHub for musicians.",
   keywords:
-    "music creation,sheet music sharing,MIDI,performance,vocals,music community,original music,music collaboration",
+    "music,original music,music creation,music collaboration,music sharing,music community,sheet music,MIDI,music composition,music performance,music creators,music platform,indie music,music discovery,collaborative music,music works,music recordings,musical collaboration,composer community,musician platform",
+  alternates: {
+    canonical: canonicalUrls.home(),
+  },
   openGraph: {
-    title: "MusicEmit - Original Music Sharing Platform",
+    title:
+      "MusicEmit - Original Music Sharing Platform | Music Creation & Collaboration",
     description:
-      "The original music sharing platform connecting global creators. Share your compositions, discover amazing music, and collaborate with like-minded musicians.",
+      "The ultimate platform for original music creation and sharing. Connect with global music creators, share compositions, discover amazing music, collaborate on projects, and showcase performances.",
     type: "website",
     url: "https://musicemit.com",
     images: [

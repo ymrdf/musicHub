@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import {
   MusicalNoteIcon,
   HeartIcon,
@@ -6,6 +7,34 @@ import {
   MicrophoneIcon,
   DocumentTextIcon,
 } from "@heroicons/react/24/outline";
+import { canonicalUrls } from "@/utils/canonical";
+
+export const metadata: Metadata = {
+  title: "About MusicEmit - The GitHub for Musicians | Original Music Platform",
+  description:
+    "Discover MusicEmit's mission to connect global music creators. Learn how we're building the ultimate platform for original music sharing, music collaboration, and music community building. Join thousands of composers, musicians, and performers.",
+  keywords:
+    "about musicemit,original music platform,music collaboration,music community,github for musicians,music creators,composer community,musical collaboration,indie music platform,music sharing community,collaborative music creation,musician network",
+  alternates: {
+    canonical: canonicalUrls.about(),
+  },
+  openGraph: {
+    title:
+      "About MusicEmit - The GitHub for Musicians | Original Music Platform",
+    description:
+      "Discover MusicEmit's mission to connect global music creators. Learn how we're building the ultimate platform for original music sharing and collaboration.",
+    type: "website",
+    url: "https://musicemit.com/about",
+    images: [
+      {
+        url: "https://musicemit.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "About MusicEmit - Original Music Platform",
+      },
+    ],
+  },
+};
 
 export default function AboutPage() {
   return (

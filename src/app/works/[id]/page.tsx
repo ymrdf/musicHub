@@ -16,6 +16,7 @@ import {
   StarIcon,
 } from "@heroicons/react/24/outline";
 import { fetchWorkById } from "@/lib/api-utils";
+import { canonicalUrls } from "@/utils/canonical";
 import WorkActions from "@/components/client/WorkActions";
 import WorkDetailClient from "@/components/client/WorkDetailClient";
 import CollaborationClient from "@/components/client/CollaborationClient";
@@ -45,6 +46,9 @@ export async function generateMetadata({
     keywords: `${work.genre?.name || ""},${work.instrument?.name || ""},${
       work.purpose?.name || ""
     },original music,sheet music,MIDI`,
+    alternates: {
+      canonical: canonicalUrls.work(params.id),
+    },
     openGraph: {
       title: work.title,
       description:

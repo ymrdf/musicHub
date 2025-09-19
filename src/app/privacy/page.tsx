@@ -1,9 +1,37 @@
+import { Metadata } from "next";
 import {
   ShieldCheckIcon,
   EyeIcon,
   LockClosedIcon,
   DocumentTextIcon,
 } from "@heroicons/react/24/outline";
+import { canonicalUrls } from "@/utils/canonical";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy - MusicEmit",
+  description:
+    "Read MusicEmit's privacy policy to understand how we collect, use, store, and protect your personal information on our music sharing platform.",
+  keywords:
+    "privacy policy,data protection,personal information,music platform privacy,user rights",
+  alternates: {
+    canonical: canonicalUrls.privacy(),
+  },
+  openGraph: {
+    title: "Privacy Policy - MusicEmit",
+    description:
+      "Read MusicEmit's privacy policy to understand how we collect, use, store, and protect your personal information on our music sharing platform.",
+    type: "website",
+    url: "https://musicemit.com/privacy",
+    images: [
+      {
+        url: "https://musicemit.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Privacy Policy - MusicEmit",
+      },
+    ],
+  },
+};
 
 export default function PrivacyPolicyPage() {
   return (

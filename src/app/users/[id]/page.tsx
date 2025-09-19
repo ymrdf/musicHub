@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { fetchUserProfile } from "@/lib/api-utils";
 import { getUserFromRequest } from "@/lib/auth";
+import { canonicalUrls } from "@/utils/canonical";
 import UserProfileActions from "@/components/client/UserProfileActions";
 
 // Dynamically generate metadata
@@ -36,6 +37,9 @@ export async function generateMetadata({
       profile.bio ||
       `${profile.username}'s music creation homepage, view their original works and performances`,
     keywords: `${profile.username},music creator,original music,musician`,
+    alternates: {
+      canonical: canonicalUrls.user(params.id),
+    },
     openGraph: {
       title: `${profile.username} - MusicEmit`,
       description:
